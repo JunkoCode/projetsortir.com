@@ -4,10 +4,15 @@ namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
+use http\Message;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+#[UniqueEntity(fields: ['pseudo'], message: 'Ce pseudo est déja utilisé')]
+#[UniqueEntity(fields: ['email'], message: 'Votre email est déja utilisé !')]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -16,6 +21,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\UniqueEntity(message: "Votre email est deja utilisé !")]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -27,16 +33,24 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[Assert\EqualTo("password", message: "Votre mot de passe n'est pas identique !")]
+    public $passwordConfirm;
+
     #[ORM\Column(length: 30, unique: true)]
+    #[Assert\UniqueEntity(message: "Ce pseudo est déja utilisé")]
     private ?string $pseudo = null;
 
     #[ORM\Column(length: 30)]
+    #[Assert\Length(max: 30,maxMessage: "Le nom ne doit pas dépasser 30 caractères !")]
     private ?string $nom = null;
 
     #[ORM\Column(length: 30)]
+    #[Assert\Length(max: 30,maxMessage: "Le prénom ne doit pas dépasser 30 caractères !")]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 15)]
+    #[Assert\Length(min: 8, max: 20, minMessage: "Le telephone n'est pas au bon format", maxMessage: "Le telephone n'est pas au bon format")]
+    #[Assert\Regex(pattern:"/^[0-9]*$/", message:"Votre numéro n'est pas au bon format")]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255, nullable: true)]
