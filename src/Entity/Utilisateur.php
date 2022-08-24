@@ -35,8 +35,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    /*
     #[Assert\EqualTo("password", message: "Votre mot de passe n'est pas identique !")]
     public $passwordConfirm;
+    */
 
     #[ORM\Column(length: 30, unique: true)]
     #[Assert\UniqueEntity(message: "Ce pseudo est déja utilisé")]
