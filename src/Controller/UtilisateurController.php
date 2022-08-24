@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Utilisateur;
 use App\Repository\UtilisateurRepository;
 use Monolog\Handler\Curl\Util;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,6 +29,14 @@ class UtilisateurController extends AbstractController
 
         $utilisateur = $utilisateurRepository->find($id);
 
+        return $this->render('utilisateur/updateProfil.html.twig', [
+            "utilisateur" => $utilisateur
+        ]);
+    }
+
+    #[Route('/profil/{id}', name: 'showProfil')]
+    public function ShowUser(Utilisateur $utilisateur, UtilisateurRepository $utilisateurRepository): Response
+    {
         return $this->render('utilisateur/updateProfil.html.twig', [
             "utilisateur" => $utilisateur
         ]);
