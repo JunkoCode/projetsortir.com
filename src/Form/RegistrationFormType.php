@@ -43,7 +43,7 @@ class RegistrationFormType extends ApplicationType
                     ]),
                 ],
             ])
-            ->add('passwordConfirm', PasswordType::class, $this->getConfiguration("Confirmation de mot de passe", "Veuillez confirmer votre mot de passe"))
+            //->add('passwordConfirm', PasswordType::class, $this->getConfiguration("Confirmation de mot de passe", "Veuillez confirmer votre mot de passe"))
             ->add('pseudo', TextType::class, $this->getConfiguration("Pseudo", "Votre pseudo"))
             ->add('nom', TextType::class, $this->getConfiguration("Nom", "Votre nom"))
             ->add('prenom', TextType::class, $this->getConfiguration("Prénom", "Votre prénom"))

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\UtilisateurRepository;
+use Monolog\Handler\Curl\Util;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,12 +21,15 @@ class UtilisateurController extends AbstractController
 
 
     #[Route('/updateProfil/{id}', name: 'updateProfil')]
-    public function updateUser(): Response
+    public function updateUser($id, UtilisateurRepository $utilisateurRepository): Response
     {
 
         //todo : utiliser le formulaire register pour envoyer les modification en base.
-        return $this->render('utilisateur/updateProfil.html.twig', [
 
+        $utilisateur = $utilisateurRepository->find($id);
+
+        return $this->render('utilisateur/updateProfil.html.twig', [
+            "utilisateur" => $utilisateur
         ]);
     }
 
