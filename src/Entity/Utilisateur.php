@@ -71,7 +71,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
     private Collection $proprietaireSorties;
 
-    #[ORM\ManyToMany(targetEntity: Sortie::class)]
+    #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
     private Collection $participantSorties;
 
     public function __construct()
