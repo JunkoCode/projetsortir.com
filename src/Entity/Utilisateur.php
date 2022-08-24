@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use http\Message;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -61,6 +63,22 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?bool $actif = null;
+
+    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $campus = null;
+
+    #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
+    private Collection $proprietaireSorties;
+
+    #[ORM\ManyToMany(targetEntity: Sortie::class)]
+    private Collection $participantSorties;
+
+    public function __construct()
+    {
+        $this->proprietaireSorties = new ArrayCollection();
+        $this->participantSorties = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -231,6 +249,72 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setActif(bool $actif): self
     {
         $this->actif = $actif;
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): self
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getProprietaireSorties(): Collection
+    {
+        return $this->proprietaireSorties;
+    }
+
+    public function addProprietaireSorty(Sortie $proprietaireSorty): self
+    {
+        if (!$this->proprietaireSorties->contains($proprietaireSorty)) {
+            $this->proprietaireSorties->add($proprietaireSorty);
+            $proprietaireSorty->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProprietaireSorty(Sortie $proprietaireSorty): self
+    {
+        if ($this->proprietaireSorties->removeElement($proprietaireSorty)) {
+            // set the owning side to null (unless already changed)
+            if ($proprietaireSorty->getOrganisateur() === $this) {
+                $proprietaireSorty->setOrganisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getParticipantSorties(): Collection
+    {
+        return $this->participantSorties;
+    }
+
+    public function addParticipantSorty(Sortie $participantSorty): self
+    {
+        if (!$this->participantSorties->contains($participantSorty)) {
+            $this->participantSorties->add($participantSorty);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipantSorty(Sortie $participantSorty): self
+    {
+        $this->participantSorties->removeElement($participantSorty);
 
         return $this;
     }
