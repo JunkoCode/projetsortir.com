@@ -17,15 +17,19 @@ class Lieu
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $rue = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank]
     private ?float $latitude = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank]
     private ?float $longitude = null;
 
     #[ORM\ManyToOne(inversedBy: 'lieux')]

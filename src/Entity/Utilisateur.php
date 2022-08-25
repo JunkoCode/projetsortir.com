@@ -25,9 +25,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\UniqueEntity(message: "Votre email est deja utilisé !")]
+    #[Assert\Email]
+    #[Assert\NotBlank]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
     private array $roles = [];
 
     /**
@@ -43,14 +46,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 30, unique: true)]
     #[Assert\UniqueEntity(message: "Ce pseudo est déja utilisé")]
+    #[Assert\NotBlank]
     private ?string $pseudo = null;
 
     #[ORM\Column(length: 30)]
     #[Assert\Length(max: 30,maxMessage: "Le nom ne doit pas dépasser 30 caractères !")]
+    #[Assert\NotBlank]
     private ?string $nom = null;
 
     #[ORM\Column(length: 30)]
     #[Assert\Length(max: 30,maxMessage: "Le prénom ne doit pas dépasser 30 caractères !")]
+    #[Assert\NotBlank]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 15)]
@@ -69,6 +75,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Assert\Choice(choices: Campus::class, message: 'Veuillez choisir un campus dans la liste')]
     private ?Campus $campus = null;
 
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]

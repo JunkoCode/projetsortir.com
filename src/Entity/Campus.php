@@ -17,6 +17,7 @@ class Campus
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $nom = null;
 
     #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Utilisateur::class)]

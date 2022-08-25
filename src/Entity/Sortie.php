@@ -21,20 +21,24 @@ class Sortie
     #[Assert\NotNull]
     private ?string $nom = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Assert\NotNull]
+    #[Assert\GreaterThan(propertyPath:'now', message: "La date limite d'inscription doit être supérieur à la date du jour")]
+    #[Assert\LessThanOrEqual(propertyPath: 'dateHeureDebut', message: "La date limite d'inscription doit être inférieur ou égal à la date de début du sortie")]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Assert\NotNull]
+    #[Assert\GreaterThan('now', message: "La date du début de la sortie doit être supérieur à la date du jour")]
+    #[Assert\GreaterThanOrEqual(propertyPath: 'dateLimiteInscription', message: "La date de début du sortie doit être supérieur ou égal à la date limite d'inscription")]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
-    #[ORM\Column(nullable: true)]
-
+    #[ORM\Column(type: Types::DATEINTERVAL)]
     private ?\DateInterval $duree = null;
 
     #[ORM\Column]
     #[Assert\NotNull]
+    #[Assert\GreaterThan(1)]
     private ?int $nombreInscriptionMax = null;
 
     #[ORM\Column(type: Types::TEXT)]

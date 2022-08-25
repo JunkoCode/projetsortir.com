@@ -18,6 +18,7 @@ class Ville
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     private ?string $nom = null;
 
     #[ORM\Column(nullable:false)]
