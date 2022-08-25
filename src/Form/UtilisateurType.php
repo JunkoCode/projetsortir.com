@@ -24,9 +24,7 @@ class UtilisateurType extends AbstractType
             ->add('photo')
             ->add('administrateur')
             ->add('actif')
-            //->add('campus', EntityType::class, ['class' => Campus::class])
-            //->add('participantSorties')
-        ;
+            ->add('campus', EntityType::class, ['class' => Campus::class, "choice_label" => 'nom']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

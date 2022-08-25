@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -28,9 +29,9 @@ class Sortie
     #[Assert\NotNull]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Assert\NotNull]
-    private ?\DateTimeInterface $duree = null;
+    #[ORM\Column(nullable: true)]
+
+    private ?\DateInterval $duree = null;
 
     #[ORM\Column]
     #[Assert\NotNull]
@@ -101,12 +102,12 @@ class Sortie
         return $this;
     }
 
-    public function getDuree(): ?\DateTimeInterface
+    public function getDuree(): ?\DateInterval
     {
         return $this->duree;
     }
 
-    public function setDuree(\DateTimeInterface $duree): self
+    public function setDuree(?\DateInterval $duree): self
     {
         $this->duree = $duree;
 
@@ -185,7 +186,7 @@ class Sortie
     {
         if (!$this->participants->contains($participant)) {
             $this->participants->add($participant);
-            $participant->addSortiesAbonnee($this);
+            $participant->addParticipantSorty($this);
         }
 
         return $this;
@@ -194,7 +195,7 @@ class Sortie
     public function removeParticipant(Utilisateur $participant): self
     {
         if ($this->participants->removeElement($participant)) {
-            $participant->removeSortiesAbonnee($this);
+            $participant->removeParticipantSorty($this);
         }
 
         return $this;

@@ -6,6 +6,8 @@ use App\Repository\VilleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: VilleRepository::class)]
 class Ville
@@ -18,7 +20,14 @@ class Ville
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:false)]
+    #[Assert\Positive]
+    #[Assert\Range(
+        notInRangeMessage: 'You must be between {{ min }}cm and {{ max }}cm tall to enter',
+        min: 01000,
+        max: 99900,
+    )]
+    #[Assert\Regex('/^(F-)?((2[A|B])|[0-9]{2})[0-9]{3}$/')]
     private ?int $codePostal = null;
 
     #[ORM\OneToMany(mappedBy: 'ville', targetEntity: Lieu::class)]

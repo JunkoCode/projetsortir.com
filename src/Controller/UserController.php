@@ -55,6 +55,17 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+           /* todo:Finaliser l'attribution du rôle en fonction CB admin
+
+           if ($utilisateur->isAdministrateur()==true){
+                $utilisateur->getRoles()='ROLE_ADMIN';
+                //dd($utilisateur)
+            } else {
+                unset($utilisateur->getRoles()['ROLE_ADMIN']);
+            }*/
+
+
             $utilisateurRepository->add($utilisateur, true);
 
             return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);

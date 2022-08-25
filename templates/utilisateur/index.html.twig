@@ -37,6 +37,7 @@
                 <td>{{ utilisateur.administrateur ? 'Yes' : 'No' }}</td>
                 <td>{{ utilisateur.actif ? 'Yes' : 'No' }}</td>
                 <td>
+                    <a href="{{ path('Profil', {'id': utilisateur.id}) }}">profil</a>
                     <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}">show</a>
                     <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">edit</a>
                 </td>
