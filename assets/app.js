@@ -13,6 +13,9 @@ import './bootstrap';
 
 //Concerne l'installation de bootstrap: (doc Symfony : https://symfony.com/doc/current/frontend/encore/bootstrap.html )
 const $ = require('jquery');
+// create global $ and jQuery variables
+global.$ = global.jQuery = $;
+
 // this "modifies" the jquery module: adding behavior to it
 // the bootstrap module doesn't export/return anything
 require('bootstrap');
