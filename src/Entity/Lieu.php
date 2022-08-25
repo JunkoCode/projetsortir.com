@@ -39,6 +39,7 @@ class Lieu
     #[ORM\OneToMany(mappedBy: 'lieu', targetEntity: Sortie::class)]
     private Collection $sorties;
 
+
     public function __construct()
     {
         $this->sorties = new ArrayCollection();

@@ -84,6 +84,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
     private Collection $participantSorties;
 
+
     public function __construct()
     {
         $this->proprietaireSorties = new ArrayCollection();

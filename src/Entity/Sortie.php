@@ -36,6 +36,7 @@ class Sortie
     #[ORM\Column(type: Types::DATEINTERVAL)]
     private ?\DateInterval $duree = null;
 
+
     #[ORM\Column]
     #[Assert\NotNull]
     #[Assert\GreaterThan(1)]

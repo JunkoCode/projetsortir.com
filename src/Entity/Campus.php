@@ -16,6 +16,7 @@ class Campus
     #[ORM\Column]
     private ?int $id = null;
 
+
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     private ?string $nom = null;
