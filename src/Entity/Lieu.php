@@ -25,11 +25,11 @@ class Lieu
     private ?string $rue = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\NotBlank]
+    //#[Assert\NotBlank]
     private ?float $latitude = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\NotBlank]
+    //#[Assert\NotBlank]
     private ?float $longitude = null;
 
     #[ORM\ManyToOne(inversedBy: 'lieux')]

@@ -21,6 +21,32 @@ class SortieController extends AbstractController
         ]);
     }
 
+    #[Route('/creer', name: 'creer_sortie', methods: ['GET','POST'])]
+    public function creerSortie(Request $request, SortieRepository $sortieRepository):Response
+    {
+        $sortie = new Sortie();
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $dureeEnMinutes = $form->get('duree')->getData()*60;
+            $sortie->getLieu()->setLatitude($form->get('latitude')->getData());
+            $sortie->getLieu()->setLongitude($form->get('longitude')->getData());
+            $sortie->setDuree(new \DateInterval('PT'.$dureeEnMinutes.'M'));
+            $sortie->setOrganisateur($this->getUser());
+            dd($sortie);
+
+            $sortieRepository->add($sortie, true);
+
+            return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('sortie/creer.html.twig', [
+            'sortie' => $sortie,
+            'form' => $form,
+        ]);
+    }
+
     #[Route('/new', name: 'app_sortie_new', methods: ['GET', 'POST'])]
     public function new(Request $request, SortieRepository $sortieRepository): Response
     {
@@ -34,6 +60,9 @@ class SortieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $dureeEnMinutes = $form->get('duree')->getData()*60;
+            $sortie->setDuree(new \DateInterval('PT'.$dureeEnMinutes.'M'));
+
             $sortieRepository->add($sortie, true);
 
             return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);

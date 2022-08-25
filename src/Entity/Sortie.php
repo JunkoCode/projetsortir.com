@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Sortie
 {
     #[ORM\Id]
@@ -23,7 +24,7 @@ class Sortie
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Assert\NotNull]
-    #[Assert\GreaterThan(propertyPath:'now', message: "La date limite d'inscription doit être supérieur à la date du jour")]
+    #[Assert\GreaterThan('now', message: "La date limite d'inscription doit être supérieur à la date du jour")]
     #[Assert\LessThanOrEqual(propertyPath: 'dateHeureDebut', message: "La date limite d'inscription doit être inférieur ou égal à la date de début du sortie")]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
@@ -47,7 +48,7 @@ class Sortie
 
     #[ORM\ManyToOne(targetEntity: Etat::class ,inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
+    //#[Assert\NotNull]
     private ?Etat $etat = null;
 
     #[ORM\ManyToOne(targetEntity: Lieu::class,inversedBy: 'sorties')]
@@ -66,7 +67,7 @@ class Sortie
         $this->participants = new ArrayCollection();
     }
 
-    public function getId(): ?int
+   public function getId(): ?int
     {
         return $this->id;
     }
@@ -205,4 +206,5 @@ class Sortie
 
         return $this;
     }
+
 }

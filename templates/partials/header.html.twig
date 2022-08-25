@@ -18,12 +18,13 @@
                     <a class="nav-link" href="{{ path('register') }}">S'enregistrer</a>
                 </li>
                 <li class="nav-item">
-                    {#  <a class="nav-link" href="{{ path('app_sortie_index') }}">Sortie</a>#}
+                      <a class="nav-link" href="{{ path('creer_sortie') }}">Créer une Sortie</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Administration</a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="{{ path('app_utilisateur_index') }}">Utilisateur</a>
+                        <a class="dropdown-item" href="{{ path('app_sortie_index') }}">Sortie</a>
                         <a class="dropdown-item" href="{{ path('app_campus_index') }}">Campus</a>
                         <a class="dropdown-item" href="{{ path('app_etat_index') }}">Etat des Sorties</a>
                         <a class="dropdown-item" href="{{ path('app_lieu_index') }}">Lieu</a>

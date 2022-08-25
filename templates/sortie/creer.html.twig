@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une nouvelle sortie{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="my-5">Créer une nouvelle sortie</h1>
+
+        {#{{ form_start(registrationForm) }}#}
+        {{ form_start(form) }}
+
+        <div class="row">
+            <div class="col">
+                <div class="alert alert-secondary">
+                    <h2 class="alert-heading">Informations générales</h2>
+                    <hr>
+                    {{ form_row(form.nom) }}
+                    {{ form_row(form.dateLimiteInscription) }}
+                    {{ form_row((form.dateHeureDebut)) }}
+                    {{ form_row((form.nombreInscriptionMax)) }}
+                    {{ form_row((form.duree)) }}
+                    {{ form_row((form.infoSortie)) }}
+                </div>
+            </div>
+            <div class="col">
+
+                <div class="alert alert-secondary">
+                    <h2 class="alert-heading">Lieu de la sortie</h2>
+                    <br>
+                    <hr>
+                    <div class="mb-3">
+                        <label for="campus" class="form-label">Campus</label>
+                        <p id="campus" class="form-control bg-info">{{ app.user.campus.nom }}</p>
+                    </div>
+                    {{ form_row(form.lieu) }}
+                    <div class="mb-3">
+                        <label for="rue" class="form-label">Rue</label>
+                        <p id="rue" class="form-control bg-info">Rue du lieu</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="code_postal" class="form-label">Code Postal</label>
+                        <p id ="code_postal" class="form-control bg-info">Code postal du lieu</p>
+                    </div>
+                    {{ form_row(form.latitude) }}
+                    {{ form_row(form.longitude) }}
+
+                </div>
+            </div>
+            {#<button type="submit" class="btn btn-primary">Confirmer inscription</button>#}
+        </div>
+
+        {{ form_end(form) }}
+        {#{{ form_end(form, {'render_rest': false}) }}#}
+
+    </div>
+
+{% endblock %}
