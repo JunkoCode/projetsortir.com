@@ -35,8 +35,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[Assert\EqualTo("password", message: "Votre mot de passe n'est pas identique !")]
-    public $passwordConfirm;
+    /*
+//    #[Assert\EqualTo("password", message: "Votre mot de passe n'est pas identique !")]
+//    private ?string $passwordConfirm = null;
+    */
 
     #[ORM\Column(length: 30, unique: true)]
     #[Assert\UniqueEntity(message: "Ce pseudo est déja utilisé")]
@@ -64,9 +66,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $actif = null;
 
-    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
+    /*#[ORM\ManyToOne(inversedBy: 'utilisateurs')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Campus $campus = null;
+    private ?Campus $campus = null;*/
 
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
     private Collection $proprietaireSorties;
