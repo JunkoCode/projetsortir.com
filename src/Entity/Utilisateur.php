@@ -63,7 +63,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $administrateur = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $actif = null;
 
     /*#[ORM\ManyToOne(inversedBy: 'utilisateurs')]
