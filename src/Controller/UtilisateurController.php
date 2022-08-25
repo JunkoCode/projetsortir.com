@@ -11,33 +11,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UtilisateurController extends AbstractController
 {
-    #[Route('/profil', name: 'profil')]
-    public function userProfil(): Response
-    {
 
-        return $this->render('utilisateur/profil.html.twig', [
-
-        ]);
-    }
-
-
-    #[Route('/updateProfil/{id}', name: 'updateProfil')]
+    #[Route('/profil/{id}', name: 'Profil')]
     public function updateUser($id, UtilisateurRepository $utilisateurRepository): Response
     {
 
-        //todo : utiliser le formulaire register pour envoyer les modification en base.
-
         $utilisateur = $utilisateurRepository->find($id);
 
-        return $this->render('utilisateur/updateProfil.html.twig', [
-            "utilisateur" => $utilisateur
-        ]);
-    }
-
-    #[Route('/profil/{id}', name: 'showProfil')]
-    public function ShowUser(Utilisateur $utilisateur, UtilisateurRepository $utilisateurRepository): Response
-    {
-        return $this->render('utilisateur/updateProfil.html.twig', [
+        return $this->render('utilisateur/profil.html.twig', [
             "utilisateur" => $utilisateur
         ]);
     }

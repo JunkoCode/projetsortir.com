@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}
+
+{% endblock %}
+
 {% block body %}
     <section class="vh-100" style="background-color: #f4f5f7;">
         <div class="container py-5 h-100">
@@ -11,10 +15,10 @@
                                  style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
                                 <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
                                      alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
-                                <h5>{{ app.user.nom }} {{ app.user.prenom }}</h5>
-                                {% if app.user.administrateur != true %}
+                                <h5>{{ utilisateur.nom }} {{ utilisateur.prenom }}</h5>
+                                {% if utilisateur.administrateur != true %}
                                     <p>Utilisateur</p>
-                                    {% else %}
+                                {% else %}
                                     <p>Administrateur</p>
                                 {% endif %}
                                 <i class="far fa-edit mb-5"></i>
@@ -26,21 +30,21 @@
                                     <div class="row pt-1">
                                         <div class="col-6 mb-3">
                                             <h6>pseudo : </h6>
-                                            <p class="text-muted">{{app.user.pseudo}}</p>
+                                            <p class="text-muted">{{utilisateur.pseudo}}</p>
                                         </div>
                                         <div class="col-6 mb-3">
                                             <h6>Email : </h6>
-                                            <p class="text-muted">{{app.user.email}}</p>
+                                            <p class="text-muted">{{utilisateur.email}}</p>
                                         </div>
                                         <div class="col-6 mb-3">
                                             <h6>Téléphone : </h6>
-                                            <p class="text-muted">{{app.user.telephone}}</p>
+                                            <p class="text-muted">{{utilisateur.telephone}}</p>
                                         </div>
                                         <div class="col-6 mb-3">
                                             <h6>Actif : </h6>
-                                            {% if app.user.actif == true %}
+                                            {% if utilisateur.actif == true %}
                                                 <p class="text-muted"> Oui</p>
-                                                {% else %}
+                                            {% else %}
                                                 <p class="text-muted"> Non</p>
                                             {% endif %}
                                         </div>
@@ -58,10 +62,12 @@
                                         </div>
                                     </div>
 
-                                        <div class="d-grid gap-2">
-                                            <a class="btn btn-outline-warning" href="{{ path('updateProfil',{'id': app.user.id}) }}">Modifier profil</a>
-                                            <button class="btn btn-outline-success" onclick="history.go(-1);">Retour </button>
-                                        </div>
+                                    <div class="d-grid gap-2">
+                                        {% if app.user.id == utilisateur.id %}
+                                        <a class="btn btn-outline-warning" href="{{ path('updateProfil',{'id': app.user.id}) }}">Modifier profil</a>
+                                        {% endif %}
+                                        <button class="btn btn-outline-success" onclick="history.go(-1);">Retour </button>
+                                    </div>
 
                                 </div>
                             </div>
@@ -71,11 +77,5 @@
             </div>
         </div>
     </section>
-
-
-{% endblock %}
-
-{% block title %}
-
 {% endblock %}
 
