@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[UniqueEntity(fields: ['pseudo'], message: 'Ce pseudo est déja utilisé')]
 #[UniqueEntity(fields: ['email'], message: 'Votre email est déja utilisé !')]
@@ -35,10 +36,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    /*
-//    #[Assert\EqualTo("password", message: "Votre mot de passe n'est pas identique !")]
-//    private ?string $passwordConfirm = null;
-    */
+
+    #[Assert\EqualTo(propertyPath: 'password', message: "Votre mot de passe n'est pas identique !")]
+    private ?string $passwordConfirm = null;
+
 
     #[ORM\Column(length: 30, unique: true)]
     #[Assert\UniqueEntity(message: "Ce pseudo est déja utilisé")]
@@ -66,9 +67,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $actif = null;
 
-    /*#[ORM\ManyToOne(inversedBy: 'utilisateurs')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Campus $campus = null;*/
+    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Campus $campus = null;
 
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
     private Collection $proprietaireSorties;
@@ -319,5 +320,21 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $this->participantSorties->removeElement($participantSorty);
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPasswordConfirm(): ?string
+    {
+        return $this->passwordConfirm;
+    }
+
+    /**
+     * @param string|null $passwordConfirm
+     */
+    public function setPasswordConfirm(?string $passwordConfirm): void
+    {
+        $this->passwordConfirm = $passwordConfirm;
     }
 }

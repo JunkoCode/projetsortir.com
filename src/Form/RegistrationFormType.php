@@ -25,10 +25,10 @@ class RegistrationFormType extends ApplicationType
     {
         $builder
             ->add('email', EmailType::class, $this->getConfiguration("Email", "Votre adresse email"))
-            ->add('plainPassword', PasswordType::class, [
+            ->add('password', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
-                'mapped' => false,
+                //'mapped' => true,
                 'label' => 'Mot de passe',
                 'attr' =>
                     ['autocomplete' => 'new-password',
@@ -46,7 +46,7 @@ class RegistrationFormType extends ApplicationType
                     ]),
                 ],
             ])
-            //->add('passwordConfirm', PasswordType::class, $this->getConfiguration("Confirmation de mot de passe", "Veuillez confirmer votre mot de passe"))
+            ->add('passwordConfirm', PasswordType::class, $this->getConfiguration("Confirmation de mot de passe", "Veuillez confirmer votre mot de passe"))
             ->add('pseudo', TextType::class, $this->getConfiguration("Pseudo", "Votre pseudo"))
             ->add('nom', TextType::class, $this->getConfiguration("Nom", "Votre nom"))
             ->add('prenom', TextType::class, $this->getConfiguration("Prénom", "Votre prénom"))

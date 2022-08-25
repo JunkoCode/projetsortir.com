@@ -24,6 +24,11 @@ class SortieController extends AbstractController
     #[Route('/new', name: 'app_sortie_new', methods: ['GET', 'POST'])]
     public function new(Request $request, SortieRepository $sortieRepository): Response
     {
+        /*todo: Ajouter les contrôles suivant :
+            - date et heure de sortie supérieur à date et heure aujourd'hui
+            - today > date d'inscription <= date de la sortie
+        */
+
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
