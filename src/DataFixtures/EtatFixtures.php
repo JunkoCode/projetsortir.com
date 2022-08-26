@@ -15,11 +15,11 @@ class EtatFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $etat1 = new Etat();
-        $etat1->setLibelle('En création');
+        $etat1->setLibelle('Créée');
         $manager->persist($etat1);
 
         $etat2 = new Etat();
-        $etat2->setLibelle('Ouvert');
+        $etat2->setLibelle('Ouverte');
         $manager->persist($etat2);
 
         $etat3 = new Etat();

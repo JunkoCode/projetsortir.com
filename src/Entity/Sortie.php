@@ -23,18 +23,20 @@ class Sortie
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Assert\DateTime]
-    #[Assert\GreaterThan(propertyPath: 'now', message: "Veuillez saisir une date supérieur à aujourd'hui")]
+    #[Assert\NotNull]
+    #[Assert\GreaterThan('now', message: "La date limite d'inscription doit être supérieur à la date du jour")]
+    #[Assert\LessThanOrEqual(propertyPath: 'dateHeureDebut', message: "La date limite d'inscription doit être inférieur ou égal à la date de début du sortie")]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Assert\GreaterThan(propertyPath: 'now', message: "Veuillez saisir une date supérieur à aujourd'hui")]
-    #[Assert\GreaterThanOrEqual(propertyPath: 'dateLimiteInscription', message: "Veuillez saisir une date supérieur ou égal à la date limite d'inscription")]
-    #[Assert\DateTime]
+    #[Assert\NotNull]
+    #[Assert\GreaterThan('now', message: "La date du début de la sortie doit être supérieur à la date du jour")]
+    #[Assert\GreaterThanOrEqual(propertyPath: 'dateLimiteInscription', message: "La date de début du sortie doit être supérieur ou égal à la date limite d'inscription")]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
     #[ORM\Column(type: Types::DATEINTERVAL)]
     private ?\DateInterval $duree = null;
+
 
     #[ORM\Column]
     #[Assert\NotNull]
@@ -46,6 +48,7 @@ class Sortie
 
     #[ORM\ManyToOne(targetEntity: Etat::class ,inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
+    //#[Assert\NotNull]
     private ?Etat $etat = null;
 
     #[ORM\ManyToOne(targetEntity: Lieu::class,inversedBy: 'sorties')]

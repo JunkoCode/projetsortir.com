@@ -3,11 +3,11 @@
 namespace App\DataFixtures;
 
 use App\Entity\Lieu;
-use Container8Km0fQ5\get_Console_Command_ContainerDebug_LazyService;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class LieuFixtures extends Fixture
+class LieuFixtures extends Fixture implements DependentFixtureInterface
 {
     public const LIEU_SORTIE1='lieu1';
     public const LIEU_SORTIE2='lieu2';
@@ -44,5 +44,12 @@ class LieuFixtures extends Fixture
         $this->addReference(self::LIEU_SORTIE1, $lieu1);
         $this->addReference(self::LIEU_SORTIE2, $lieu2);
         $this->addReference(self::LIEU_SORTIE3, $lieu3);
+    }
+
+    public function getDependencies()
+    {
+        return [
+            VilleFixtures::class,
+        ];
     }
 }
