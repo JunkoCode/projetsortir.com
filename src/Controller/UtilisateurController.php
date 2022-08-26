@@ -32,7 +32,8 @@ class UtilisateurController extends AbstractController
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        //TODO remettre le && $form->isValid() dans le if du formulaire.
+        if ($form->isSubmitted() ) {
             $utilisateurRepository->add($utilisateur, true);
 
             return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
