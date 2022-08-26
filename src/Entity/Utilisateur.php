@@ -12,9 +12,11 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[UniqueEntity(fields: ['pseudo'], message: 'Ce pseudo est déja utilisé')]
 #[UniqueEntity(fields: ['email'], message: 'Votre email est déja utilisé !')]
+#[ORM\HasLifecycleCallbacks]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -24,9 +26,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\UniqueEntity(message: "Votre email est deja utilisé !")]
+    #[Assert\Email]
+    #[Assert\NotBlank]
     private ?string $email = null;
 
     #[ORM\Column]
+    //#[Assert\NotBlank]
     private array $roles = [];
 
     /**
@@ -35,19 +40,24 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[Assert\EqualTo("password", message: "Votre mot de passe n'est pas identique !")]
-    public $passwordConfirm;
+
+    #[Assert\EqualTo(propertyPath: 'password', message: "Votre mot de passe n'est pas identique !")]
+    private ?string $passwordConfirm = null;
+
 
     #[ORM\Column(length: 30, unique: true)]
     #[Assert\UniqueEntity(message: "Ce pseudo est déja utilisé")]
+    #[Assert\NotBlank]
     private ?string $pseudo = null;
 
     #[ORM\Column(length: 30)]
     #[Assert\Length(max: 30,maxMessage: "Le nom ne doit pas dépasser 30 caractères !")]
+    #[Assert\NotBlank]
     private ?string $nom = null;
 
     #[ORM\Column(length: 30)]
     #[Assert\Length(max: 30,maxMessage: "Le prénom ne doit pas dépasser 30 caractères !")]
+    #[Assert\NotBlank]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 15)]
@@ -61,21 +71,26 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $administrateur = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $actif = null;
 
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
+    //#[Assert\Choice(choices: Campus::class, message: 'Veuillez choisir un campus dans la liste')]
+    #[Assert\Type(Campus::class)]
+    #[Assert\Valid]
     private ?Campus $campus = null;
 
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
     private Collection $proprietaireSorties;
 
-    #[ORM\ManyToMany(targetEntity: Sortie::class)]
+    #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
     private Collection $participantSorties;
+
 
     public function __construct()
     {
+
         $this->proprietaireSorties = new ArrayCollection();
         $this->participantSorties = new ArrayCollection();
     }
@@ -317,5 +332,21 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $this->participantSorties->removeElement($participantSorty);
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPasswordConfirm(): ?string
+    {
+        return $this->passwordConfirm;
+    }
+
+    /**
+     * @param string|null $passwordConfirm
+     */
+    public function setPasswordConfirm(?string $passwordConfirm): void
+    {
+        $this->passwordConfirm = $passwordConfirm;
     }
 }

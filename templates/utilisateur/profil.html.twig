@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+{{ parent() }} | Profil
+{% endblock %}
+
+{% block body %}
+    <section class="vh-100" style="background-color: #f4f5f7;">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-lg-6 mb-4 mb-lg-0">
+                    <div class="card mb-3" style="border-radius: .5rem;">
+                        <div class="row g-0">
+                            <div class="col-md-4 gradient-custom text-center text-white"
+                                 style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                                     alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+                                <h5>{{ utilisateur.nom }} {{ utilisateur.prenom }}</h5>
+                                {% if utilisateur.administrateur != true %}
+                                    <p>Utilisateur</p>
+                                {% else %}
+                                    <p>Administrateur</p>
+                                {% endif %}
+                                <i class="far fa-edit mb-5"></i>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body p-4">
+                                    <h6>Information</h6>
+                                    <hr class="mt-0 mb-4">
+                                    <div class="row pt-1">
+                                        <div class="col-6 mb-3">
+                                            <h6>pseudo : </h6>
+                                            <p class="text-muted">{{utilisateur.pseudo}}</p>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>Email : </h6>
+                                            <p class="text-muted">{{utilisateur.email}}</p>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>Téléphone : </h6>
+                                            <p class="text-muted">{{utilisateur.telephone}}</p>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>Actif : </h6>
+                                            {% if utilisateur.actif == true %}
+                                                <p class="text-muted"> Oui</p>
+                                            {% else %}
+                                                <p class="text-muted"> Non</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <h6>Sorties</h6>
+                                    <hr class="mt-0 mb-4">
+                                    <div class="row pt-1">
+                                        <div class="col-6 mb-3">
+                                            <h6>Prochaine : </h6>
+                                            <p class="text-muted"> A faire</p>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>Récemment créée : </h6>
+                                            <p class="text-muted">A faire</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-grid gap-2">
+                                        {% if app.user.id == utilisateur.id %}
+                                        <a class="btn btn-outline-warning" href="{{ path('UpdateProfil',{'id': app.user.id}) }}">Modifier profil</a>
+                                        {% endif %}
+                                        <button class="btn btn-outline-success" onclick="history.go(-1);">Retour </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+

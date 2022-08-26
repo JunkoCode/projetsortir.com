@@ -3,11 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\SortieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Sortie
 {
     #[ORM\Id]
@@ -16,6 +19,7 @@ class Sortie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotNull]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -33,24 +37,34 @@ class Sortie
     private ?\DateInterval $duree = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
+    #[Assert\GreaterThan(1)]
     private ?int $nombreInscriptionMax = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $infoSortie = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\ManyToOne(targetEntity: Etat::class ,inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Etat $etat = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\ManyToOne(targetEntity: Lieu::class,inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Lieu $lieu = null;
 
-    #[ORM\ManyToOne(inversedBy: 'proprietaireSorties')]
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'proprietaireSorties')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $organisateur = null;
 
-    public function getId(): ?int
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: '$participantSorties')]
+    private Collection $participants;
+
+    public function __construct()
+    {
+        $this->participants = new ArrayCollection();
+    }
+
+   public function getId(): ?int
     {
         return $this->id;
     }
@@ -96,7 +110,7 @@ class Sortie
         return $this->duree;
     }
 
-    public function setDuree(\DateInterval $duree): self
+    public function setDuree(?\DateInterval $duree): self
     {
         $this->duree = $duree;
 
@@ -162,4 +176,32 @@ class Sortie
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function addParticipant(Utilisateur $participant): self
+    {
+        if (!$this->participants->contains($participant)) {
+            $this->participants->add($participant);
+            $participant->addParticipantSorty($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(Utilisateur $participant): self
+    {
+        if ($this->participants->removeElement($participant)) {
+            $participant->removeParticipantSorty($this);
+        }
+
+        return $this;
+    }
+
 }
