@@ -13,8 +13,15 @@
                         <div class="row g-0">
                             <div class="col-md-4 gradient-custom text-center text-white"
                                  style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
-                                     alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+
+                                {% if utilisateur.photo != NULL %}
+                                    <img src="{{ asset('uploads/images/avatars/' ~ utilisateur.photo) }}"
+                                         alt="Avatar" class="img-fluid my-5 rounded-circle mt-5" style="width: 80px;" />
+                                {% else %}
+                                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                                         alt="Avatar" class="img-fluid my-5" style="width: 100px;" />
+                                {% endif %}
+
                                 <h5>{{ utilisateur.nom }} {{ utilisateur.prenom }}</h5>
                                 {% if utilisateur.administrateur != true %}
                                     <p>Utilisateur</p>
@@ -63,8 +70,8 @@
                                     </div>
 
                                     <div class="d-grid gap-2">
-                                        {% if app.user.id == utilisateur.id %}
-                                        <a class="btn btn-outline-warning" href="{{ path('UpdateProfil',{'id': app.user.id}) }}">Modifier profil</a>
+                                        {% if app.user.id == utilisateur.id or app.user.administrateur == true %}
+                                        <a class="btn btn-outline-warning" href="{{ path('UpdateProfil',{'id': utilisateur.id}) }}">Modifier profil</a>
                                         {% endif %}
                                         <button class="btn btn-outline-success" onclick="history.go(-1);">Retour </button>
                                     </div>

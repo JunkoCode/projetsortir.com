@@ -6,8 +6,10 @@ use App\Entity\Campus;
 use App\Entity\Utilisateur;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class UtilisateurType extends AbstractType
 {
@@ -21,7 +23,19 @@ class UtilisateurType extends AbstractType
             ->add('nom')
             ->add('prenom')
             ->add('telephone')
-            ->add('photo')
+            ->add('photo', FileType::class,[
+                'mapped'=> false,
+                'required'=> false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2048k',
+                        'mimeTypes' => [
+                            'image/*'
+                        ],
+                        'mimeTypesMessage' => 'Veuillez fournir un fichier conforme',
+                    ])
+                ],
+                ])
             ->add('administrateur')
             ->add('actif')
             //->add('campus', EntityType::class, ['class' => Campus::class])
