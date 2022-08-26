@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SortieRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -17,14 +18,19 @@ class Sortie
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Assert\DateTime]
+    #[Assert\GreaterThan(propertyPath: 'now', message: "Veuillez saisir une date supérieur à aujourd'hui")]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Assert\GreaterThan(propertyPath: 'now', message: "Veuillez saisir une date supérieur à aujourd'hui")]
+    #[Assert\GreaterThanOrEqual(propertyPath: 'dateLimiteInscription', message: "Veuillez saisir une date supérieur ou égal à la date limite d'inscription")]
+    #[Assert\DateTime]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $duree = null;
+    #[ORM\Column(type: Types::DATEINTERVAL)]
+    private ?\DateInterval $duree = null;
 
     #[ORM\Column]
     private ?int $nombreInscriptionMax = null;
@@ -85,12 +91,12 @@ class Sortie
         return $this;
     }
 
-    public function getDuree(): ?\DateTimeInterface
+    public function getDuree(): ?\DateInterval
     {
         return $this->duree;
     }
 
-    public function setDuree(\DateTimeInterface $duree): self
+    public function setDuree(\DateInterval $duree): self
     {
         $this->duree = $duree;
 
