@@ -190,7 +190,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setNom(string $nom): self
     {
-        $this->nom = $nom;
+        $this->nom = ucwords($nom);
 
         return $this;
     }
@@ -202,7 +202,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPrenom(string $prenom): self
     {
-        $this->prenom = $prenom;
+        $this->prenom = ucwords($prenom);
 
         return $this;
     }
