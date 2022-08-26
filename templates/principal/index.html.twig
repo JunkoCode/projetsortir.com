@@ -3,5 +3,32 @@
 {% block title %}Hello PrincipalController!{% endblock %}
 
 {% block body %}
-<h1>Coucou</h1>
+    <div class="px-4 pt-5 my-5 text-center border-bottom">
+        <h1 class="display-4 fw-bold">Sortir !</h1>
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque, est laborum modi
+                nisi sint veniam? Ab aut cupiditate deleniti distinctio dolorem excepturi fugiat illum, incidunt itaque
+                neque quo similique temporibus.</p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
+                {% if (app.user==null) %}
+                    <a href="{{ path('login') }}" class="btn btn-primary btn-lg px-4 me-sm-3" role="button"
+                       aria-pressed="true">Se connecter</a>
+                    <a href="{{ path('register') }}" class="btn btn-outline-secondary btn-lg px-4" role="button"
+                       aria-pressed="true">S'inscrire</a>
+                {% else %}
+                    <a href="{{ path('afficher_liste_sorties') }}" class="btn btn-primary btn-lg px-4 me-sm-3" role="button"
+                       aria-pressed="true">Participer à une sortie</a>
+                    <a href="{{ path('creer_sortie') }}" class="btn btn-outline-secondary btn-lg px-4" role="button"
+                       aria-pressed="true">Créer une sortie</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="overflow-hidden" style="max-height: 30vh;">
+            <div class="container px-5">
+                <img src="{{ asset('uploads/images/SortirPicture.png') }}"
+                     class="img-fluid border rounded-3 shadow-lg mb-4" alt="Example image" width="700" height="500"
+                     loading="lazy">
+            </div>
+        </div>
+    </div>
 {% endblock %}

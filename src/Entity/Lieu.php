@@ -25,11 +25,9 @@ class Lieu
     private ?string $rue = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\NotBlank]
     private ?float $latitude = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\NotBlank]
     private ?float $longitude = null;
 
     #[ORM\ManyToOne(inversedBy: 'lieux')]
@@ -38,7 +36,6 @@ class Lieu
 
     #[ORM\OneToMany(mappedBy: 'lieu', targetEntity: Sortie::class)]
     private Collection $sorties;
-
 
     public function __construct()
     {

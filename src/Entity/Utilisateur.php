@@ -16,6 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[UniqueEntity(fields: ['pseudo'], message: 'Ce pseudo est déja utilisé')]
 #[UniqueEntity(fields: ['email'], message: 'Votre email est déja utilisé !')]
+#[ORM\HasLifecycleCallbacks]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -30,7 +31,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank]
+    //#[Assert\NotBlank]
     private array $roles = [];
 
     /**
@@ -75,7 +76,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Assert\Choice(choices: Campus::class, message: 'Veuillez choisir un campus dans la liste')]
+    //#[Assert\Choice(choices: Campus::class, message: 'Veuillez choisir un campus dans la liste')]
+    #[Assert\Type(Campus::class)]
+    #[Assert\Valid]
     private ?Campus $campus = null;
 
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
@@ -87,6 +90,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
+
         $this->proprietaireSorties = new ArrayCollection();
         $this->participantSorties = new ArrayCollection();
     }
@@ -199,7 +203,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setNom(string $nom): self
     {
-        $this->nom = $nom;
+        $this->nom = ucwords($nom);
 
         return $this;
     }
@@ -211,7 +215,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPrenom(string $prenom): self
     {
-        $this->prenom = $prenom;
+        $this->prenom = ucwords($prenom);
 
         return $this;
     }
@@ -326,6 +330,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeParticipantSorty(Sortie $participantSorty): self
     {
         $this->participantSorties->removeElement($participantSorty);
+        $participantSorty->removeParticipant($this);
 
         return $this;
     }
