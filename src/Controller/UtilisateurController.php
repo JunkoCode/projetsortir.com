@@ -35,7 +35,7 @@ class UtilisateurController extends AbstractController
         $form->handleRequest($request);
 
         //TODO remettre le && $form->isValid() dans le if du formulaire.
-        if ($form->isSubmitted() ) {
+        if ($form->isSubmitted() && $form->isValid()) {
             /**@var UploadedFile $avatarFile*/
             $avatarFile = $form->get('photo')->getData();
             if ($avatarFile){

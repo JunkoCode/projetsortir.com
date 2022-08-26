@@ -58,7 +58,7 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('sortie/creer.html.twig', [
+        return $this->renderForm('sortie/creerSortie.html.twig', [
             'sortie' => $sortie,
             'form' => $form,
         ]);
@@ -85,7 +85,7 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('sortie/edit.html.twig', [
+        return $this->renderForm('sortie/editerSortie.html.twig', [
             'sortie' => $sortie,
             'form' => $form,
         ]);
