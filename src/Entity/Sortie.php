@@ -22,13 +22,13 @@ class Sortie
     #[Assert\NotNull]
     private ?string $nom = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotNull]
     #[Assert\GreaterThan('now', message: "La date limite d'inscription doit être supérieur à la date du jour")]
     #[Assert\LessThanOrEqual(propertyPath: 'dateHeureDebut', message: "La date limite d'inscription doit être inférieur ou égal à la date de début du sortie")]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotNull]
     #[Assert\GreaterThan('now', message: "La date du début de la sortie doit être supérieur à la date du jour")]
     #[Assert\GreaterThanOrEqual(propertyPath: 'dateLimiteInscription', message: "La date de début du sortie doit être supérieur ou égal à la date limite d'inscription")]
@@ -40,10 +40,10 @@ class Sortie
 
     #[ORM\Column]
     #[Assert\NotNull]
-    #[Assert\GreaterThan(1)]
+    #[Assert\GreaterThanOrEqual(1)]
     private ?int $nombreInscriptionMax = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT,nullable: true)]
     private ?string $infoSortie = null;
 
     #[ORM\ManyToOne(targetEntity: Etat::class ,inversedBy: 'sorties')]
@@ -59,7 +59,7 @@ class Sortie
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $organisateur = null;
 
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: '$participantSorties')]
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'participantSorties')]
     private Collection $participants;
 
     public function __construct()

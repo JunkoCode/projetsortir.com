@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Afficher une sortie{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="my-5">Créer une nouvelle sortie</h1>
+
+        <div class="row d-flex flex-row align-items-stretch">
+            <div class="col-6 h-100">
+                <div class="alert alert-secondary w-100">
+                    <div style="min-height: 75px; class">
+                        <h2 class="alert-heading">Informations générales</h2>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <label for="nom" class="form-label">Nom</label>
+                        <p id="nom" class="form-control bg-grey">{{ sortie.organisateur.nom }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="date_sortie" class="form-label">Date et heure de la sortie</label>
+                        <p id="date_sortie" class="form-control bg-grey">{{ sortie.dateHeureDebut|date("d-m-y T hh:mm") }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="date_inscription" class="form-label">Date et heure limite d'inscription</label>
+                        <p id="date_inscription" class="form-control bg-grey">{{ sortie.dateLimiteInscription|date("d-m-y T hh:mm") }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="participant" class="form-label">Nombre de place Maximum</label>
+                        <p id="participant" class="form-control bg-grey">{{ sortie.nombreInscriptionMax }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="duree" class="form-label">Durée</label>
+                        <p id="duree" class="form-control bg-grey">{#{{ sortie.duree | format_time('hh:mm') }}#}DUREE</p> {# todo : créer la variable duree#}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="campus" class="form-label">Informations sur la sortie</label>
+                        <p id="campus" class="form-control bg-grey">{{ sortie.infoSortie==null?"Pas d'information sur la sortie":sortie.infoSortie }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 h-100">
+
+                <div class="alert alert-secondary">
+                    <div style="min-height: 75px;"><h2 class="alert-heading">Lieu de la sortie</h2>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <label for="campus" class="form-label">Campus</label>
+                        <p id="campus" class="form-control bg-grey">{{ sortie.organisateur.campus.nom }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ville" class="form-label">Ville</label>
+                        <p id="ville" class="form-control bg-grey">{{ sortie.lieu.ville.nom }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ville" class="form-label">Lieu</label>
+                        <p id="ville" class="form-control bg-grey">{{ sortie.lieu.nom }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rue" class="form-label">Rue</label>
+                        <p id="rue" class="form-control bg-grey">{{ sortie.lieu.rue }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="code_postal" class="form-label">Code Postal</label>
+                        <p id="code_postal" class="form-control bg-grey">{{ sortie.lieu.ville.codePostal }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="code_postal" class="form-label">Latitude</label>
+                        <p id="code_postal" class="form-control bg-grey">{{ sortie.lieu.latitude==null?"Aucune latitude renseignée":sortie.lieu.latitude }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="code_postal" class="form-label">longitude</label>
+                        <p id="code_postal" class="form-control bg-grey">{{ sortie.lieu.longitude==null?"Aucune longitude renseignée":sortie.lieu.longitude }}</p>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col text-center">
+                button
+            </div>
+
+            <div class="col text-center">
+                boutton
+            </div>
+
+            <div class="col text-center">
+                <a href="#" class="btn btn-primary btn-lg" role="button">Annuler</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

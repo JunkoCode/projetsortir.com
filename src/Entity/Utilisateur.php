@@ -330,6 +330,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeParticipantSorty(Sortie $participantSorty): self
     {
         $this->participantSorties->removeElement($participantSorty);
+        $participantSorty->removeParticipant($this);
 
         return $this;
     }

@@ -12,68 +12,54 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/sortie')]
-class SortieController extends AbstractController
+#[Route('admin/sortie')]
+class AdminSortieController extends AbstractController
 {
-    #[Route('/', name: 'afficher_liste_sorties', methods: ['GET'])]
+    #[Route('/', name: 'app_sortie_index', methods: ['GET'])]
     public function index(SortieRepository $sortieRepository): Response
     {
-        return $this->render('sortie/listSorties.html.twig', [
+        return $this->render('admin/sortie/index.html.twig', [
             'sorties' => $sortieRepository->findAll(),
         ]);
     }
 
-    #[Route('/creer', name: 'creer_sortie', methods: ['GET', 'POST'])]
-    public function creerSortie(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository): Response
+
+    #[Route('/new', name: 'app_sortie_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, SortieRepository $sortieRepository): Response
     {
+        /*todo: Ajouter les contrôles suivant :
+            - date et heure de sortie supérieur à date et heure aujourd'hui
+            - today > date d'inscription <= date de la sortie
+        */
+
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $dureeEnMinutes = $form->get('duree')->getData() * 60;
-
-            if (($form->get('latitude')->getData() != null)) {
-                $sortie->getLieu()->setLatitude($form->get('latitude')->getData());
-            }
-
-            if (($form->get('longitude')->getData() != null)) {
-                $sortie->getLieu()->setLongitude($form->get('longitude')->getData());
-            }
-
             $sortie->setDuree(new \DateInterval('PT' . $dureeEnMinutes . 'M'));
-            $sortie->setOrganisateur($this->getUser());
-            /*if ($form->submit('btnEnregistrer')->isSubmitted()){
-
-            }*/
-            $etat=$etatRepository->findOneBy(['libelle'=>Etat::CREEE]);
-
-            $sortie->setEtat($etat);
-            //dd($sortie);
 
             $sortieRepository->add($sortie, true);
-            $this->addFlash('success','Sortie créée!');
 
-            return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('sortie/creer.html.twig', [
+        return $this->renderForm('admin/sortie/new.html.twig', [
             'sortie' => $sortie,
             'form' => $form,
         ]);
     }
 
-
-    #[Route('/{id}', name: 'afficher_sortie', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_sortie_show', methods: ['GET'])]
     public function show(Sortie $sortie): Response
     {
-        return $this->render('sortie/AfficherSortie.html.twig', [
+        return $this->render('admin/sortie/show.html.twig', [
             'sortie' => $sortie,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'editer_sortie', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_sortie_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
     {
         $form = $this->createForm(SortieType::class, $sortie);
@@ -82,22 +68,22 @@ class SortieController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $sortieRepository->add($sortie, true);
 
-            return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('sortie/edit.html.twig', [
+        return $this->renderForm('admin/sortie/edit.html.twig', [
             'sortie' => $sortie,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'supprimer_sortie', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_sortie_delete', methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
             $sortieRepository->remove($sortie, true);
         }
 
-        return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
     }
 }

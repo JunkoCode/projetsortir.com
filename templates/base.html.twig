@@ -15,7 +15,24 @@
     </head>
     <body>
         {% include 'partials/header.html.twig' %}
+
+
+        <div class="container my-5">
+        {# read and display all flash messages #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
         {% block body %}{% endblock %}
+        </div>
+
         {% include 'partials/footer.html.twig' %}
     </body>
 </html>
