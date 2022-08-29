@@ -9,6 +9,7 @@ use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
 use App\Repository\UtilisateurRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Types\Array_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,32 +79,48 @@ class SortieController extends AbstractController
     }
 
     #[Route('/ajouteParticipant/{id}', name: 'ajouter_participant_sortie', methods: ['GET', 'POST'])]
-    public function showSortie(Sortie $sortie): Response
+    public function showSortie(Sortie $sortie,EntityManagerInterface $entityManager): Response
     {
         $userConnecte=$this->getUser();
-        //dd($sortie);
-
-        $inscrits=$sortie->getParticipants()->count();
+        $nbInscrits=$sortie->getParticipants()->count();
         $datenow = new \DateTimeImmutable("now");
 
-        if(!$sortie->getParticipants()->contains($userConnecte) &&
-            $inscrits < $sortie->getNombreInscriptionMax() &&
+        if($sortie->getDateLimiteInscription() > $datenow){
+            $this->addFlash('error',"La date limite d'inscriptions est dépassé");
+        } elseif ($nbInscrits >= $sortie->getNombreInscriptionMax()){
+            $this->addFlash('error',"Le nombre maximale d'inscriptions est atteinte.");
+        } elseif ($sortie->getParticipants()->contains($userConnecte)){
+            $this->addFlash('error', "L'utilisateur est déjà inscrit à cette sortie");
+        } else{
+            $sortie->addParticipant($userConnecte);
+            //rajout des lignes pour persister l'information et flushé l'info dans la base
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+            $this->addFlash('success', 'Amusez vous bien!');
+        }
+
+        // La version précédente est une amélioration du code pour éviter la redondance des contrôles de la version en commentaire :
+        /*if($sortie->getParticipants()->contains($userConnecte) &&
+            $nbInscrits < $sortie->getNombreInscriptionMax() &&
             $sortie->getDateLimiteInscription() > $datenow)
         {
             $sortie->addParticipant($userConnecte);
+            $entityManager->persist($sortie);
+            $entityManager->flush();
             $this->addFlash('success', 'Amusez vous bien!');
+
         } else if ($sortie->getParticipants()->contains($userConnecte) &&
-            $inscrits < $sortie->getNombreInscriptionMax() &&
+            $nbInscrits < $sortie->getNombreInscriptionMax() &&
             $sortie->getDateLimiteInscription() > $datenow){
             $this->addFlash('error', "L'utilisateur est déjà inscrit à cette sortie");
 
         } else if (!$sortie->getParticipants()->contains($userConnecte)&&
-            $inscrits >= $sortie->getNombreInscriptionMax() &&
+            $nbInscrits >= $sortie->getNombreInscriptionMax() &&
             $sortie->getDateLimiteInscription() > $datenow){
             $this->addFlash('error',"Le nombre maximale d'inscriptions est atteinte.");
         } else {
             $this->addFlash('error',"La date limite d'inscriptions est dépassé");
-        }
+        }*/
 
         //$participants=$sortie->getParticipants();
 
@@ -129,7 +146,7 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{id}', name: 'supprimer_sortie', methods: ['POST'])]
+    #[Route('/{id}', name: 'supprimer_sortie', methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
