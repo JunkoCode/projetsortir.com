@@ -4,9 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Etat;
 use App\Entity\Sortie;
+use App\Entity\Utilisateur;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
+use App\Repository\UtilisateurRepository;
+use phpDocumentor\Reflection\Types\Array_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,13 +50,13 @@ class SortieController extends AbstractController
             /*if ($form->submit('btnEnregistrer')->isSubmitted()){
 
             }*/
-            $etat=$etatRepository->findOneBy(['libelle'=>Etat::CREEE]);
+            $etat = $etatRepository->findOneBy(['libelle' => Etat::CREEE]);
 
             $sortie->setEtat($etat);
             //dd($sortie);
 
             $sortieRepository->add($sortie, true);
-            $this->addFlash('success','Sortie créée!');
+            $this->addFlash('success', 'Sortie créée!');
 
             return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
         }
@@ -62,15 +65,50 @@ class SortieController extends AbstractController
             'sortie' => $sortie,
             'form' => $form,
         ]);
-    }
 
+
+    }
 
     #[Route('/{id}', name: 'afficher_sortie', methods: ['GET'])]
     public function show(Sortie $sortie): Response
     {
-        return $this->render('sortie/AfficherSortie.html.twig', [
+        return $this->render('sortie/afficherSortie.html.twig', [
             'sortie' => $sortie,
         ]);
+    }
+
+    #[Route('/ajouteParticipant/{id}', name: 'ajouter_participant_sortie', methods: ['GET', 'POST'])]
+    public function showSortie(Sortie $sortie): Response
+    {
+        $userConnecte=$this->getUser();
+        //dd($sortie);
+
+        $inscrits=$sortie->getParticipants()->count();
+        $datenow = new \DateTimeImmutable("now");
+
+        if(!$sortie->getParticipants()->contains($userConnecte) &&
+            $inscrits < $sortie->getNombreInscriptionMax() &&
+            $sortie->getDateLimiteInscription() > $datenow)
+        {
+            $sortie->addParticipant($userConnecte);
+            $this->addFlash('success', 'Amusez vous bien!');
+        } else if ($sortie->getParticipants()->contains($userConnecte) &&
+            $inscrits < $sortie->getNombreInscriptionMax() &&
+            $sortie->getDateLimiteInscription() > $datenow){
+            $this->addFlash('error', "L'utilisateur est déjà inscrit à cette sortie");
+
+        } else if (!$sortie->getParticipants()->contains($userConnecte)&&
+            $inscrits >= $sortie->getNombreInscriptionMax() &&
+            $sortie->getDateLimiteInscription() > $datenow){
+            $this->addFlash('error',"Le nombre maximale d'inscriptions est atteinte.");
+        } else {
+            $this->addFlash('error',"La date limite d'inscriptions est dépassé");
+        }
+
+        //$participants=$sortie->getParticipants();
+
+        return $this->redirectToRoute('afficher_sortie', ['id'=>$sortie->getId()]);
+
     }
 
     #[Route('/{id}/edit', name: 'editer_sortie', methods: ['GET', 'POST'])]
@@ -91,7 +129,7 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'supprimer_sortie', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'supprimer_sortie', methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
