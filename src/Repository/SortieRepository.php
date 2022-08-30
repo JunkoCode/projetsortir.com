@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\data\FiltreData;
 use App\Entity\Sortie;
+use App\Entity\Utilisateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\AST\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -63,4 +66,58 @@ class SortieRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+
+    public function findByFiltre(Utilisateur $user, int $idUser ,FiltreData $data)
+
+    {
+        $query = $this ->createQueryBuilder('s')
+            ->orderBy('s.dateHeureDebut', 'ASC');
+
+        if(!empty($data->filtreSortieMotCle)){
+            $query
+                ->andWhere('s.nom LIKE :filtreSortieMotCle')
+                ->setParameter('filtreSortieMotCle', $data->filtreSortieMotCle);
+        }
+
+        if (!empty($data->filtreSortieDateMin)){
+            $query
+                ->andWhere('s.dateHeureDebut > :filtreSortieDateMin')
+                ->setParameter('filtreSortieDateMin', $data->filtreSortieDateMin);
+
+
+        }
+
+        if (!empty($data->filtreSortieDateMax)){
+            $query
+                ->andWhere('s.dateHeureDebut < :filtreSortieDateMax')
+                ->setParameter('filtreSortieDateMax', $data->filtreSortieDateMax);
+        }
+
+        if (!empty($data->filtreSortieOrganisateur)){
+            $query
+                ->andWhere('s.organisateur = :idUser')
+                ->setParameter('idUser', $idUser);
+        }
+
+        if (!empty($data->filtreSortieInscrit)){
+            $query
+                ->innerJoin('s.participants', 'pa')
+                ->andWhere('pa.id = :id')
+                ->setParameter('id', $idUser);
+        }
+
+        if (!empty($data->filtreSortiePasInscrit)){
+            $query
+                ->leftJoin('s.participants', 'p')
+                ->andWhere($query->expr()->neq('p.id',$idUser))
+                ->orWhere($query->expr()->isNull('p.id'));
+        }
+
+
+
+
+        return $query->getQuery()->execute();
+    }
+
 }

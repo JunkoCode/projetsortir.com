@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\data\FiltreData;
 use App\Entity\Etat;
 use App\Entity\Sortie;
+use App\Form\SortieFiltreType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
@@ -15,12 +17,23 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/sortie')]
 class SortieController extends AbstractController
 {
-    #[Route('/', name: 'afficher_liste_sorties', methods: ['GET'])]
-    public function index(SortieRepository $sortieRepository): Response
+    #[Route('/', name: 'afficher_liste_sorties', methods: ['GET','POST'])]
+    public function index(SortieRepository $sortieRepository, Request $request): Response
     {
+        $data = new FiltreData();
+        $form = $this->createForm(SortieFiltreType::class, $data);
+        $form -> handleRequest($request);
+        $idUser = $this->getUser()->getId();
+        $user = $this->getUser();
+
+        $sorties= $sortieRepository->findByFiltre($user,$idUser,$data);
+
         return $this->render('sortie/listSorties.html.twig', [
-            'sorties' => $sortieRepository->findAll(),
+            'sorties' => $sorties,
+            'form' => $form->createView()
         ]);
+
+
     }
 
     #[Route('/creer', name: 'creer_sortie', methods: ['GET', 'POST'])]
@@ -100,4 +113,6 @@ class SortieController extends AbstractController
 
         return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
     }
+
+
 }
