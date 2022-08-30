@@ -29,7 +29,7 @@
                             {% if app.user.photo != NULL %}
                                 <img src="{{ asset('uploads/images/avatars/' ~ app.user.photo) }}" alt="Avatar de {{app.user.pseudo}}" class="avatar-mini" />
                             {% else %}
-                                <img src="https://static.fnac-static.com/multimedia/Images/FD/Comete/135565/CCP_IMG_600x400/1777919.jpg" alt="Avatar par default" class="avatar-mini">
+                                <img src="{{ asset('uploads/images/imgProfilByDefault.png') }}" alt="Avatar par default" class="avatar-mini">
                             {% endif %}
                             {{app.user.pseudo}}
                         </a>

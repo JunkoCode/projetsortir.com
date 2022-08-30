@@ -3,15 +3,15 @@
 {% block title %}Créer une nouvelle sortie{% endblock %}
 
 {% block body %}
-    <div class="container my-5">
+    <div class="container d-none d-md-block">
         <h1 class="my-5">Créer une nouvelle sortie</h1>
 
         {{ form_start(form) }}
 
         <div class="row d-flex flex-row align-items-stretch">
-            <div class="col-6 h-100">
+            <div class="col-lg-6 col-md-12 col-sm-12 h-100">
                 <div class="alert alert-secondary w-100">
-                    <div style="min-height: 75px; class">
+                    <div style="min-height: 75px;">
                         <h2 class="alert-heading">Informations générales</h2>
                     </div>
                     <hr>
@@ -23,7 +23,7 @@
                     {{ form_row((form.infoSortie)) }}
                 </div>
             </div>
-            <div class="col-6 h-100">
+            <div class="col-lg-6 col-md-12 col-sm-12 h-100">
 
                 <div class="alert alert-secondary">
                     <div style="min-height: 75px;"><h2 class="alert-heading">Lieu de la sortie</h2>
@@ -71,22 +71,34 @@
             {# <button type="submit" class="btn btn-primary">Confirmer inscription</button> #}
         </div>
         <div class="row mt-5">
-            <div class="col text-center">
+            <div class="col-lg-4 col-md-12 col-sm-12 text-center">
                 {{ form_row(form.btnEnregistrer) }}
             </div>
 
-            <div class="col text-center">
+            <div class="col-lg-4 col-md-12 col-sm-12 text-center">
                 {{ form_row(form.btnPublier) }}
             </div>
 
-            <div class="col text-center">
-                <a href="#" class="btn btn-primary btn-lg" role="button">Annuler</a>
+            <div class="col-lg-4 col-md-12 col-sm-12 text-center">
+                <a href="#" class="btn btn-primary" role="button">Annuler</a>
             </div>
+
         </div>
 
 
         {# {{ form_end(form) }} #}
         {{ form_end(form, {'render_rest': false}) }}
+
+    </div>
+    <div class="container d-sm-none">
+
+
+        <div class="alert alert-dismissible alert-primary">
+            <p>Impossible d'accéder à la création d'une sortie depuis votre smartphone !
+            </p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <strong>Désolé!</strong> <a href="{{ path('home') }}" class="alert-link">Retour accueil</a>
+        </div>
 
     </div>
 
