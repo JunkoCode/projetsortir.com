@@ -4,18 +4,23 @@
 
 {% block body %}
     <div class="container my-5">
-        <h1 class="my-5">Créer une nouvelle sortie</h1>
+        <h1 class="my-5">Afficher sortie</h1>
 
         <div class="row d-flex flex-row align-items-stretch">
             <div class="col-6 h-100">
                 <div class="alert alert-secondary w-100">
-                    <div style="min-height: 75px; class">
+                    <div style="min-height: 75px; ">
                         <h2 class="alert-heading">Informations générales</h2>
                     </div>
                     <hr>
                     <div class="mb-3">
-                        <label for="nom" class="form-label">Nom</label>
+                        <label for="nom" class="form-label">Organisateur</label>
                         <p id="nom" class="form-control bg-grey">{{ sortie.organisateur.nom }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nom" class="form-label">Nom de la sortie</label>
+                        <p id="nom" class="form-control bg-grey">{{ sortie.nom }}</p>
                     </div>
 
                     <div class="mb-3">
@@ -45,7 +50,6 @@
                 </div>
             </div>
             <div class="col-6 h-100">
-
                 <div class="alert alert-secondary">
                     <div style="min-height: 75px;"><h2 class="alert-heading">Lieu de la sortie</h2>
                     </div>
@@ -83,18 +87,54 @@
 
             </div>
         </div>
+
+        <div class="row d-flex flex-row align-items-stretch">
+            <div class="col-6 h-100">
+                <div class="alert alert-secondary w-100">
+                    <div style="min-height: 75px; ">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Pseudo</th>
+                                <th>Nom</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for participant in sortie.participants %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ path('ProfilParticipant', {'id':participant.id}) }}">{{ participant.pseudo }}</a>
+                                    </td>
+                                    <td>{{ participant.nom }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>Pas de participant pour cette sortie!</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row mt-5">
-            <div class="col text-center">
-                button
-            </div>
-
-            <div class="col text-center">
-                boutton
-            </div>
-
-            <div class="col text-center">
-                <a href="#" class="btn btn-primary btn-lg" role="button">Annuler</a>
-            </div>
+            {% if app.user.id != sortie.organisateur.id %}
+                {% if app.user not in sortie.participants %}
+                    <div class="col text-center">
+                        <a href="{{ path('ajouter_participant_sortie', {'id':sortie.id}) }}" class="btn btn-primary btn-lg" role="button">Participer!</a>
+                    </div>
+                {% else %}
+                    <div class="col text-center">
+                        <a href="{{ path('retirer_participant_sortie', {'id':sortie.id}) }}" class="btn btn-primary btn-lg" role="button">Se désister</a>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="col text-center">
+                    <a href="{{ path('supprimer_sortie_organisateur', {'id':sortie.id}) }}" class="btn btn-primary btn-lg" role="button">Annuler la sortie</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 

@@ -20,7 +20,8 @@
                 <th>Duree</th>
                 <th>NombreInscriptionMax</th>
                 <th>InfoSortie</th>
-                <th>actions</th>
+                <th>Actions</th>
+                <th>Organisateur</th>
             </tr>
         </thead>
         <tbody>
@@ -36,6 +37,9 @@
                 <td>
                     <a href="{{ path('afficher_sortie', {'id': sortie.id}) }}">show</a>
                     <a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}">edit</a>
+                </td>
+                <td>
+                    <a href="{{ path('ProfilParticipant', {'id':sortie.organisateur.id}) }}">{{ sortie.organisateur.pseudo }}</a>
                 </td>
             </tr>
         {% else %}

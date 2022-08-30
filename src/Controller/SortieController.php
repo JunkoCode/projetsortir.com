@@ -6,9 +6,13 @@ use App\data\FiltreData;
 use App\Entity\Etat;
 use App\Entity\Sortie;
 use App\Form\SortieFiltreType;
+use App\Entity\Utilisateur;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
+use App\Repository\UtilisateurRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\Array_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,8 +36,6 @@ class SortieController extends AbstractController
             'sorties' => $sorties,
             'form' => $form->createView()
         ]);
-
-
     }
 
     #[Route('/creer', name: 'creer_sortie', methods: ['GET', 'POST'])]
@@ -60,13 +62,13 @@ class SortieController extends AbstractController
             /*if ($form->submit('btnEnregistrer')->isSubmitted()){
 
             }*/
-            $etat=$etatRepository->findOneBy(['libelle'=>Etat::CREEE]);
+            $etat = $etatRepository->findOneBy(['libelle' => Etat::CREEE]);
 
             $sortie->setEtat($etat);
             //dd($sortie);
 
             $sortieRepository->add($sortie, true);
-            $this->addFlash('success','Sortie créée!');
+            $this->addFlash('success', 'Sortie créée!');
 
             return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
         }
@@ -81,9 +83,56 @@ class SortieController extends AbstractController
     #[Route('/{id}', name: 'afficher_sortie', methods: ['GET'])]
     public function show(Sortie $sortie): Response
     {
-        return $this->render('sortie/AfficherSortie.html.twig', [
+        return $this->render('sortie/afficherSortie.html.twig', [
             'sortie' => $sortie,
         ]);
+    }
+
+    #[Route('/ajouteParticipant/{id}', name: 'ajouter_participant_sortie', methods: ['GET', 'POST'])]
+    public function showSortieParticiper(Sortie $sortie,EntityManagerInterface $entityManager, EtatRepository $etatRepository): Response
+    {
+        $userConnecte=$this->getUser();
+        $nbInscrits=$sortie->getParticipants()->count();
+        $datenow = new \DateTimeImmutable("now");
+
+        if($sortie->getEtat() !== $etatRepository->findOneBy(['libelle'=> Etat::OUVERTE])){
+            $this->addFlash('error', "La participation à la sortie n'est plus ouverte.");
+        } elseif($sortie->getDateLimiteInscription() < $datenow){
+            $this->addFlash('error',"La date limite d'inscriptions est dépassé");
+        } elseif ($nbInscrits >= $sortie->getNombreInscriptionMax()){
+            $this->addFlash('error',"Le nombre maximale d'inscriptions est atteinte.");
+        } elseif ($sortie->getParticipants()->contains($userConnecte)){
+            $this->addFlash('error', "L'utilisateur est déjà inscrit à cette sortie");
+        } else{
+            $sortie->addParticipant($userConnecte);
+            //rajout des lignes pour persister l'information et flushé l'info dans la base
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+            $this->addFlash('success', 'Amusez vous bien!');
+        }
+
+        return $this->redirectToRoute('afficher_sortie', ['id'=>$sortie->getId()]);
+
+    }
+
+    #[Route('/retirerParticipant/{id}', name: 'retirer_participant_sortie', methods: ['GET', 'POST'])]
+    public function showSortieRetirer(Sortie $sortie,EntityManagerInterface $entityManager, EtatRepository $etatRepository): Response
+    {
+        $userConnecte=$this->getUser();
+        //vérifier l'état de la sortie
+        if($sortie->getEtat() !== $etatRepository->findOneBy(['libelle'=> Etat::OUVERTE])){
+            $this->addFlash('error', "Impossible de se retirer de la sortie.");
+        } elseif (!$sortie->getParticipants()->contains($userConnecte)){
+            $this->addFlash('error', "L'utilisateur n'est pas inscrit à cette sortie");
+        } else{
+            $sortie->removeParticipant($userConnecte);
+            //rajout des lignes pour persister l'information et flushé l'info dans la base
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+            $this->addFlash('warning', 'Vous avez été retiré des participants!');
+        }
+
+        return $this->redirectToRoute('afficher_sortie', ['id'=>$sortie->getId()]);
     }
 
     #[Route('/{id}/edit', name: 'editer_sortie', methods: ['GET', 'POST'])]
@@ -113,6 +162,4 @@ class SortieController extends AbstractController
 
         return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
     }
-
-
 }

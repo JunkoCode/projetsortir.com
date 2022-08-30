@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Sortie;
 use App\Entity\Utilisateur;
 use App\Form\UtilisateurType;
 use App\Repository\UtilisateurRepository;
 use App\Services\FileUploader;
-use Monolog\Handler\Curl\Util;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,6 +26,22 @@ class UtilisateurController extends AbstractController
             "utilisateur" => $utilisateur
         ]);
     }
+
+    #[Route('/profilParticipant/{id}', name: 'ProfilParticipant')]
+    public function showProfilParticipant($id, UtilisateurRepository $utilisateurRepository): Response
+    {
+        $userConnecte = $this->getUser();
+        $participant = $utilisateurRepository->find($id);
+
+        if($userConnecte===$participant){
+           return $this->render('utilisateur/profil.html.twig', [
+                "utilisateur" => $userConnecte]);
+        } else {
+            return $this->render('utilisateur/profil.html.twig', [
+                "utilisateur" => $participant]);
+        }
+    }
+
 
     #[Route('/updateprofil/{id}', name: 'UpdateProfil')]
     public function updateProfil(Request $request, Utilisateur $utilisateur, UtilisateurRepository $utilisateurRepository,FileUploader $fileUploader): Response
