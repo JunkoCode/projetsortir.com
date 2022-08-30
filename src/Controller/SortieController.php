@@ -79,13 +79,13 @@ class SortieController extends AbstractController
     }
 
     #[Route('/ajouteParticipant/{id}', name: 'ajouter_participant_sortie', methods: ['GET', 'POST'])]
-    public function showSortie(Sortie $sortie,EntityManagerInterface $entityManager): Response
+    public function showSortieParticiper(Sortie $sortie,EntityManagerInterface $entityManager): Response
     {
         $userConnecte=$this->getUser();
         $nbInscrits=$sortie->getParticipants()->count();
         $datenow = new \DateTimeImmutable("now");
 
-        if($sortie->getDateLimiteInscription() > $datenow){
+        if($sortie->getDateLimiteInscription() < $datenow){
             $this->addFlash('error',"La date limite d'inscriptions est dépassé");
         } elseif ($nbInscrits >= $sortie->getNombreInscriptionMax()){
             $this->addFlash('error',"Le nombre maximale d'inscriptions est atteinte.");
@@ -99,30 +99,27 @@ class SortieController extends AbstractController
             $this->addFlash('success', 'Amusez vous bien!');
         }
 
-        // La version précédente est une amélioration du code pour éviter la redondance des contrôles de la version en commentaire :
-        /*if($sortie->getParticipants()->contains($userConnecte) &&
-            $nbInscrits < $sortie->getNombreInscriptionMax() &&
-            $sortie->getDateLimiteInscription() > $datenow)
-        {
-            $sortie->addParticipant($userConnecte);
+        return $this->redirectToRoute('afficher_sortie', ['id'=>$sortie->getId()]);
+
+    }
+
+    #[Route('/retirerParticipant/{id}', name: 'retirer_participant_sortie', methods: ['GET', 'POST'])]
+    public function showSortieRetirer(Sortie $sortie,EntityManagerInterface $entityManager): Response
+    {
+        $userConnecte=$this->getUser();
+        $datenow = new \DateTimeImmutable("now");
+
+        if($sortie->getDateLimiteInscription() < $datenow){
+            $this->addFlash('error',"La date limite de désinscriptions est dépassé");
+        } elseif (!$sortie->getParticipants()->contains($userConnecte)){
+            $this->addFlash('error', "L'utilisateur n'est pas inscrit à cette sortie");
+        } else{
+            $sortie->removeParticipant($userConnecte);
+            //rajout des lignes pour persister l'information et flushé l'info dans la base
             $entityManager->persist($sortie);
             $entityManager->flush();
-            $this->addFlash('success', 'Amusez vous bien!');
-
-        } else if ($sortie->getParticipants()->contains($userConnecte) &&
-            $nbInscrits < $sortie->getNombreInscriptionMax() &&
-            $sortie->getDateLimiteInscription() > $datenow){
-            $this->addFlash('error', "L'utilisateur est déjà inscrit à cette sortie");
-
-        } else if (!$sortie->getParticipants()->contains($userConnecte)&&
-            $nbInscrits >= $sortie->getNombreInscriptionMax() &&
-            $sortie->getDateLimiteInscription() > $datenow){
-            $this->addFlash('error',"Le nombre maximale d'inscriptions est atteinte.");
-        } else {
-            $this->addFlash('error',"La date limite d'inscriptions est dépassé");
-        }*/
-
-        //$participants=$sortie->getParticipants();
+            $this->addFlash('warning', 'Vous avez été retiré des participants!');
+        }
 
         return $this->redirectToRoute('afficher_sortie', ['id'=>$sortie->getId()]);
 
