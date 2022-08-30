@@ -12,7 +12,7 @@
             <h1 class="my-5 col-md-6 offset-md-3">Se connecter</h1>
 
             <div class="row">
-                <div class="col-md-6 offset-md-3">
+                <div class="col-lg-6 offset-lg-3 col-md-12">
                     <div class="alert alert-secondary">
 
                         <div class="col-12">
@@ -24,15 +24,17 @@
                             <input type="password" name="password" id="inputPassword" class="form-control" required>
                         </div>
                         <br>
-                        <button class="btn btn-primary" type="submit">
-                            Se connecter
-                        </button>
-                        <label>
-                            <input type="checkbox" name="_remember_me"> Remember me
-                        </label>
-                        <br>
-                        <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
-                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                        <div class="col-md-12">
+                            <button class="btn btn-primary" type="submit">
+                                Se connecter
+                            </button>
+                            <label>
+                                <input type="checkbox" name="_remember_me"> Remember me
+                            </label>
+                            <br>
+                            <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                        </div>
                     </div>
                 </div>
             </div>

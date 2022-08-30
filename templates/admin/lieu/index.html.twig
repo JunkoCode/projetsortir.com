@@ -11,8 +11,8 @@
                 <th>Id</th>
                 <th>Nom</th>
                 <th>Rue</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
+                <th class="d-none d-md-table-cell">Latitude</th>
+                <th class="d-none d-md-table-cell">Longitude</th>
                 <th>Ville</th>
                 <th>actions</th>
             </tr>
@@ -23,8 +23,8 @@
                 <td>{{ lieu.id }}</td>
                 <td>{{ lieu.nom }}</td>
                 <td>{{ lieu.rue }}</td>
-                <td>{{ lieu.latitude }}</td>
-                <td>{{ lieu.longitude }}</td>
+                <td class="d-none d-md-table-cell">{{ lieu.latitude }}</td>
+                <td class="d-none d-md-table-cell">{{ lieu.longitude }}</td>
                 <td>{{ lieu.ville.nom }}</td>
                 <td>
                     <a href="{{ path('app_lieu_show', {'id': lieu.id}) }}">show</a>
