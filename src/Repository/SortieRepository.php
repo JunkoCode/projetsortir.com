@@ -72,7 +72,8 @@ class SortieRepository extends ServiceEntityRepository
 
     {
         $query = $this ->createQueryBuilder('s')
-            ->orderBy('s.dateHeureDebut', 'ASC');
+            ->orderBy('s.dateHeureDebut', 'ASC')
+            ->distinct();
 
         if(!empty($data->filtreSortieMotCle)){
             $query
