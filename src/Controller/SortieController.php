@@ -7,14 +7,17 @@ use App\Entity\Sortie;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/sortie')]
+#[IsGranted('ROLE_ACTIF')]
 class SortieController extends AbstractController
 {
+
     #[Route('/', name: 'afficher_liste_sorties', methods: ['GET'])]
     public function index(SortieRepository $sortieRepository): Response
     {
