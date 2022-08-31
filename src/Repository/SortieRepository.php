@@ -118,7 +118,7 @@ class SortieRepository extends ServiceEntityRepository
 
         if (!empty($data->filtreSortiePassees)){
             $query
-                ->andWhere('s.dateHeureDebut > :dateNow')
+                ->andWhere('s.dateHeureDebut < :dateNow')
                 ->setParameter('dateNow', new \dateTimeImmutable);
         }
 

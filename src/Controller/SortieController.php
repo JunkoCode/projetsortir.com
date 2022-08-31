@@ -30,11 +30,12 @@ class SortieController extends AbstractController
         $idUser = $this->getUser()->getId();
         $user = $this->getUser();
 
+
         $sorties= $sortieRepository->findByFiltre($user,$idUser,$data);
 
         return $this->render('sortie/listSorties.html.twig', [
             'sorties' => $sorties,
-            'form' => $form->createView()
+            'formFilter' => $form->createView()
         ]);
     }
 

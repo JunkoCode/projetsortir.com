@@ -35,7 +35,7 @@ class SortieFiltreType extends AbstractType
     {
         $builder
             ->add('filtreSortieMotCle', TextType::class, [
-                'label'=>false,
+                'label'=>'Rechercher : ',
                 'required'=>false,
                 'attr'=>[
                     'placeholder' => 'rechercher par mot clé'
