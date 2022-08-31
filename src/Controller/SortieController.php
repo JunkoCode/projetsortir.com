@@ -34,11 +34,12 @@ class SortieController extends AbstractController
         $idUser = $this->getUser()->getId();
         $user = $this->getUser();
 
-        $sorties = $sortieRepository->findByFiltre($idUser, $data);
+
+        $sorties= $sortieRepository->findByFiltre($user,$idUser,$data);
 
         return $this->render('sortie/listSorties.html.twig', [
             'sorties' => $sorties,
-            'form' => $form->createView()
+            'formFilter' => $form->createView()
         ]);
     }
 
@@ -85,7 +86,6 @@ class SortieController extends AbstractController
             if ($form->getClickedButton() && 'btnPublier' === $form->getClickedButton()->getName()) {
                 $sortie->setEtat($etatRepository->findOneBy(['libelle' => Etat::ETAT_OUVERTE]));
             }
-            //dd($sortie);
 
             $sortieRepository->add($sortie, true);
             $this->addFlash('success', 'Sortie créée!');

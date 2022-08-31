@@ -34,9 +34,9 @@ class SortieFiltreType extends AbstractType
     {
         $builder
             ->add('filtreSortieMotCle', TextType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => [
+                'label'=>'Rechercher : ',
+                'required'=>false,
+                'attr'=>[
                     'placeholder' => 'rechercher par mot clé'
                 ]
             ])
@@ -51,7 +51,7 @@ class SortieFiltreType extends AbstractType
                 'required' => false,
                 'widget' => 'single_text',
                 'data' => new DateTimeImmutable("-1 day"),
-                'attr'=>['min'=>new DateTimeImmutable("-30 day")]
+                //'attr'=>['min'=>new DateTimeImmutable("-30 day")]
             ])
             ->add('filtreSortieDateMax', DateType::class, [
                 'label' => 'et : ',
