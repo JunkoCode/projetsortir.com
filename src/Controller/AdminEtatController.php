@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/etat')]
+#[Route('/admin/etat')]
 class AdminEtatController extends AbstractController
 {
     #[Route('/', name: 'app_etat_index', methods: ['GET'])]

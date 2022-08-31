@@ -7,6 +7,9 @@
         <div class="collapse navbar-collapse" id="navbarColor03">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ path('afficher_liste_sorties') }}">Les Sorties</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{{ path('creer_sortie') }}">Créer une Sortie</a>
                 </li>
                 {% if is_granted('ROLE_ADMIN') %}
