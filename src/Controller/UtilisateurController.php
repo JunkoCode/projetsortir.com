@@ -50,6 +50,7 @@ class UtilisateurController extends AbstractController
         $form->handleRequest($request);
 
         //TODO remettre le && $form->isValid() dans le if du formulaire.
+        $campusBefore = $utilisateur->getCampus();
         if ($form->isSubmitted() && $form->isValid()) {
             /**@var UploadedFile $avatarFile */
             $avatarFile = $form->get('photo')->getData();
@@ -57,7 +58,7 @@ class UtilisateurController extends AbstractController
                 $avatarFileName = $fileUploader->upload($avatarFile);
                 $utilisateur->setPhoto($avatarFileName);
             }
-
+            $utilisateur->setCampus($campusBefore);
             $utilisateurRepository->add($utilisateur, true);
 
             return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);

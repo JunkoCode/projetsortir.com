@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Sortie;
 use App\Form\SortieType;
 use App\Repository\SortieRepository;
+use DateInterval;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,7 +37,7 @@ class AdminSortieController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $dureeEnMinutes = $form->get('duree')->getData() * 60;
-            $sortie->setDuree(new \DateInterval('PT' . $dureeEnMinutes . 'M'));
+            $sortie->setDuree(new DateInterval('PT' . $dureeEnMinutes . 'M'));
 
             $sortieRepository->add($sortie, true);
 

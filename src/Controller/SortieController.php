@@ -4,15 +4,18 @@ namespace App\Controller;
 
 use App\data\FiltreData;
 use App\Entity\Etat;
+use App\Entity\Lieu;
 use App\Entity\Sortie;
+use App\Form\LieuType;
 use App\Form\SortieFiltreType;
-use App\Entity\Utilisateur;
 use App\Form\SortieType;
+use App\Form\SortieTypeAjax;
 use App\Repository\EtatRepository;
+use App\Repository\LieuRepository;
 use App\Repository\SortieRepository;
-use App\Repository\UtilisateurRepository;
+use DateInterval;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Types\Array_;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +35,7 @@ class SortieController extends AbstractController
         $idUser = $this->getUser()->getId();
         $user = $this->getUser();
 
-        $sorties = $sortieRepository->findByFiltre($user, $idUser, $data);
+        $sorties = $sortieRepository->findByFiltre($idUser, $data);
 
         return $this->render('sortie/listSorties.html.twig', [
             'sorties' => $sorties,
@@ -41,13 +44,27 @@ class SortieController extends AbstractController
     }
 
     #[Route('/creer', name: 'creer_sortie', methods: ['GET', 'POST'])]
-    public function creerSortie(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository): Response
+    public function creerSortie(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, LieuRepository $lieuRepository): Response
     {
         $sortie = new Sortie();
-        $form = $this->createForm(SortieType::class, $sortie);
+        $form = $this->createForm(SortieTypeAjax::class, $sortie);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $lieu = new Lieu();
+        $formLieu = $this->createForm(LieuType::class, $lieu);
+        $formLieu->handleRequest($request);
+
+        if ($formLieu->isSubmitted() && $formLieu->isValid()) {
+            $lieuRepository->add($lieu, true);
+            $this->addFlash('success', 'Lieu créée!');
+            return $this->renderForm('sortie/creerSortie.html.twig', [
+                'sortie' => $sortie,
+                'form' => $form,
+                'formLieu' =>$formLieu,
+            ]);
+        }
+
+        if($form->isSubmitted() && $form->isValid()) {
 
             $dureeEnMinutes = $form->get('duree')->getData() * 60;
 
@@ -59,15 +76,15 @@ class SortieController extends AbstractController
                 $sortie->getLieu()->setLongitude($form->get('longitude')->getData());
             }
 
-            $sortie->setDuree(new \DateInterval('PT' . $dureeEnMinutes . 'M'));
+            $sortie->setDuree(new DateInterval('PT' . $dureeEnMinutes . 'M'));
             $sortie->setOrganisateur($this->getUser());
 
             if ($form->getClickedButton() && 'btnEnregistrer' === $form->getClickedButton()->getName()) {
-                $sortie->setEtat($etatRepository->findOneBy(['libelle' => Etat::CREEE]));
+                $sortie->setEtat($etatRepository->findOneBy(['libelle' => Etat::ETAT_CREEE]));
             }
 
             if ($form->getClickedButton() && 'btnPublier' === $form->getClickedButton()->getName()) {
-                $sortie->setEtat($etatRepository->findOneBy(['libelle' => Etat::OUVERTE]));
+                $sortie->setEtat($etatRepository->findOneBy(['libelle' => Etat::ETAT_OUVERTE]));
             }
             //dd($sortie);
 
@@ -80,6 +97,7 @@ class SortieController extends AbstractController
         return $this->renderForm('sortie/creerSortie.html.twig', [
             'sortie' => $sortie,
             'form' => $form,
+            'formLieu' =>$formLieu,
         ]);
     }
 
@@ -97,9 +115,9 @@ class SortieController extends AbstractController
     {
         $userConnecte = $this->getUser();
         $nbInscrits = $sortie->getParticipants()->count();
-        $datenow = new \DateTimeImmutable("now");
+        $datenow = new DateTimeImmutable("now");
 
-        if ($sortie->getEtat() !== $etatRepository->findOneBy(['libelle' => Etat::OUVERTE])) {
+        if ($sortie->getEtat() !== $etatRepository->findOneBy(['libelle' => Etat::ETAT_OUVERTE])) {
             $this->addFlash('danger', "La participation à la sortie n'est plus ouverte.");
         } elseif ($sortie->getDateLimiteInscription() < $datenow) {
             $this->addFlash('danger', "La date limite d'inscriptions est dépassé");
@@ -124,7 +142,7 @@ class SortieController extends AbstractController
     {
         $userConnecte = $this->getUser();
         //vérifier l'état de la sortie
-        if ($sortie->getEtat() !== $etatRepository->findOneBy(['libelle' => Etat::OUVERTE])) {
+        if ($sortie->getEtat() !== $etatRepository->findOneBy(['libelle' => Etat::ETAT_OUVERTE])) {
             $this->addFlash('danger', "Impossible de se retirer de la sortie.");
         } elseif (!$sortie->getParticipants()->contains($userConnecte)) {
             $this->addFlash('danger', "L'utilisateur n'est pas inscrit à cette sortie");
@@ -167,10 +185,10 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/supprimerSortieOrganisateur/{id}', name: 'supprimer_sortie_organisateur', methods: ['POST', 'GET'])]
+    #[Route('/annuler/{id}', name: 'supprimer_sortie_organisateur', methods: ['POST', 'GET'])]
     public function deleteGet(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
     {
-        $datenow = new \DateTimeImmutable("now");
+        $datenow = new DateTimeImmutable("now");
         $userConnecte = $this->getUser();
 
         if ($userConnecte !== $sortie->getOrganisateur()) {

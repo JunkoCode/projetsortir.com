@@ -13,7 +13,7 @@ class FileUploader
 
     }
 
-    public function upload(UploadedFile $file)
+    public function upload(UploadedFile $file): string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
@@ -24,7 +24,7 @@ class FileUploader
         return $fileName;
     }
 
-    public function getTargetDirectory()
+    public function getTargetDirectory(): string
     {
         return $this->targetDirectory;
     }

@@ -4,6 +4,7 @@ namespace App\data;
 
 use App\Entity\Campus;
 use App\Entity\Utilisateur;
+use DateTime;
 
 class FiltreData
 {
@@ -11,31 +12,31 @@ class FiltreData
     /**
      * @var string
      */
-    public $filtreSortieMotCle = '';
+    public string $filtreSortieMotCle = '';
 
     /**
-     * @var Utilisateur
+     * @var Integer
      */
-    public $filtreSortieIdUser;
+    public int $filtreSortieIdUser;
 
     /**
      * @var Campus[]
      */
-    public $filtreSortieCampus = [];
+    public array $filtreSortieCampus = [];
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
-    public $filtreSortieDateMin = '';
-    public $filtreSortieDateMax = '';
+    public string|null|DateTime $filtreSortieDateMin = '';
+    public string|null|DateTime $filtreSortieDateMax = '';
 
     /**
      * @var boolean
      */
     public $filtreSortieOrganisateur = false;
-    public $filtreSortieInscrit = false;
-    public $filtreSortiePasInscrit = false;
-    public $filtreSortiePassees = false;
+    public bool $filtreSortieInscrit = false;
+    public bool $filtreSortiePasInscrit = false;
+    public bool $filtreSortiePassees = false;
 
 
 }

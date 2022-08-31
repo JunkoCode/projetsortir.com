@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SortieRepository;
+use DateInterval;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -26,16 +28,16 @@ class Sortie
     #[Assert\NotNull]
     #[Assert\GreaterThan('now', message: "La date limite d'inscription doit être supérieur à la date du jour")]
     #[Assert\LessThanOrEqual(propertyPath: 'dateHeureDebut', message: "La date limite d'inscription doit être inférieur ou égal à la date de début du sortie")]
-    private ?\DateTimeInterface $dateLimiteInscription = null;
+    private ?DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotNull]
     #[Assert\GreaterThan('now', message: "La date du début de la sortie doit être supérieur à la date du jour")]
     #[Assert\GreaterThanOrEqual(propertyPath: 'dateLimiteInscription', message: "La date de début du sortie doit être supérieur ou égal à la date limite d'inscription")]
-    private ?\DateTimeInterface $dateHeureDebut = null;
+    private ?DateTimeInterface $dateHeureDebut = null;
 
     #[ORM\Column(type: Types::DATEINTERVAL)]
-    private ?\DateInterval $duree = null;
+    private ?DateInterval $duree = null;
 
 
     #[ORM\Column]
@@ -85,36 +87,36 @@ class Sortie
         return $this;
     }
 
-    public function getDateLimiteInscription(): ?\DateTimeInterface
+    public function getDateLimiteInscription(): ?DateTimeInterface
     {
         return $this->dateLimiteInscription;
     }
 
-    public function setDateLimiteInscription(\DateTimeInterface $dateLimiteInscription): self
+    public function setDateLimiteInscription(DateTimeInterface $dateLimiteInscription): self
     {
         $this->dateLimiteInscription = $dateLimiteInscription;
 
         return $this;
     }
 
-    public function getDateHeureDebut(): ?\DateTimeInterface
+    public function getDateHeureDebut(): ?DateTimeInterface
     {
         return $this->dateHeureDebut;
     }
 
-    public function setDateHeureDebut(\DateTimeInterface $dateHeureDebut): self
+    public function setDateHeureDebut(DateTimeInterface $dateHeureDebut): self
     {
         $this->dateHeureDebut = $dateHeureDebut;
 
         return $this;
     }
 
-    public function getDuree(): ?\DateInterval
+    public function getDuree(): ?DateInterval
     {
         return $this->duree;
     }
 
-    public function setDuree(?\DateInterval $duree): self
+    public function setDuree(?DateInterval $duree): self
     {
         $this->duree = $duree;
 

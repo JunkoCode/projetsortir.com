@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use function get_class;
 
 /**
  * @extends ServiceEntityRepository<Utilisateur>
@@ -49,7 +50,7 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         if (!$user instanceof Utilisateur) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
         }
 
         $user->setPassword($newHashedPassword);
@@ -82,6 +83,9 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
 //        ;
 //    }
 
+    /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function loadUserByUsername(string $emailOrUsername)
     {
         return $this->createQueryBuilder('u')

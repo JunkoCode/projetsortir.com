@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\data\FiltreData;
 use App\Entity\Campus;
+use DateTimeImmutable;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -49,13 +50,14 @@ class SortieFiltreType extends AbstractType
                 'label' => 'Entre : ',
                 'required' => false,
                 'widget' => 'single_text',
-                'data' => new \DateTimeImmutable("-1 day")
+                'data' => new DateTimeImmutable("-1 day"),
+                'attr'=>['min'=>new DateTimeImmutable("-30 day")]
             ])
             ->add('filtreSortieDateMax', DateType::class, [
                 'label' => 'et : ',
                 'required' => false,
                 'widget' => 'single_text',
-                'data' => new \DateTimeImmutable("+30 day")
+                'data' => new DateTimeImmutable("+30 day")
             ])
             ->add('filtreSortieOrganisateur', CheckboxType::class, [
                 'label' => 'Sorties dont je suis l\'oganisteur/trice',

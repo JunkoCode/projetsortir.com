@@ -46,7 +46,7 @@ class LieuFixtures extends Fixture implements DependentFixtureInterface
         $this->addReference(self::LIEU_SORTIE3, $lieu3);
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             VilleFixtures::class,

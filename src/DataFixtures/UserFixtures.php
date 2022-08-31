@@ -10,9 +10,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture implements DependentFixtureInterface
 {
-    public const ORGANISATEUR1 = 'organisateur1';
-    public const ORGANISATEUR2 = 'organisateur2';
-    public const UTILISATEUR1 = 'utilisateur1';
+    public const USER_1 = 'user1';
+    public const USER_2 = 'user2';
+    public const USER_3 = 'user3';
 
     private UserPasswordHasherInterface $userPasswordHasher;
 
@@ -33,9 +33,8 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             '123456'));
         $user1->setTelephone('0102030405');
         $user1->setCampus($this->getReference(CampusFixtures::CAMPUS_USER1));
-        $user1->setActif(1);
-        $user1->addRole(Utilisateur::ROLE_ACTIF);
-        $user1->addRole(Utilisateur::ROLE_USER);
+        $user1->setActif(true);
+        $user1->setAdministrateur(false);
         $user1->setPhoto('imgProfilUser1.jpg');
         $manager->persist($user1);
 
@@ -49,7 +48,8 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             '123456'));
         $user2->setTelephone('0602030406');
         $user2->setCampus($this->getReference(CampusFixtures::CAMPUS_USER2));
-        $user2->setActif(0);
+        $user2->setActif(false);
+        $user2->setAdministrateur(false);
         $manager->persist($user2);
 
         $user3 = new Utilisateur();
@@ -62,23 +62,19 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             '123456'));
         $user3->setTelephone('0104050405');
         $user3->setCampus($this->getReference(CampusFixtures::CAMPUS_USER3));
-        $user3->setRoles(["ROLE_ADMIN", "ROLE_ACTIF"]);
-        $user3->addRole(Utilisateur::ROLE_ACTIF);
-        $user3->addRole(Utilisateur::ROLE_USER);
-        $user3->addRole(Utilisateur::ROLE_ADMIN);
-        $user3->setActif(1);
-        $user3->setAdministrateur(1);
+        $user3->setActif(true);
+        $user3->setAdministrateur(true);
         $user3->setPhoto('imgProfilUser1.jpg');
         $manager->persist($user3);
 
         $manager->flush();
 
-        $this->addReference(self::ORGANISATEUR1, $user1);
-        $this->addReference(self::ORGANISATEUR2, $user2);
-        $this->addReference(self::UTILISATEUR1, $user3);
+        $this->addReference(self::USER_1, $user1);
+        $this->addReference(self::USER_2, $user2);
+        $this->addReference(self::USER_3, $user3);
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             CampusFixtures::class

@@ -86,7 +86,30 @@
         {# {{ form_end(form) }} #}
         {{ form_end(form, {'render_rest': false}) }}
 
+        <!-- Modal -->
+        <div class="modal fade" id="ModalAjoutLieu" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="ModalAjoutLieuLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Ajouter un lieu</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    {{ form_start((formLieu)) }}
+                    <div class="modal-body">
+
+                        {{ form_widget(formLieu) }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Ajouter un lieu</button>
+                    </div>
+                    {{ form_end(formLieu) }}
+                </div>
+            </div>
     </div>
+
+
+
     <div class="container d-sm-none">
 
 

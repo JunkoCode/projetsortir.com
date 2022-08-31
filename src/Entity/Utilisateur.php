@@ -18,9 +18,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    const ROLE_USER = "ROLE_USER";
-    const ROLE_ADMIN = "ROLE_ADMIN";
-    const ROLE_ACTIF = "ROLE_ACTIF";
+    const ROLE_USER = 'ROLE_USER';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_ACTIF = 'ROLE_ACTIF';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -33,7 +33,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank]
     private ?string $email = null;
 
-    #[ORM\Column]
+    //#[ORM\Column]
     //#[Assert\NotBlank]
     private array $roles = [];
 
@@ -71,10 +71,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'boolean')]
     private ?bool $administrateur = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'boolean')]
     private ?bool $actif = null;
 
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
@@ -91,10 +91,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $participantSorties;
 
     #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
+    public function SetCreatedValues(): void
     {
-        $this->administrateur = false;
-        $this->actif = true;
+        if ($this->administrateur == null) {
+            $this->administrateur = false;
+        }
+        if ($this->actif == null) {
+            $this->actif = true;
+        }
     }
 
     public function __construct()
@@ -144,14 +148,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = self::ROLE_USER;
+        $this->roles[] = self::ROLE_USER;
+        if ($this->administrateur == true) {
+            $this->roles[] = self::ROLE_ADMIN;
+        }
+        if ($this->actif == true) {
+            $this->roles[] = self::ROLE_ACTIF;
+        }
 
-        return array_unique($roles);
+        return array_unique($this->roles);
     }
 
-    public function setRoles(array $roles): self
+    /*public function setRoles(array $roles): self
     {
         $this->roles = $roles;
 
@@ -173,7 +181,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
-    }
+    }*/
 
     /**
      * @see PasswordAuthenticatedUserInterface
