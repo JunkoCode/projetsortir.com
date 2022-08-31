@@ -69,7 +69,7 @@ class AdminVilleController extends AbstractController
     #[Route('/{id}', name: 'app_ville_delete', methods: ['POST'])]
     public function delete(Request $request, Ville $ville, VilleRepository $villeRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$ville->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $ville->getId(), $request->request->get('_token'))) {
             $villeRepository->remove($ville, true);
         }
 

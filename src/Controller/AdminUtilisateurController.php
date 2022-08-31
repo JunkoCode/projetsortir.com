@@ -57,19 +57,19 @@ class AdminUtilisateurController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
 
-           if ($utilisateur->isAdministrateur()==true){
-               $utilisateur->setRoles(["ROLE_ADMIN"]);
-           } else {
-               $utilisateur->setRoles(["Role_ACTIF"]);
-           }
+            if ($utilisateur->isAdministrateur() == true) {
+                $utilisateur->setRoles(["ROLE_ADMIN"]);
+            } else {
+                $utilisateur->setRoles(["Role_ACTIF"]);
+            }
 
-           if($utilisateur->isActif()==true){
-               $utilisateur->setActif(1);
-               $utilisateur->setRoles(["ROLE_ACTIF"]);
-           } else {
-               $utilisateur->setActif(0);
-               $utilisateur->setRoles([""]);
-           }
+            if ($utilisateur->isActif() == true) {
+                $utilisateur->setActif(1);
+                $utilisateur->setRoles(["ROLE_ACTIF"]);
+            } else {
+                $utilisateur->setActif(0);
+                $utilisateur->setRoles([""]);
+            }
 
 
             $utilisateurRepository->add($utilisateur, true);
@@ -86,7 +86,7 @@ class AdminUtilisateurController extends AbstractController
     #[Route('/{id}', name: 'app_utilisateur_delete', methods: ['POST'])]
     public function delete(Request $request, Utilisateur $utilisateur, UtilisateurRepository $utilisateurRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$utilisateur->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $utilisateur->getId(), $request->request->get('_token'))) {
             $utilisateurRepository->remove($utilisateur, true);
         }
 

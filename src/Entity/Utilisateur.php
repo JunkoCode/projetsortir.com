@@ -6,7 +6,6 @@ use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use http\Message;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -19,6 +18,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    const ROLE_USER = "ROLE_USER";
+    const ROLE_ADMIN = "ROLE_ADMIN";
+    const ROLE_ACTIF = "ROLE_ACTIF";
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -51,18 +54,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $pseudo = null;
 
     #[ORM\Column(length: 30)]
-    #[Assert\Length(max: 30,maxMessage: "Le nom ne doit pas dépasser 30 caractères !")]
+    #[Assert\Length(max: 30, maxMessage: "Le nom ne doit pas dépasser 30 caractères !")]
     #[Assert\NotBlank]
     private ?string $nom = null;
 
     #[ORM\Column(length: 30)]
-    #[Assert\Length(max: 30,maxMessage: "Le prénom ne doit pas dépasser 30 caractères !")]
+    #[Assert\Length(max: 30, maxMessage: "Le prénom ne doit pas dépasser 30 caractères !")]
     #[Assert\NotBlank]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 15)]
     #[Assert\Length(min: 8, max: 20, minMessage: "Le telephone n'est pas au bon format", maxMessage: "Le telephone n'est pas au bon format")]
-    #[Assert\Regex(pattern:"/^[0-9]*$/", message:"Votre numéro n'est pas au bon format")]
+    #[Assert\Regex(pattern: "/^[0-9]*$/", message: "Votre numéro n'est pas au bon format")]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -87,6 +90,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
     private Collection $participantSorties;
 
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        $this->administrateur = false;
+        $this->actif = true;
+    }
 
     public function __construct()
     {
@@ -119,7 +128,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -127,7 +136,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -137,7 +146,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = self::ROLE_USER;
 
         return array_unique($roles);
     }
@@ -145,6 +154,23 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function addRole(string $role): self
+    {
+        if (!in_array($role, $this->roles)) {
+            $this->roles[] = $role;
+        }
+        return $this;
+    }
+
+    public function removeRole(string $role): self
+    {
+        if (($key = array_search($role, $this->roles)) !== false) {
+            unset($this->roles[$key]);
+        }
 
         return $this;
     }

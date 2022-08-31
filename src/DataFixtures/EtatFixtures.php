@@ -8,9 +8,12 @@ use Doctrine\Persistence\ObjectManager;
 
 class EtatFixtures extends Fixture
 {
-    public const ETAT_SORTIE1='etat1';
-    public const ETAT_SORTIE2='etat2';
-    public const ETAT_SORTIE3='etat3';
+    public const ETAT_CREEE = 'etat1';
+    public const ETAT_OUVERTE = 'etat2';
+    public const ETAT_CLOTUREE = 'etat3';
+    public const ETAT_EN_COURS = 'etat4';
+    public const ETAT_PASSEE = 'etat5';
+    public const ETAT_ANNULEE = 'etat6';
 
     public function load(ObjectManager $manager): void
     {
@@ -23,13 +26,28 @@ class EtatFixtures extends Fixture
         $manager->persist($etat2);
 
         $etat3 = new Etat();
-        $etat3->setLibelle('En cours');
+        $etat3->setLibelle('Clôturée');
         $manager->persist($etat3);
+
+        $etat4 = new Etat();
+        $etat4->setLibelle('Activité en cours');
+        $manager->persist($etat4);
+
+        $etat5 = new Etat();
+        $etat5->setLibelle('Passée');
+        $manager->persist($etat5);
+
+        $etat6 = new Etat();
+        $etat6->setLibelle('Annulée');
+        $manager->persist($etat6);
 
         $manager->flush();
 
-        $this->addReference(self::ETAT_SORTIE1, $etat1);
-        $this->addReference(self::ETAT_SORTIE2, $etat2);
-        $this->addReference(self::ETAT_SORTIE3, $etat3);
+        $this->addReference(self::ETAT_CREEE, $etat1);
+        $this->addReference(self::ETAT_OUVERTE, $etat2);
+        $this->addReference(self::ETAT_CLOTUREE, $etat3);
+        $this->addReference(self::ETAT_EN_COURS, $etat4);
+        $this->addReference(self::ETAT_PASSEE, $etat5);
+        $this->addReference(self::ETAT_ANNULEE, $etat6);
     }
 }

@@ -43,15 +43,15 @@ class Sortie
     #[Assert\GreaterThanOrEqual(1)]
     private ?int $nombreInscriptionMax = null;
 
-    #[ORM\Column(type: Types::TEXT,nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $infoSortie = null;
 
-    #[ORM\ManyToOne(targetEntity: Etat::class ,inversedBy: 'sorties')]
+    #[ORM\ManyToOne(targetEntity: Etat::class, inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
     //#[Assert\NotNull]
     private ?Etat $etat = null;
 
-    #[ORM\ManyToOne(targetEntity: Lieu::class,inversedBy: 'sorties')]
+    #[ORM\ManyToOne(targetEntity: Lieu::class, inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Lieu $lieu = null;
 
@@ -68,7 +68,7 @@ class Sortie
         $this->participants = new ArrayCollection();
     }
 
-   public function getId(): ?int
+    public function getId(): ?int
     {
         return $this->id;
     }

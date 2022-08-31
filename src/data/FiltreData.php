@@ -4,14 +4,13 @@ namespace App\data;
 
 use App\Entity\Campus;
 use App\Entity\Utilisateur;
-use phpDocumentor\Reflection\Types\Null_;
 
 class FiltreData
 {
 
     /**
-    * @var string
-    */
+     * @var string
+     */
     public $filtreSortieMotCle = '';
 
     /**
@@ -28,7 +27,7 @@ class FiltreData
      * @var \DateTime|null
      */
     public $filtreSortieDateMin = '';
-    public $filtreSortieDateMax='';
+    public $filtreSortieDateMax = '';
 
     /**
      * @var boolean
@@ -37,7 +36,6 @@ class FiltreData
     public $filtreSortieInscrit = false;
     public $filtreSortiePasInscrit = false;
     public $filtreSortiePassees = false;
-
 
 
 }

@@ -12,26 +12,27 @@
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
+
         {% endblock %}
     </head>
     <body>
         {% include 'partials/header.html.twig' %}
-
+        <div class="container">
 
         {# read and display all flash messages #}
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
                     {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
                 </div>
+
             {% endfor %}
         {% endfor %}
 
         {% block body %}{% endblock %}
 
         {% include 'partials/footer.html.twig' %}
+        </div>
     </body>
 </html>

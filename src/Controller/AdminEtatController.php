@@ -69,7 +69,7 @@ class AdminEtatController extends AbstractController
     #[Route('/{id}', name: 'app_etat_delete', methods: ['POST'])]
     public function delete(Request $request, Etat $etat, EtatRepository $etatRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$etat->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $etat->getId(), $request->request->get('_token'))) {
             $etatRepository->remove($etat, true);
         }
 

@@ -8,9 +8,9 @@ use Doctrine\Persistence\ObjectManager;
 
 class CampusFixtures extends Fixture
 {
-    public const CAMPUS_USER1='campus1';
-    public const CAMPUS_USER2='campus2';
-    public const CAMPUS_USER3='campus3';
+    public const CAMPUS_USER1 = 'campus1';
+    public const CAMPUS_USER2 = 'campus2';
+    public const CAMPUS_USER3 = 'campus3';
 
     public function load(ObjectManager $manager): void
     {

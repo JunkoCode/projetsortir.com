@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Sortie;
 use App\Entity\Utilisateur;
 use App\Form\UtilisateurType;
 use App\Repository\UtilisateurRepository;
@@ -33,8 +32,8 @@ class UtilisateurController extends AbstractController
         $userConnecte = $this->getUser();
         $participant = $utilisateurRepository->find($id);
 
-        if($userConnecte===$participant){
-           return $this->render('utilisateur/profil.html.twig', [
+        if ($userConnecte === $participant) {
+            return $this->render('utilisateur/profil.html.twig', [
                 "utilisateur" => $userConnecte]);
         } else {
             return $this->render('utilisateur/profil.html.twig', [
@@ -44,7 +43,7 @@ class UtilisateurController extends AbstractController
 
 
     #[Route('/updateprofil/{id}', name: 'UpdateProfil')]
-    public function updateProfil(Request $request, Utilisateur $utilisateur, UtilisateurRepository $utilisateurRepository,FileUploader $fileUploader): Response
+    public function updateProfil(Request $request, Utilisateur $utilisateur, UtilisateurRepository $utilisateurRepository, FileUploader $fileUploader): Response
     {
 
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
@@ -52,9 +51,9 @@ class UtilisateurController extends AbstractController
 
         //TODO remettre le && $form->isValid() dans le if du formulaire.
         if ($form->isSubmitted() && $form->isValid()) {
-            /**@var UploadedFile $avatarFile*/
+            /**@var UploadedFile $avatarFile */
             $avatarFile = $form->get('photo')->getData();
-            if ($avatarFile){
+            if ($avatarFile) {
                 $avatarFileName = $fileUploader->upload($avatarFile);
                 $utilisateur->setPhoto($avatarFileName);
             }

@@ -100,13 +100,13 @@ class SortieController extends AbstractController
         $datenow = new \DateTimeImmutable("now");
 
         if ($sortie->getEtat() !== $etatRepository->findOneBy(['libelle' => Etat::OUVERTE])) {
-            $this->addFlash('error', "La participation à la sortie n'est plus ouverte.");
+            $this->addFlash('danger', "La participation à la sortie n'est plus ouverte.");
         } elseif ($sortie->getDateLimiteInscription() < $datenow) {
-            $this->addFlash('error', "La date limite d'inscriptions est dépassé");
+            $this->addFlash('danger', "La date limite d'inscriptions est dépassé");
         } elseif ($nbInscrits >= $sortie->getNombreInscriptionMax()) {
-            $this->addFlash('error', "Le nombre maximale d'inscriptions est atteinte.");
+            $this->addFlash('danger', "Le nombre maximale d'inscriptions est atteinte.");
         } elseif ($sortie->getParticipants()->contains($userConnecte)) {
-            $this->addFlash('error', "L'utilisateur est déjà inscrit à cette sortie");
+            $this->addFlash('danger', "L'utilisateur est déjà inscrit à cette sortie");
         } else {
             $sortie->addParticipant($userConnecte);
             //rajout des lignes pour persister l'information et flushé l'info dans la base
@@ -125,9 +125,9 @@ class SortieController extends AbstractController
         $userConnecte = $this->getUser();
         //vérifier l'état de la sortie
         if ($sortie->getEtat() !== $etatRepository->findOneBy(['libelle' => Etat::OUVERTE])) {
-            $this->addFlash('error', "Impossible de se retirer de la sortie.");
+            $this->addFlash('danger', "Impossible de se retirer de la sortie.");
         } elseif (!$sortie->getParticipants()->contains($userConnecte)) {
-            $this->addFlash('error', "L'utilisateur n'est pas inscrit à cette sortie");
+            $this->addFlash('danger', "L'utilisateur n'est pas inscrit à cette sortie");
         } else {
             $sortie->removeParticipant($userConnecte);
             //rajout des lignes pour persister l'information et flushé l'info dans la base
@@ -174,9 +174,9 @@ class SortieController extends AbstractController
         $userConnecte = $this->getUser();
 
         if ($userConnecte !== $sortie->getOrganisateur()) {
-            $this->addFlash('error', "Suppression impossible, vous n'êtes pas l'organisateur de cette sortie.");
+            $this->addFlash('danger', "Suppression impossible, vous n'êtes pas l'organisateur de cette sortie.");
         } elseif ($datenow >= $sortie->getDateHeureDebut()) {
-            $this->addFlash('error', "La sortie a débuté, impossible de le supprimer.");
+            $this->addFlash('danger', "La sortie a débuté, impossible de le supprimer.");
         } elseif ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
             $sortieRepository->remove($sortie, true);
         }

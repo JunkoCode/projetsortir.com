@@ -12,8 +12,7 @@ class EtatType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('libelle')
-        ;
+            ->add('libelle');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -10,13 +10,15 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture implements DependentFixtureInterface
 {
-    public const ORGANISATEUR1='organisateur1';
-    public const ORGANISATEUR2='organisateur2';
+    public const ORGANISATEUR1 = 'organisateur1';
+    public const ORGANISATEUR2 = 'organisateur2';
+    public const UTILISATEUR1 = 'utilisateur1';
 
     private UserPasswordHasherInterface $userPasswordHasher;
 
-    public function __construct(UserPasswordHasherInterface $userPasswordHasher){
-        $this->userPasswordHasher=$userPasswordHasher;
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher)
+    {
+        $this->userPasswordHasher = $userPasswordHasher;
     }
 
     public function load(ObjectManager $manager): void
@@ -32,7 +34,9 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $user1->setTelephone('0102030405');
         $user1->setCampus($this->getReference(CampusFixtures::CAMPUS_USER1));
         $user1->setActif(1);
-        $user1->setRoles(["ROLE_ACTIF"]);
+        $user1->addRole(Utilisateur::ROLE_ACTIF);
+        $user1->addRole(Utilisateur::ROLE_USER);
+        $user1->setPhoto('imgProfilUser1.jpg');
         $manager->persist($user1);
 
         $user2 = new Utilisateur();
@@ -58,15 +62,20 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             '123456'));
         $user3->setTelephone('0104050405');
         $user3->setCampus($this->getReference(CampusFixtures::CAMPUS_USER3));
-        $user3->setAdministrateur(1);
-        $user3->setRoles(["ROLE_ADMIN","ROLE_ACTIF"]);
+        $user3->setRoles(["ROLE_ADMIN", "ROLE_ACTIF"]);
+        $user3->addRole(Utilisateur::ROLE_ACTIF);
+        $user3->addRole(Utilisateur::ROLE_USER);
+        $user3->addRole(Utilisateur::ROLE_ADMIN);
         $user3->setActif(1);
+        $user3->setAdministrateur(1);
+        $user3->setPhoto('imgProfilUser1.jpg');
         $manager->persist($user3);
 
         $manager->flush();
 
         $this->addReference(self::ORGANISATEUR1, $user1);
         $this->addReference(self::ORGANISATEUR2, $user2);
+        $this->addReference(self::UTILISATEUR1, $user3);
     }
 
     public function getDependencies()

@@ -31,7 +31,7 @@
                             {% if app.user.photo != NULL %}
                                 <img src="{{ asset('uploads/images/avatars/' ~ app.user.photo) }}" alt="Avatar de {{app.user.pseudo}}" class="avatar-mini" />
                             {% else %}
-                                <img src="{{ asset('uploads/images/imgProfilByDefault.png') }}" alt="Avatar par default" class="avatar-mini">
+                                <img src="{{ asset('uploads/images/avatars/imgProfilByDefault.png') }}" alt="Avatar par default" class="avatar-mini">
                             {% endif %}
                             {{app.user.pseudo}}
                         </a>

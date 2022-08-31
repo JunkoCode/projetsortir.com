@@ -21,7 +21,7 @@ class Ville
     #[Assert\NotBlank]
     private ?string $nom = null;
 
-    #[ORM\Column(nullable:false)]
+    #[ORM\Column(nullable: false)]
     #[Assert\Positive]
     #[Assert\Range(
         notInRangeMessage: 'You must be between {{ min }}cm and {{ max }}cm tall to enter',

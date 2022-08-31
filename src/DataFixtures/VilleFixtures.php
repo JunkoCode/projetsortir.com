@@ -8,9 +8,9 @@ use Doctrine\Persistence\ObjectManager;
 
 class VilleFixtures extends Fixture
 {
-    public const LIEU_VILLE1='ville1';
-    public const LIEU_VILLE2='ville2';
-    public const LIEU_VILLE3='ville3';
+    public const LIEU_VILLE1 = 'ville1';
+    public const LIEU_VILLE2 = 'ville2';
+    public const LIEU_VILLE3 = 'ville3';
 
     public function load(ObjectManager $manager): void
     {
