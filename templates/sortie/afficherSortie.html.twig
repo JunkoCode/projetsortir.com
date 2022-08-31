@@ -14,8 +14,13 @@
                     </div>
                     <hr>
                     <div class="mb-3">
-                        <label for="nom" class="form-label">Nom</label>
+                        <label for="nom" class="form-label">Organisateur</label>
                         <p id="nom" class="form-control bg-grey">{{ sortie.organisateur.nom }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nom" class="form-label">Nom de la sortie</label>
+                        <p id="nom" class="form-control bg-grey">{{ sortie.nom }}</p>
                     </div>
 
                     <div class="mb-3">
@@ -97,7 +102,9 @@
                             <tbody>
                             {% for participant in sortie.participants %}
                                 <tr>
-                                    <td>{{ participant.pseudo }}</td>
+                                    <td>
+                                        <a href="{{ path('ProfilParticipant', {'id':participant.id}) }}">{{ participant.pseudo }}</a>
+                                    </td>
                                     <td>{{ participant.nom }}</td>
                                 </tr>
                             {% else %}
@@ -113,17 +120,21 @@
         </div>
 
         <div class="row mt-5">
-            <div class="col text-center">
-                <a href="{{ path('ajouter_participant_sortie', {'id':sortie.id}) }}" class="btn btn-primary btn-lg" role="button">Participer!</a>
-            </div>
-
-            <div class="col text-center">
-                <a href="#" class="btn btn-primary btn-lg" role="button">Se désister</a>
-            </div>
-
-            <div class="col text-center">
-                <a href="#" class="btn btn-primary btn-lg" role="button">Supprimer la sortie</a>
-            </div>
+            {% if app.user.id != sortie.organisateur.id %}
+                {% if app.user not in sortie.participants %}
+                    <div class="col text-center">
+                        <a href="{{ path('ajouter_participant_sortie', {'id':sortie.id}) }}" class="btn btn-primary btn-lg" role="button">Participer!</a>
+                    </div>
+                {% else %}
+                    <div class="col text-center">
+                        <a href="{{ path('retirer_participant_sortie', {'id':sortie.id}) }}" class="btn btn-primary btn-lg" role="button">Se désister</a>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="col text-center">
+                    <a href="{{ path('supprimer_sortie_organisateur', {'id':sortie.id}) }}" class="btn btn-primary btn-lg" role="button">Annuler la sortie</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 
