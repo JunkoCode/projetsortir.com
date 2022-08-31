@@ -16,7 +16,6 @@ use App\Repository\SortieRepository;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -175,28 +174,20 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'supprimer_sortie', methods: ['POST'])]
-    public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
+    #[Route('/annulerSortieOrganisateur/{id}', name: 'annuler_sortie_organisateur', methods: ['GET','POST'])]
+    public function delete(Request $request, Sortie $sortie, EtatRepository $etatRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
-            $sortieRepository->remove($sortie, true);
-        }
 
-        return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
-    }
-
-    #[Route('/annuler/{id}', name: 'supprimer_sortie_organisateur', methods: ['POST', 'GET'])]
-    public function deleteGet(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
-    {
         $datenow = new DateTimeImmutable("now");
         $userConnecte = $this->getUser();
 
-        if ($userConnecte !== $sortie->getOrganisateur()) {
+        if($userConnecte!==$sortie->getOrganisateur()){
             $this->addFlash('danger', "Suppression impossible, vous n'êtes pas l'organisateur de cette sortie.");
-        } elseif ($datenow >= $sortie->getDateHeureDebut()) {
-            $this->addFlash('danger', "La sortie a débuté, impossible de le supprimer.");
-        } elseif ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
-            $sortieRepository->remove($sortie, true);
+        } elseif ($datenow >= $sortie->getDateHeureDebut()){
+            $this->addFlash('danger',"La sortie a débuté, impossible de le supprimer.");
+        } else {
+            $sortie->setEtat($etatRepository->findOneBy(['libelle'=> Etat::ANNULEE]));
+            $this->addFlash('warning', 'La sortie a été annulé!');
         }
 
         return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
