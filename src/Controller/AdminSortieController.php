@@ -77,7 +77,7 @@ class AdminSortieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_sortie_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_sortie_delete', methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
