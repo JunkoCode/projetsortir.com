@@ -23,16 +23,16 @@ use Symfony\Component\Routing\Annotation\Route;
 #[IsGranted('ROLE_ACTIF')]
 class SortieController extends AbstractController
 {
-    #[Route('/', name: 'afficher_liste_sorties', methods: ['GET','POST'])]
+    #[Route('/', name: 'afficher_liste_sorties', methods: ['GET', 'POST'])]
     public function index(SortieRepository $sortieRepository, Request $request): Response
     {
         $data = new FiltreData();
         $form = $this->createForm(SortieFiltreType::class, $data);
-        $form -> handleRequest($request);
+        $form->handleRequest($request);
         $idUser = $this->getUser()->getId();
         $user = $this->getUser();
 
-        $sorties= $sortieRepository->findByFiltre($user,$idUser,$data);
+        $sorties = $sortieRepository->findByFiltre($user, $idUser, $data);
 
         return $this->render('sortie/listSorties.html.twig', [
             'sorties' => $sorties,
@@ -61,12 +61,14 @@ class SortieController extends AbstractController
 
             $sortie->setDuree(new \DateInterval('PT' . $dureeEnMinutes . 'M'));
             $sortie->setOrganisateur($this->getUser());
-            /*if ($form->submit('btnEnregistrer')->isSubmitted()){
 
-            }*/
-            $etat = $etatRepository->findOneBy(['libelle' => Etat::CREEE]);
+            if ($form->getClickedButton() && 'btnEnregistrer' === $form->getClickedButton()->getName()) {
+                $sortie->setEtat($etatRepository->findOneBy(['libelle' => Etat::CREEE]));
+            }
 
-            $sortie->setEtat($etat);
+            if ($form->getClickedButton() && 'btnPublier' === $form->getClickedButton()->getName()) {
+                $sortie->setEtat($etatRepository->findOneBy(['libelle' => Etat::OUVERTE]));
+            }
             //dd($sortie);
 
             $sortieRepository->add($sortie, true);
@@ -91,21 +93,21 @@ class SortieController extends AbstractController
     }
 
     #[Route('/ajouteParticipant/{id}', name: 'ajouter_participant_sortie', methods: ['GET', 'POST'])]
-    public function showSortieParticiper(Sortie $sortie,EntityManagerInterface $entityManager, EtatRepository $etatRepository): Response
+    public function showSortieParticiper(Sortie $sortie, EntityManagerInterface $entityManager, EtatRepository $etatRepository): Response
     {
-        $userConnecte=$this->getUser();
-        $nbInscrits=$sortie->getParticipants()->count();
+        $userConnecte = $this->getUser();
+        $nbInscrits = $sortie->getParticipants()->count();
         $datenow = new \DateTimeImmutable("now");
 
-        if($sortie->getEtat() !== $etatRepository->findOneBy(['libelle'=> Etat::OUVERTE])){
+        if ($sortie->getEtat() !== $etatRepository->findOneBy(['libelle' => Etat::OUVERTE])) {
             $this->addFlash('error', "La participation à la sortie n'est plus ouverte.");
-        } elseif($sortie->getDateLimiteInscription() < $datenow){
-            $this->addFlash('error',"La date limite d'inscriptions est dépassé");
-        } elseif ($nbInscrits >= $sortie->getNombreInscriptionMax()){
-            $this->addFlash('error',"Le nombre maximale d'inscriptions est atteinte.");
-        } elseif ($sortie->getParticipants()->contains($userConnecte)){
+        } elseif ($sortie->getDateLimiteInscription() < $datenow) {
+            $this->addFlash('error', "La date limite d'inscriptions est dépassé");
+        } elseif ($nbInscrits >= $sortie->getNombreInscriptionMax()) {
+            $this->addFlash('error', "Le nombre maximale d'inscriptions est atteinte.");
+        } elseif ($sortie->getParticipants()->contains($userConnecte)) {
             $this->addFlash('error', "L'utilisateur est déjà inscrit à cette sortie");
-        } else{
+        } else {
             $sortie->addParticipant($userConnecte);
             //rajout des lignes pour persister l'information et flushé l'info dans la base
             $entityManager->persist($sortie);
@@ -113,20 +115,20 @@ class SortieController extends AbstractController
             $this->addFlash('success', 'Amusez vous bien!');
         }
 
-        return $this->redirectToRoute('afficher_sortie', ['id'=>$sortie->getId()]);
+        return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
 
     }
 
     #[Route('/retirerParticipant/{id}', name: 'retirer_participant_sortie', methods: ['GET', 'POST'])]
-    public function showSortieRetirer(Sortie $sortie,EntityManagerInterface $entityManager, EtatRepository $etatRepository): Response
+    public function showSortieRetirer(Sortie $sortie, EntityManagerInterface $entityManager, EtatRepository $etatRepository): Response
     {
-        $userConnecte=$this->getUser();
+        $userConnecte = $this->getUser();
         //vérifier l'état de la sortie
-        if($sortie->getEtat() !== $etatRepository->findOneBy(['libelle'=> Etat::OUVERTE])){
+        if ($sortie->getEtat() !== $etatRepository->findOneBy(['libelle' => Etat::OUVERTE])) {
             $this->addFlash('error', "Impossible de se retirer de la sortie.");
-        } elseif (!$sortie->getParticipants()->contains($userConnecte)){
+        } elseif (!$sortie->getParticipants()->contains($userConnecte)) {
             $this->addFlash('error', "L'utilisateur n'est pas inscrit à cette sortie");
-        } else{
+        } else {
             $sortie->removeParticipant($userConnecte);
             //rajout des lignes pour persister l'information et flushé l'info dans la base
             $entityManager->persist($sortie);
@@ -134,7 +136,7 @@ class SortieController extends AbstractController
             $this->addFlash('warning', 'Vous avez été retiré des participants!');
         }
 
-        return $this->redirectToRoute('afficher_sortie', ['id'=>$sortie->getId()]);
+        return $this->redirectToRoute('afficher_sortie', ['id' => $sortie->getId()]);
     }
 
     #[Route('/{id}/edit', name: 'editer_sortie', methods: ['GET', 'POST'])]
@@ -159,6 +161,23 @@ class SortieController extends AbstractController
     public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
+            $sortieRepository->remove($sortie, true);
+        }
+
+        return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/supprimerSortieOrganisateur/{id}', name: 'supprimer_sortie_organisateur', methods: ['POST', 'GET'])]
+    public function deleteGet(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
+    {
+        $datenow = new \DateTimeImmutable("now");
+        $userConnecte = $this->getUser();
+
+        if ($userConnecte !== $sortie->getOrganisateur()) {
+            $this->addFlash('error', "Suppression impossible, vous n'êtes pas l'organisateur de cette sortie.");
+        } elseif ($datenow >= $sortie->getDateHeureDebut()) {
+            $this->addFlash('error', "La sortie a débuté, impossible de le supprimer.");
+        } elseif ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
             $sortieRepository->remove($sortie, true);
         }
 
