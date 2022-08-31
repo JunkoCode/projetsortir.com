@@ -81,7 +81,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Valid]
     private ?Campus $campus = null;
 
-    #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
+    #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class, orphanRemoval: true )]
     private Collection $proprietaireSorties;
 
     #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
