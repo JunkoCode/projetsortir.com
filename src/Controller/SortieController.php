@@ -11,12 +11,14 @@ use App\Repository\SortieRepository;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Types\Array_;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/sortie')]
+#[IsGranted('ROLE_ACTIF')]
 class SortieController extends AbstractController
 {
     #[Route('/', name: 'afficher_liste_sorties', methods: ['GET'])]
@@ -66,9 +68,8 @@ class SortieController extends AbstractController
             'sortie' => $sortie,
             'form' => $form,
         ]);
-
-
     }
+
 
     #[Route('/{id}', name: 'afficher_sortie', methods: ['GET'])]
     public function show(Sortie $sortie): Response

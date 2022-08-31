@@ -31,6 +31,8 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             '123456'));
         $user1->setTelephone('0102030405');
         $user1->setCampus($this->getReference(CampusFixtures::CAMPUS_USER1));
+        $user1->setActif(1);
+        $user1->setRoles(["ROLE_ACTIF"]);
         $manager->persist($user1);
 
         $user2 = new Utilisateur();
@@ -43,6 +45,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             '123456'));
         $user2->setTelephone('0602030406');
         $user2->setCampus($this->getReference(CampusFixtures::CAMPUS_USER2));
+        $user2->setActif(0);
         $manager->persist($user2);
 
         $user3 = new Utilisateur();
@@ -55,6 +58,9 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             '123456'));
         $user3->setTelephone('0104050405');
         $user3->setCampus($this->getReference(CampusFixtures::CAMPUS_USER3));
+        $user3->setAdministrateur(1);
+        $user3->setRoles(["ROLE_ADMIN","ROLE_ACTIF"]);
+        $user3->setActif(1);
         $manager->persist($user3);
 
         $manager->flush();
