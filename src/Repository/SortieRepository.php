@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\data\FiltreData;
+use App\Entity\Campus;
 use App\Entity\Sortie;
 use App\Entity\Utilisateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -68,11 +69,13 @@ class SortieRepository extends ServiceEntityRepository
 //    }
 
 
-    public function findByFiltre(Utilisateur $user, int $idUser ,FiltreData $data)
+    public function findByFiltre(Utilisateur $user,int $idUser ,FiltreData $data)
 
     {
         $query = $this ->createQueryBuilder('s')
             ->orderBy('s.dateHeureDebut', 'ASC')
+            ->andWhere('s.dateHeureDebut > :archiveDate')
+            ->setParameter('archiveDate', new \dateTimeImmutable('-30 day'))
             ->distinct();
 
         if(!empty($data->filtreSortieMotCle)){
@@ -83,15 +86,13 @@ class SortieRepository extends ServiceEntityRepository
 
         if (!empty($data->filtreSortieDateMin)){
             $query
-                ->andWhere('s.dateHeureDebut > :filtreSortieDateMin')
+                ->andWhere('s.dateHeureDebut >= :filtreSortieDateMin')
                 ->setParameter('filtreSortieDateMin', $data->filtreSortieDateMin);
-
-
         }
 
         if (!empty($data->filtreSortieDateMax)){
             $query
-                ->andWhere('s.dateHeureDebut < :filtreSortieDateMax')
+                ->andWhere('s.dateHeureDebut <= :filtreSortieDateMax')
                 ->setParameter('filtreSortieDateMax', $data->filtreSortieDateMax);
         }
 
@@ -115,8 +116,18 @@ class SortieRepository extends ServiceEntityRepository
                 ->orWhere($query->expr()->isNull('p.id'));
         }
 
+        if (!empty($data->filtreSortiePassees)){
+            $query
+                ->andWhere('s.dateHeureDebut > :dateNow')
+                ->setParameter('dateNow', new \dateTimeImmutable);
+        }
 
-
+        if (!empty($data->filtreSortieCampus)){
+            $query
+                ->leftJoin('s.participants', 'par')
+                ->andWhere('par.campus IN (:campus)')
+                ->setParameter('campus', $data->filtreSortieCampus);
+        }
 
         return $query->getQuery()->execute();
     }
