@@ -5,6 +5,11 @@
 {% block body %}
     <h1>liste des Sorties</h1>
 
+    {{ form_start(form) }}
+
+    <button type="submit" class="btn btn-outline-success">Filtrer</button>
+    {{ form_end(form) }}
+
     <table class="table">
         <thead>
             <tr>

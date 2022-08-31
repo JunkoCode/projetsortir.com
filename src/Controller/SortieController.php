@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\data\FiltreData;
 use App\Entity\Etat;
 use App\Entity\Sortie;
+use App\Form\SortieFiltreType;
 use App\Entity\Utilisateur;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
@@ -21,11 +23,20 @@ use Symfony\Component\Routing\Annotation\Route;
 #[IsGranted('ROLE_ACTIF')]
 class SortieController extends AbstractController
 {
-    #[Route('/', name: 'afficher_liste_sorties', methods: ['GET'])]
-    public function index(SortieRepository $sortieRepository): Response
+    #[Route('/', name: 'afficher_liste_sorties', methods: ['GET','POST'])]
+    public function index(SortieRepository $sortieRepository, Request $request): Response
     {
+        $data = new FiltreData();
+        $form = $this->createForm(SortieFiltreType::class, $data);
+        $form -> handleRequest($request);
+        $idUser = $this->getUser()->getId();
+        $user = $this->getUser();
+
+        $sorties= $sortieRepository->findByFiltre($user,$idUser,$data);
+
         return $this->render('sortie/listSorties.html.twig', [
-            'sorties' => $sortieRepository->findAll(),
+            'sorties' => $sorties,
+            'form' => $form->createView()
         ]);
     }
 
@@ -144,19 +155,10 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/supprimerSortieOrganisateur/{id}', name: 'supprimer_sortie_organisateur', methods: ['POST'])]
+    #[Route('/{id}', name: 'supprimer_sortie', methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
     {
-        $datenow = new \DateTimeImmutable("now");
-        $userConnecte=$this->getUser();
-
-        if($userConnecte!==$sortie->getOrganisateur()){
-            $this->addFlash('error', "Suppression impossible, vous n'êtes pas l'organisateur de cette sortie.");
-        } elseif ($datenow >= $sortie->getDateHeureDebut()){
-            $this->addFlash('error',"La sortie a débuté, impossible de le supprimer.");
-        }
-
-        elseif ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
             $sortieRepository->remove($sortie, true);
         }
 

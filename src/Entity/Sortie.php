@@ -60,6 +60,7 @@ class Sortie
     private ?Utilisateur $organisateur = null;
 
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'participantSorties')]
+    #[ORM\JoinTable (name: "utilisateur_sortie")]
     private Collection $participants;
 
     public function __construct()

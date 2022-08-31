@@ -2,8 +2,12 @@
 
 namespace App\Repository;
 
+use App\data\FiltreData;
+use App\Entity\Campus;
 use App\Entity\Sortie;
+use App\Entity\Utilisateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\AST\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -63,4 +67,69 @@ class SortieRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+
+    public function findByFiltre(Utilisateur $user,int $idUser ,FiltreData $data)
+
+    {
+        $query = $this ->createQueryBuilder('s')
+            ->orderBy('s.dateHeureDebut', 'ASC')
+            ->andWhere('s.dateHeureDebut > :archiveDate')
+            ->setParameter('archiveDate', new \dateTimeImmutable('-30 day'))
+            ->distinct();
+
+        if(!empty($data->filtreSortieMotCle)){
+            $query
+                ->andWhere('s.nom LIKE :filtreSortieMotCle')
+                ->setParameter('filtreSortieMotCle', $data->filtreSortieMotCle);
+        }
+
+        if (!empty($data->filtreSortieDateMin)){
+            $query
+                ->andWhere('s.dateHeureDebut >= :filtreSortieDateMin')
+                ->setParameter('filtreSortieDateMin', $data->filtreSortieDateMin);
+        }
+
+        if (!empty($data->filtreSortieDateMax)){
+            $query
+                ->andWhere('s.dateHeureDebut <= :filtreSortieDateMax')
+                ->setParameter('filtreSortieDateMax', $data->filtreSortieDateMax);
+        }
+
+        if (!empty($data->filtreSortieOrganisateur)){
+            $query
+                ->andWhere('s.organisateur = :idUser')
+                ->setParameter('idUser', $idUser);
+        }
+
+        if (!empty($data->filtreSortieInscrit)){
+            $query
+                ->innerJoin('s.participants', 'pa')
+                ->andWhere('pa.id = :id')
+                ->setParameter('id', $idUser);
+        }
+
+        if (!empty($data->filtreSortiePasInscrit)){
+            $query
+                ->leftJoin('s.participants', 'p')
+                ->andWhere($query->expr()->neq('p.id',$idUser))
+                ->orWhere($query->expr()->isNull('p.id'));
+        }
+
+        if (!empty($data->filtreSortiePassees)){
+            $query
+                ->andWhere('s.dateHeureDebut > :dateNow')
+                ->setParameter('dateNow', new \dateTimeImmutable);
+        }
+
+        if (!empty($data->filtreSortieCampus)){
+            $query
+                ->leftJoin('s.participants', 'par')
+                ->andWhere('par.campus IN (:campus)')
+                ->setParameter('campus', $data->filtreSortieCampus);
+        }
+
+        return $query->getQuery()->execute();
+    }
+
 }
