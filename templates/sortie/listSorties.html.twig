@@ -55,7 +55,11 @@
 
                             </div>
                             <div class="widget-49-meeting-action">
-                                <p class="widget-49-meeting-action"><span>Nombre d'inscriptions max : {{ sortie.nombreInscriptionMax }}</span></p>
+                                <p class="widget-49-meeting-action">
+                                    <span>Nombre d'inscriptions max : {{ sortie.nombreInscriptionMax }}</span><br>
+                                    <span>Nombre d'inscrits : {{ sortie.participants.count }}</span>
+                                </p>
+
                                 <a href="{{ path('afficher_sortie', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-success">Afficher la sortie</a>
                                 {% if app.user.id == sortie.organisateur.id %}
                                 <a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-warning">Modifier la sortie</a>
