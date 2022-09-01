@@ -30,8 +30,8 @@ class SortieType extends AbstractType
             ->add('lieu', EntityType::class, ['class' => Lieu::class, 'choice_label' => 'nom'])
             ->add('latitude', TextType::class, ['required' => false, 'attr' => ['placeholder' => 'Préciser si besoin la latitude du lieu'], 'mapped' => false])
             ->add('longitude', TextType::class, ['required' => false, 'attr' => ['placeholder' => 'Préciser si besoin la longitude du lieu'], 'mapped' => false])
-            ->add('btnEnregistrer', SubmitType::class, ['label' => 'Enregistrer'])
-            ->add('btnPublier', SubmitType::class, ['label' => 'Publier la sortie']);
+            ->add('btnEnregistrer', SubmitType::class, ['label' => 'Enregistrer', 'attr'=>['class' => 'btn-outline-success']])
+            ->add('btnPublier', SubmitType::class, ['label' => 'Publier la sortie', 'attr'=>['class' => 'btn-outline-success']]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
