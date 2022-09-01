@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Sortir.com!{% endblock %}</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {% block stylesheets %}
@@ -17,15 +17,15 @@
     </head>
     <body>
         {% include 'partials/header.html.twig' %}
-        <div class="container">
 
         {# read and display all flash messages #}
         {% for label, messages in app.flashes %}
             {% for message in messages %}
-                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
-                </div>
+
+            <div class="alert alert-dismissible alert-{{ label }}">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <p>{{ message }}</p>
+            </div>
 
             {% endfor %}
         {% endfor %}

@@ -3,11 +3,12 @@
 {% block title %}Edit Etat{% endblock %}
 
 {% block body %}
-    <h1>Edit Etat</h1>
+<div class="container">
+    <h1 class="my-5"><i class="ion-edit"></i> Modifier Etat </h1>
 
-    {{ include('admin/etat/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('admin/etat/_form.html.twig', {'button_label': 'Enregistrer'}) }}
 
-    <a href="{{ path('app_etat_index') }}">back to list</a>
+    <a class="btn btn-outline-dark" href="{{ path('app_etat_index') }}">Retour</a>
 
-    {{ include('admin/etat/_delete_form.html.twig') }}
+</div>
 {% endblock %}

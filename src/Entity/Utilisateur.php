@@ -84,6 +84,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     //#[Assert\Choice(choices: Campus::class, message: 'Veuillez choisir un campus dans la liste')]
     #[Assert\Type(Campus::class)]
     #[Assert\Valid]
+    #[ORM\JoinColumn(onDelete:"SET NULL")]
     private ?Campus $campus = null;
 
     #[MaxDepth(1)]

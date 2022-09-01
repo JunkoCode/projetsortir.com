@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Utilisateur{% endblock %}
+{% block title %}Utilisateur {{ utilisateur.pseudo }}{% endblock %}
 
 {% block body %}
-    <h1>Utilisateur</h1>
+<div class="container">
+    <h1 class="my-5"><i class="ion-ios-paper-outline"></i> Profil de {{ utilisateur.pseudo }} </h1>
 
     <table class="table">
         <tbody>
@@ -54,9 +55,10 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_utilisateur_index') }}">back to list</a>
+    <a class="btn btn-outline-dark" href="{{ path('app_utilisateur_index') }}">Retour</a>
 
-    <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">edit</a>
+    <a class="btn btn-outline-warning" href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">Modifier</a>
 
-    {{ include('admin/utilisateur/_delete_form.html.twig') }}
+    <a class="btn btn-outline-danger" onclick="return confirm('Souhaitez vous supprimer cette utilisateur ?');" href="{{ path('app_utilisateur_delete',{'id':utilisateur.id })}}">Supprimer</a>
+</div>
 {% endblock %}

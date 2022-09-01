@@ -56,7 +56,7 @@ class AdminLieuController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $lieuRepository->add($lieu, true);
-
+            $this->addFlash('success', "La modification a bien été pris en compte");
             return $this->redirectToRoute('app_lieu_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -66,13 +66,11 @@ class AdminLieuController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_lieu_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_lieu_delete')]
     public function delete(Request $request, Lieu $lieu, LieuRepository $lieuRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $lieu->getId(), $request->request->get('_token'))) {
-            $lieuRepository->remove($lieu, true);
-        }
-
+        $lieuRepository->remove($lieu, true);
+  
         return $this->redirectToRoute('app_lieu_index', [], Response::HTTP_SEE_OTHER);
     }
 }

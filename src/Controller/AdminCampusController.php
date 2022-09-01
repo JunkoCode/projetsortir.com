@@ -56,7 +56,7 @@ class AdminCampusController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $campusRepository->add($campus, true);
-
+            $this->addFlash('success', "La modification a bien été pris en compte");
             return $this->redirectToRoute('app_campus_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -66,13 +66,11 @@ class AdminCampusController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_campus_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_campus_delete')]
     public function delete(Request $request, Campus $campus, CampusRepository $campusRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $campus->getId(), $request->request->get('_token'))) {
-            $campusRepository->remove($campus, true);
-        }
-
+        $campusRepository->remove($campus, true);
+        
         return $this->redirectToRoute('app_campus_index', [], Response::HTTP_SEE_OTHER);
     }
 }
