@@ -23,9 +23,9 @@ class UtilisateurType extends AbstractType
             ->add('nom')
             ->add('prenom')
             ->add('telephone')
-            ->add('photo', FileType::class,[
-                'mapped'=> false,
-                'required'=> false,
+            ->add('photo', FileType::class, [
+                'mapped' => false,
+                'required' => false,
                 'constraints' => [
                     new File([
                         'maxSize' => '2048k',
@@ -35,7 +35,7 @@ class UtilisateurType extends AbstractType
                         'mimeTypesMessage' => 'Veuillez fournir un fichier conforme',
                     ])
                 ],
-                ])
+            ])
             ->add('administrateur')
             ->add('actif')
             ->add('campus', EntityType::class, ['class' => Campus::class, "choice_label" => 'nom']);

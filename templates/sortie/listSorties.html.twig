@@ -5,41 +5,70 @@
 {% block body %}
     <h1>liste des Sorties</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>DateLimiteInscription</th>
-                <th>DateHeureDebut</th>
-                <th>Duree</th>
-                <th>NombreInscriptionMax</th>
-                <th>InfoSortie</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for sortie in sorties %}
-            <tr>
-                <td>{{ sortie.id }}</td>
-                <td>{{ sortie.nom }}</td>
-                <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ sortie.duree ? sortie.duree|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ sortie.nombreInscriptionMax }}</td>
-                <td>{{ sortie.infoSortie }}</td>
-                <td>
-                    <a href="{{ path('afficher_sortie', {'id': sortie.id}) }}">show</a>
-                    <a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="container">
+        {{ form_start(formFilter) }}
+        <div class="row">
+            <div class="col">
+                {{ form_row(formFilter.filtreSortieMotCle) }}
+            </div>
+            <div class="col">
+                {{ form_row(formFilter.filtreSortieDateMin) }}
+                {{ form_row(formFilter.filtreSortieDateMax) }}
+            </div>
+            <div class="col">
+                {{ form_row(formFilter.filtreSortieCampus) }}
+            </div>
+            <div class="col">
+                {{ form_row(formFilter.filtreSortieOrganisateur) }}
+                {{ form_row(formFilter.filtreSortieInscrit) }}
+                {{ form_row(formFilter.filtreSortiePasInscrit) }}
+                {{ form_row(formFilter.filtreSortiePassees) }}
+            </div>
+            <div class="row-cols-1">
+                <div class="col-1"> <button type="submit" class="btn btn-outline-success">Filtrer</button></div>
+            </div>
+        </div>
+        {{ form_end(formFilter) }}
+        <div class="row">
+            {% for sortie in sorties %}
+            <div class="col-lg-4">
+                <div class="card card-margin">
+                    <div class="card-header no-border gradient-custom">
+                        <h5 class="card-title">{{ sortie.nom }}</h5>
+                    </div>
+                    <div class="card-body pt-0">
+                        <div class="widget-49">
+                            <div class="widget-49-title-wrapper">
+                                <div class="widget-49-date-primary">
+                                    <span class="widget-49-date-day">{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d') }}</span>
+                                    <span class="widget-49-date-month">{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|format_datetime(pattern="LLL")  }}</span>
+                                </div>
+                                <div class="widget-49-meeting-info">
+                                    <span class="widget-49-pro-title">{{ sortie.nom }} | par : <a href="{{ path('ProfilParticipant', {'id':sortie.organisateur.id}) }}">{{ sortie.organisateur.pseudo }}</a></span>
+                                    <span class="widget-49-meeting-time">Durée : {{ sortie.duree ? sortie.duree|date('Y-m-d H:i:s') : '' }}</span>
+                                    <span class="widget-49-meeting-time">Clôture : {{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('Y-m-d H:i') : '' }}</span>
+                                </div>
+                            </div>
+                            <div class="widget-49-meeting-points">
+                                <h6>Description : </h6>
+                                <p class="widget-49-meeting-item"><span>{{ sortie.infoSortie }}</span></p>
 
-    <a href="{{ path('app_sortie_new') }}">Create new</a>
+                            </div>
+                            <div class="widget-49-meeting-action">
+                                <p class="widget-49-meeting-action"><span>Nombre d'inscriptions max : {{ sortie.nombreInscriptionMax }}</span></p>
+                                <a href="{{ path('afficher_sortie', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-success">Afficher la sortie</a>
+                                {% if app.user.id == sortie.organisateur.id %}
+                                <a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-warning">Modifier la sortie</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+                <p>no records found</p>
+            {% endfor %}
+
+        </div>
+    </div>
 {% endblock %}

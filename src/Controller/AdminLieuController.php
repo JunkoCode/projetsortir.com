@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/lieu')]
+#[Route('/admin/lieu')]
 class AdminLieuController extends AbstractController
 {
     #[Route('/', name: 'app_lieu_index', methods: ['GET'])]
@@ -70,7 +70,7 @@ class AdminLieuController extends AbstractController
     public function delete(Request $request, Lieu $lieu, LieuRepository $lieuRepository): Response
     {
         $lieuRepository->remove($lieu, true);
-
+  
         return $this->redirectToRoute('app_lieu_index', [], Response::HTTP_SEE_OTHER);
     }
 }

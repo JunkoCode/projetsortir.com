@@ -8,28 +8,46 @@ use Doctrine\Persistence\ObjectManager;
 
 class EtatFixtures extends Fixture
 {
-    public const ETAT_SORTIE1='etat1';
-    public const ETAT_SORTIE2='etat2';
-    public const ETAT_SORTIE3='etat3';
+    public const ETAT_CREEE = 'etatCree';
+    public const ETAT_OUVERTE = 'etatOuvert';
+    public const ETAT_CLOTUREE = 'etatCloture';
+    public const ETAT_EN_COURS = 'etatEnCours';
+    public const ETAT_PASSEE = 'etatPasse';
+    public const ETAT_ANNULEE = 'etatAnnule';
 
     public function load(ObjectManager $manager): void
     {
-        $etat1 = new Etat();
-        $etat1->setLibelle('Créée');
-        $manager->persist($etat1);
+        $etatCree = new Etat();
+        $etatCree->setLibelle(Etat::ETAT_CREEE);
+        $manager->persist($etatCree);
 
-        $etat2 = new Etat();
-        $etat2->setLibelle('Ouverte');
-        $manager->persist($etat2);
+        $etatOuvert = new Etat();
+        $etatOuvert->setLibelle(Etat::ETAT_OUVERTE);
+        $manager->persist($etatOuvert);
 
-        $etat3 = new Etat();
-        $etat3->setLibelle('En cours');
-        $manager->persist($etat3);
+        $etatCloture = new Etat();
+        $etatCloture->setLibelle(Etat::ETAT_CLOTUREE);
+        $manager->persist($etatCloture);
+
+        $etatEnCours = new Etat();
+        $etatEnCours->setLibelle(Etat::ETAT_EN_COURS);
+        $manager->persist($etatEnCours);
+
+        $etatPasse = new Etat();
+        $etatPasse->setLibelle(Etat::ETAT_PASSEE);
+        $manager->persist($etatPasse);
+
+        $etatAnnule = new Etat();
+        $etatAnnule->setLibelle(Etat::ETAT_ANNULEE);
+        $manager->persist($etatAnnule);
 
         $manager->flush();
 
-        $this->addReference(self::ETAT_SORTIE1, $etat1);
-        $this->addReference(self::ETAT_SORTIE2, $etat2);
-        $this->addReference(self::ETAT_SORTIE3, $etat3);
+        $this->addReference(self::ETAT_CREEE, $etatCree);
+        $this->addReference(self::ETAT_OUVERTE, $etatOuvert);
+        $this->addReference(self::ETAT_CLOTUREE, $etatCloture);
+        $this->addReference(self::ETAT_EN_COURS, $etatEnCours);
+        $this->addReference(self::ETAT_PASSEE, $etatPasse);
+        $this->addReference(self::ETAT_ANNULEE, $etatAnnule);
     }
 }

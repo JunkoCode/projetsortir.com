@@ -6,7 +6,6 @@ use App\Entity\Utilisateur;
 use App\Form\UtilisateurType;
 use App\Repository\UtilisateurRepository;
 use App\Services\FileUploader;
-use Monolog\Handler\Curl\Util;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,22 +26,39 @@ class UtilisateurController extends AbstractController
         ]);
     }
 
+    #[Route('/profilParticipant/{id}', name: 'ProfilParticipant')]
+    public function showProfilParticipant($id, UtilisateurRepository $utilisateurRepository): Response
+    {
+        $userConnecte = $this->getUser();
+        $participant = $utilisateurRepository->find($id);
+
+        if ($userConnecte === $participant) {
+            return $this->render('utilisateur/profil.html.twig', [
+                "utilisateur" => $userConnecte]);
+        } else {
+            return $this->render('utilisateur/profil.html.twig', [
+                "utilisateur" => $participant]);
+        }
+    }
+
+
     #[Route('/updateprofil/{id}', name: 'UpdateProfil')]
-    public function updateProfil(Request $request, Utilisateur $utilisateur, UtilisateurRepository $utilisateurRepository,FileUploader $fileUploader): Response
+    public function updateProfil(Request $request, Utilisateur $utilisateur, UtilisateurRepository $utilisateurRepository, FileUploader $fileUploader): Response
     {
 
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
         $form->handleRequest($request);
 
         //TODO remettre le && $form->isValid() dans le if du formulaire.
+        $campusBefore = $utilisateur->getCampus();
         if ($form->isSubmitted() && $form->isValid()) {
-            /**@var UploadedFile $avatarFile*/
+            /**@var UploadedFile $avatarFile */
             $avatarFile = $form->get('photo')->getData();
-            if ($avatarFile){
+            if ($avatarFile) {
                 $avatarFileName = $fileUploader->upload($avatarFile);
                 $utilisateur->setPhoto($avatarFileName);
             }
-
+            $utilisateur->setCampus($campusBefore);
             $utilisateurRepository->add($utilisateur, true);
 
             return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);

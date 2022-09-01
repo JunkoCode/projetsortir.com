@@ -6,16 +6,18 @@ use App\Repository\EtatRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EtatRepository::class)]
 class Etat
 {
-    const CREEE = 'Créée';
-    const OUVERTE = 'Ouverte';
-    const CLOTUREE = 'Clôturée';
-    const EN_COURS = 'Activité en cours';
-    const ANNULEE = 'Annulée';
+    public const ETAT_CREEE = 'Créée';
+    public const ETAT_OUVERTE = 'Ouverte';
+    public const ETAT_CLOTUREE = 'Clôturée';
+    public const ETAT_EN_COURS = 'En cours';
+    public const ETAT_PASSEE = 'Passée';
+    public const ETAT_ANNULEE = 'Annulée';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,6 +28,7 @@ class Etat
     #[Assert\NotBlank]
     private ?string $libelle = null;
 
+    #[MaxDepth(1)]
     #[ORM\OneToMany(mappedBy: 'etat', targetEntity: Sortie::class)]
     private Collection $sorties;
 

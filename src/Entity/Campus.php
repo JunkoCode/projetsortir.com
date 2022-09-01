@@ -6,6 +6,7 @@ use App\Repository\CampusRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CampusRepository::class)]
@@ -21,6 +22,7 @@ class Campus
     #[Assert\NotBlank]
     private ?string $nom = null;
 
+    #[MaxDepth(1)]
     #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Utilisateur::class)]
     private Collection $utilisateurs;
 
@@ -74,5 +76,10 @@ class Campus
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->nom;
     }
 }

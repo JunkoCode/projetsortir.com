@@ -2,11 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Etat;
 use App\Entity\Sortie;
 use App\Form\SortieType;
-use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
+use DateInterval;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,7 +37,7 @@ class AdminSortieController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $dureeEnMinutes = $form->get('duree')->getData() * 60;
-            $sortie->setDuree(new \DateInterval('PT' . $dureeEnMinutes . 'M'));
+            $sortie->setDuree(new DateInterval('PT' . $dureeEnMinutes . 'M'));
 
             $sortieRepository->add($sortie, true);
 
@@ -76,6 +75,7 @@ class AdminSortieController extends AbstractController
             'form' => $form,
         ]);
     }
+
 
     #[Route('/{id}/delete', name: 'app_sortie_delete')]
     public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response

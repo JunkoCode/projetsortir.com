@@ -70,7 +70,7 @@ class AdminCampusController extends AbstractController
     public function delete(Request $request, Campus $campus, CampusRepository $campusRepository): Response
     {
         $campusRepository->remove($campus, true);
-
+        
         return $this->redirectToRoute('app_campus_index', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -70,12 +70,11 @@
                                     </div>
 
                                     <div class="d-grid gap-2">
-                                        {% if app.user.id == utilisateur.id or app.user.administrateur == true %}
+                                        {% if app.user.id == utilisateur.id or app.user.administrateur == true or app.user == utilisateur.participantSorties %}
                                         <a class="btn btn-outline-warning" href="{{ path('UpdateProfil',{'id': utilisateur.id}) }}">Modifier profil</a>
                                         {% endif %}
                                         <button class="btn btn-outline-success" onclick="history.go(-1);">Retour </button>
                                     </div>
-
                                 </div>
                             </div>
                         </div>

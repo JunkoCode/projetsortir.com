@@ -3,93 +3,114 @@
 {% block title %}Créer une nouvelle sortie{% endblock %}
 
 {% block body %}
-    <div class="container d-none d-md-block">
-        <h1 class="my-5">Créer une nouvelle sortie</h1>
+<div class="container d-none d-md-block">
+    <h1 class="my-5">Créer une nouvelle sortie</h1>
 
-        {{ form_start(form) }}
+    {{ form_start(form) }}
 
-        <div class="row d-flex flex-row align-items-stretch">
-            <div class="col-lg-6 col-md-12 col-sm-12 h-100">
-                <div class="alert alert-secondary w-100">
-                    <div style="min-height: 75px;">
-                        <h2 class="alert-heading">Informations générales</h2>
-                    </div>
-                    <hr>
-                    {{ form_row(form.nom) }}
-                    {{ form_row(form.dateLimiteInscription) }}
-                    {{ form_row((form.dateHeureDebut)) }}
-                    {{ form_row((form.nombreInscriptionMax)) }}
-                    {{ form_row((form.duree)) }}
-                    {{ form_row((form.infoSortie)) }}
+    <div class="row d-flex flex-row align-items-stretch">
+        <div class="col-lg-6 col-md-12 col-sm-12 h-100">
+            <div class="alert alert-secondary w-100">
+                <div style="min-height: 75px;">
+                    <h2 class="alert-heading">Informations générales</h2>
                 </div>
+                <hr>
+                {{ form_row(form.nom) }}
+                {{ form_row(form.dateLimiteInscription) }}
+                {{ form_row((form.dateHeureDebut)) }}
+                {{ form_row((form.nombreInscriptionMax)) }}
+                {{ form_row((form.duree)) }}
+                {{ form_row((form.infoSortie)) }}
             </div>
-            <div class="col-lg-6 col-md-12 col-sm-12 h-100">
-
-                <div class="alert alert-secondary">
-                    <div style="min-height: 75px;"><h2 class="alert-heading">Lieu de la sortie</h2>
-                    </div>
-                    <hr>
-                    <div class="mb-3">
-                        <label for="campus" class="form-label">Campus</label>
-                        <p id="campus" class="form-control bg-grey">{{ app.user.campus.nom }}</p>
-                    </div>
-                    <div class="mb-3">
-                        <label for="ville" class="form-label">Ville</label>
-                        <p id="ville" class="form-control bg-grey">Ville</p>
-                    </div>
-                    <div class="row my-3 d-flex align-items-center justify-content-center">
-                        {{ form_label(form.lieu) }}
-                        <div class="col col-10">
-                            {{ form_widget(form.lieu) }}
-                        </div>
-                        <div class="d-flex col col-2 ml-auto">
-                            <a href="#">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="currentColor"
-                                     class="bi bi-plus-circle" viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                                </svg>
-                            </a>
-                        </div>
-                        {{ form_errors(form.lieu) }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="rue" class="form-label">Rue</label>
-                        <p id="rue" class="form-control bg-grey">Rue du lieu</p>
-                    </div>
-                    <div class="mb-3">
-                        <label for="code_postal" class="form-label">Code Postal</label>
-                        <p id="code_postal" class="form-control bg-grey">Code postal du lieu</p>
-                    </div>
-                    {{ form_row(form.latitude) }}
-                    {{ form_row(form.longitude) }}
-                    {{ form_row(form._token) }}
-                </div>
-
-
-            </div>
-            {# <button type="submit" class="btn btn-primary">Confirmer inscription</button> #}
         </div>
-        <div class="row mt-5">
-            <div class="col-lg-4 col-md-12 col-sm-12 text-center">
-                {{ form_row(form.btnEnregistrer) }}
+        <div class="col-lg-6 col-md-12 col-sm-12 h-100">
+
+            <div class="alert alert-secondary">
+                <div style="min-height: 75px;"><h2 class="alert-heading">Lieu de la sortie</h2>
+                </div>
+                <hr>
+                <div class="mb-3">
+                    <label for="campus" class="form-label">Campus</label>
+                    <p id="campus" class="form-control bg-grey">{{ app.user.campus.nom }}</p>
+                </div>
+                <div class="mb-3">
+                    <label for="ville" class="form-label">{{ form_label(form.ville) }}</label>
+                    {# <p id="ville" class="form-control bg-grey">Ville</p> #}
+                    {{ form_widget(form.ville) }}
+                </div>
+                <div class="row my-3 d-flex align-items-center justify-content-center">
+                    {{ form_label(form.lieu) }}
+                    <div class="col-10">
+                        {{ form_widget(form.lieu) }}
+                    </div>
+                    <div class="d-flex col-2 ml-auto">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary btn-sm rounded-circle" data-bs-toggle="modal"
+                                data-bs-target="#ModalAjoutLieu">
+                            +
+                        </button>
+                    </div>
+                    {{ form_errors(form.lieu) }}
+                </div>
+                <div class="mb-3">
+                    <label for="rue" class="form-label">Rue</label>
+                    <p id="rue" class="form-control bg-grey">Rue du lieu</p>
+                </div>
+                <div class="mb-3">
+                    <label for="code_postal" class="form-label">Code Postal</label>
+                    <p id="code_postal" class="form-control bg-grey">Code postal du lieu</p>
+                </div>
+                {{ form_row(form.latitude) }}
+                {{ form_row(form.longitude) }}
+                {{ form_row(form._token) }}
             </div>
 
-            <div class="col-lg-4 col-md-12 col-sm-12 text-center">
-                {{ form_row(form.btnPublier) }}
-            </div>
-
-            <div class="col-lg-4 col-md-12 col-sm-12 text-center">
-                <a href="#" class="btn btn-primary" role="button">Annuler</a>
-            </div>
 
         </div>
-
-
-        {# {{ form_end(form) }} #}
-        {{ form_end(form, {'render_rest': false}) }}
-
+        {# <button type="submit" class="btn btn-primary">Confirmer inscription</button> #}
     </div>
+    <div class="row mt-5">
+        <div class="col-lg-4 col-md-12 col-sm-12 text-center">
+            {{ form_row(form.btnEnregistrer) }}
+        </div>
+
+        <div class="col-lg-4 col-md-12 col-sm-12 text-center">
+            {{ form_row(form.btnPublier) }}
+        </div>
+
+        <div class="col-lg-4 col-md-12 col-sm-12 text-center">
+            <a href="#" class="btn btn-primary" role="button">Annuler</a>
+        </div>
+    </div>
+
+
+    {# {{ form_end(form) }} #}
+    {{ form_end(form, {'render_rest': false}) }}
+
+    <!-- Modal -->
+    <div class="modal fade" id="ModalAjoutLieu" data-bs-backdrop="true" data-bs-keyboard="true" tabindex="-1"
+         aria-labelledby="ModalAjoutLieuLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Ajouter un lieu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                {{ form_start(formLieu, {'attr': {'id': 'formLieu'}}) }}
+                <div class="modal-body">
+
+                    {{ form_widget(formLieu) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter un lieu</button>
+                </div>
+                {{ form_end(formLieu) }}
+            </div>
+        </div>
+    </div>
+
+
     <div class="container d-sm-none">
 
 
@@ -102,4 +123,98 @@
 
     </div>
 
-{% endblock %}
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const ville = document.getElementById('sortie_type_ajax_ville');
+            const lieu = document.getElementById('sortie_type_ajax_lieu');
+            const formLieu = document.getElementById('formLieu');
+
+            const modalLieu=document.getElementById('ModalAjoutLieu');
+            const inputLieuNom=document.getElementById('lieu_nom');
+
+            lieu.innerHTML="<option value='' selected='selected' title='choississez d abord une ville'>Choississez un lieu</option>"
+            lieu.disabled=true;
+
+            ville.addEventListener('change', function (event) {
+                let idVille = ville.options[ville.selectedIndex].value;
+
+                fetch('{{ path('app_ajax_ville') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: idVille,
+                    })
+                })
+                    .then(response => response.text())
+                    .then(htmlOptionLieu => {
+                            ville.firstChild.remove()
+                            lieu.disabled=false;
+                            lieu.innerHTML = htmlOptionLieu
+                            lieu.focus()
+
+                        }
+                    )
+                ;
+            });
+
+            lieu.addEventListener('change', () => {
+                let idLieu = lieu.options[lieu.selectedIndex].value;
+                fetch('{{ path('app_ajax_lieu') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: idLieu,
+                    })
+                })
+                    .then(response => response.json())
+                    .then(json => {
+                            lieu.firstChild.remove()
+                            let data = JSON.parse(json)
+                            document.getElementById('rue').innerText = data.rue
+                            document.getElementById('code_postal').innerText = data.codePostal
+                            document.getElementById('sortie_type_ajax_latitude').value = data.latitude
+                            document.getElementById('sortie_type_ajax_longitude').value = data.longitude
+
+                        }
+                    );
+
+            });
+
+            modalLieu.addEventListener('shown.bs.modal', function () {
+                inputLieuNom.focus()
+            })
+
+            formLieu.addEventListener('submit', event => {
+                event.preventDefault();
+                data = new URLSearchParams(new FormData(formLieu))
+
+                fetch(formLieu.action, {
+                    method: 'POST',
+                    body: data
+
+                })
+                    .then(response => response.text())
+                    .then(html => {
+                        lieu.replaceWith((new DOMParser().parseFromString(html,'text/html')).getElementById('sortie_type_ajax_lieu'))
+                        //todo : ajouter un message flash
+                        lieu.focus()
+
+                    })
+
+
+            });
+
+
+
+
+
+        });
+
+    </script>
+
+    {% endblock %}

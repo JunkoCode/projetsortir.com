@@ -69,6 +69,7 @@ class AdminEtatController extends AbstractController
     #[Route('/{id}/delete', name: 'app_etat_delete')]
     public function delete(Request $request, Etat $etat, EtatRepository $etatRepository): Response
     {
+
             $etatRepository->remove($etat, true);
 
         return $this->redirectToRoute('app_etat_index', [], Response::HTTP_SEE_OTHER);

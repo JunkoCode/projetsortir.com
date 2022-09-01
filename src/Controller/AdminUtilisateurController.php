@@ -55,23 +55,6 @@ class AdminUtilisateurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-
-           if ($utilisateur->isAdministrateur()==true){
-               $utilisateur->setRoles(["ROLE_ADMIN"]);
-           } else {
-               $utilisateur->setRoles(["Role_ACTIF"]);
-           }
-
-           if($utilisateur->isActif()==true){
-               $utilisateur->setActif(1);
-               $utilisateur->setRoles(["ROLE_ACTIF"]);
-           } else {
-               $utilisateur->setActif(0);
-               $utilisateur->setRoles([""]);
-           }
-
-
             $utilisateurRepository->add($utilisateur, true);
             $this->addFlash('success', "La modification a bien été pris en compte");
             return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
