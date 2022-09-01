@@ -31,7 +31,7 @@ class Ville
     #[Assert\Regex('/^(F-)?((2[A|B])|[0-9]{2})[0-9]{3}$/')]
     private ?int $codePostal = null;
 
-    #[ORM\OneToMany(mappedBy: 'ville', targetEntity: Lieu::class)]
+    #[ORM\OneToMany(mappedBy: 'ville', targetEntity: Lieu::class,orphanRemoval: true)]
     private Collection $lieux;
 
 

@@ -56,7 +56,7 @@ class AdminVilleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $villeRepository->add($ville, true);
-
+            $this->addFlash('success', "La modification a bien été pris en compte");
             return $this->redirectToRoute('app_ville_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -66,12 +66,10 @@ class AdminVilleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_ville_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_ville_delete')]
     public function delete(Request $request, Ville $ville, VilleRepository $villeRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$ville->getId(), $request->request->get('_token'))) {
-            $villeRepository->remove($ville, true);
-        }
+        $villeRepository->remove($ville, true);
 
         return $this->redirectToRoute('app_ville_index', [], Response::HTTP_SEE_OTHER);
     }

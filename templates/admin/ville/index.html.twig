@@ -1,13 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ville index{% endblock %}
+{% block title %}Villes{% endblock %}
 
 {% block body %}
-    <h1>Ville index</h1>
+<div class="container">
+    <h1 class="my-5">Villes</h1>
 
-    <table class="table">
+    <table class="table table-striped table-hover">
         <thead>
-            <tr>
+            <tr class="table-dark">
                 <th>Id</th>
                 <th>Nom</th>
                 <th>CodePostal</th>
@@ -16,22 +17,31 @@
         </thead>
         <tbody>
         {% for ville in villes %}
-            <tr>
+            <tr onMouseOut="javascript:this.style.background='#ffffff'"
+                style="cursor: pointer;"
+                onMouseOver="javascript:this.style.background='#fddba6'"
+                onclick="location.href='{{ path('app_ville_show', {'id': ville.id}) }}';"
+            >
                 <td>{{ ville.id }}</td>
                 <td>{{ ville.nom }}</td>
                 <td>{{ ville.codePostal }}</td>
                 <td>
-                    <a href="{{ path('app_ville_show', {'id': ville.id}) }}">show</a>
-                    <a href="{{ path('app_ville_edit', {'id': ville.id}) }}">edit</a>
+                    <a class="icon ion-edit" href="{{ path('app_ville_edit', {'id': ville.id}) }}"></a>
+                    <a class="icon ion-trash-a"
+                       style="color: red"
+                       href="{{ path('app_ville_delete',{'id':ville.id })}}"
+                       onclick="return confirm('Souhaitez vous supprimer cette ville ?');">
+                    </a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="3">Il n'y a aucun enregistrement</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_ville_new') }}">Create new</a>
+    <a class="btn btn-outline-dark" href="{{ path('app_ville_new') }}">Ajouter une ville</a>
+</div>
 {% endblock %}

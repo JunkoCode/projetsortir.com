@@ -1,11 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Campus{% endblock %}
+{% block title %}Ajouter Campus{% endblock %}
 
 {% block body %}
-    <h1>Create new Campus</h1>
+    <div class="container">
+        <h1 class="my-5"><i class="ion-ios-briefcase"></i> Ajouter un campus</h1>
 
-    {{ include('admin/campus/_form.html.twig') }}
+        {{ include('admin/campus/_form.html.twig') }}
 
-    <a href="{{ path('app_campus_index') }}">back to list</a>
+        <a class="btn btn-outline-dark" href="{{ path('app_campus_index') }}">Retour</a>
+    </div>
 {% endblock %}

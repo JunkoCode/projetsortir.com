@@ -67,7 +67,7 @@ class AdminSortieController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $sortieRepository->add($sortie, true);
-
+            $this->addFlash('success', "La modification a bien été pris en compte");
             return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -77,12 +77,10 @@ class AdminSortieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_sortie_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_sortie_delete')]
     public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
-            $sortieRepository->remove($sortie, true);
-        }
+        $sortieRepository->remove($sortie, true);
 
         return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
     }

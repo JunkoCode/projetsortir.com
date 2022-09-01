@@ -3,11 +3,15 @@
 {% block title %}Edit Campus{% endblock %}
 
 {% block body %}
-    <h1>Edit Campus</h1>
+    <div class="container">
+        <h1 class="my-5"><i class="ion-ios-paper-outline"></i> Modifier le campus de {{ campus.nom }} </h1>
 
-    {{ include('admin/campus/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('admin/campus/_form.html.twig', {'button_label': 'Modifier'}) }}
 
-    <a href="{{ path('app_campus_index') }}">back to list</a>
-
-    {{ include('admin/campus/_delete_form.html.twig') }}
+    <a class="btn btn-outline-dark" href="{{ path('app_campus_index') }}">Retour</a>
+    <a class="btn btn-outline-danger"
+       onclick="return confirm('Souhaitez vous supprimer ce campus ?');"
+       href="{{ path('app_campus_delete',{'id':campus.id })}}">Supprimer
+    </a>
+</div>
 {% endblock %}

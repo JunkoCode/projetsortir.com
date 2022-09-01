@@ -56,7 +56,7 @@ class AdminEtatController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $etatRepository->add($etat, true);
-
+            $this->addFlash('success', "La modification a bien été pris en compte");
             return $this->redirectToRoute('app_etat_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -66,12 +66,10 @@ class AdminEtatController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_etat_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_etat_delete')]
     public function delete(Request $request, Etat $etat, EtatRepository $etatRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$etat->getId(), $request->request->get('_token'))) {
             $etatRepository->remove($etat, true);
-        }
 
         return $this->redirectToRoute('app_etat_index', [], Response::HTTP_SEE_OTHER);
     }

@@ -59,7 +59,7 @@ class Sortie
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $organisateur = null;
 
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'participantSorties')]
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'participantSorties',orphanRemoval: true)]
     private Collection $participants;
 
     public function __construct()

@@ -1,13 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Etat index{% endblock %}
+{% block title %}Etats{% endblock %}
 
 {% block body %}
-    <h1>Etat index</h1>
+<div class="container">
+    <h1 class="my-5">Etats</h1>
 
-    <table class="table">
+    <table class="table table-striped table-hover">
         <thead>
-            <tr>
+            <tr class="table-dark">
                 <th>Id</th>
                 <th>Libelle</th>
                 <th>actions</th>
@@ -15,21 +16,25 @@
         </thead>
         <tbody>
         {% for etat in etats %}
-            <tr>
+            <tr onMouseOut="javascript:this.style.background='#ffffff'"
+                style="cursor: pointer;"
+                onMouseOver="javascript:this.style.background='#fddba6'"
+                onclick="location.href='{{ path('app_etat_show', {'id': etat.id}) }}';"
+            >
                 <td>{{ etat.id }}</td>
                 <td>{{ etat.libelle }}</td>
                 <td>
-                    <a href="{{ path('app_etat_show', {'id': etat.id}) }}">show</a>
-                    <a href="{{ path('app_etat_edit', {'id': etat.id}) }}">edit</a>
+                    <a class="icon ion-edit" href="{{ path('app_etat_edit', {'id': etat.id}) }}"></a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">no records found</td>
+                <td colspan="3">Il n'y a aucun enregistrement</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_etat_new') }}">Create new</a>
+    <a class="btn btn-outline-dark" href="{{ path('app_etat_new') }}">Ajouter un Etat</a>
+</div>
 {% endblock %}
