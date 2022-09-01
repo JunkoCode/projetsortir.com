@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Sortie index{% endblock %}
+{% block title %}Sorties{% endblock %}
 
 {% block body %}
-    <h1>liste des Sorties</h1>
+<div class="container">
+    <h1 class="my-5">Liste des Sorties</h1>
 
     <div class="container">
         {{ form_start(formFilter) }}
@@ -71,4 +72,5 @@
 
         </div>
     </div>
+</div>
 {% endblock %}
