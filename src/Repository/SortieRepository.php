@@ -80,7 +80,7 @@ class SortieRepository extends ServiceEntityRepository
         if(!empty($data->filtreSortieMotCle)){
             $query
                 ->andWhere('s.nom LIKE :filtreSortieMotCle')
-                ->setParameter('filtreSortieMotCle', $data->filtreSortieMotCle);
+                ->setParameter('filtreSortieMotCle', '%'.$data->filtreSortieMotCle.'%');
         }
 
         if (!empty($data->filtreSortieDateMin)){

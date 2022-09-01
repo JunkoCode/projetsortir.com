@@ -50,14 +50,14 @@ class SortieFiltreType extends AbstractType
                 'label' => 'Entre : ',
                 'required' => false,
                 'widget' => 'single_text',
-                'data' => new DateTimeImmutable("-1 day"),
+                'data' => null,
                 //'attr'=>['min'=>new DateTimeImmutable("-30 day")]
             ])
             ->add('filtreSortieDateMax', DateType::class, [
                 'label' => 'et : ',
                 'required' => false,
                 'widget' => 'single_text',
-                'data' => new DateTimeImmutable("+30 day")
+                'data' => null
             ])
             ->add('filtreSortieOrganisateur', CheckboxType::class, [
                 'label' => 'Sorties dont je suis l\'oganisteur/trice',

@@ -6,6 +6,7 @@ use App\Repository\VilleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -31,6 +32,7 @@ class Ville
     #[Assert\Regex('/^(F-)?((2[A|B])|[0-9]{2})[0-9]{3}$/')]
     private ?int $codePostal = null;
 
+    #[MaxDepth(1)]
     #[ORM\OneToMany(mappedBy: 'ville', targetEntity: Lieu::class)]
     private Collection $lieux;
 

@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/ville')]
+#[Route('/admin/ville')]
 class AdminVilleController extends AbstractController
 {
     #[Route('/', name: 'app_ville_index', methods: ['GET'])]

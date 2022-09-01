@@ -6,6 +6,7 @@ use App\Repository\LieuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LieuRepository::class)]
@@ -30,10 +31,12 @@ class Lieu
     #[ORM\Column(nullable: true)]
     private ?float $longitude = null;
 
+    #[MaxDepth(1)]
     #[ORM\ManyToOne(inversedBy: 'lieux')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Ville $ville = null;
 
+    #[MaxDepth(1)]
     #[ORM\OneToMany(mappedBy: 'lieu', targetEntity: Sortie::class)]
     private Collection $sorties;
 

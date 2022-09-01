@@ -10,19 +10,19 @@ class FiltreData
 {
 
     /**
-     * @var string
+     * @var string|null
      */
-    public string $filtreSortieMotCle = '';
+    public string|null $filtreSortieMotCle = '';
 
     /**
-     * @var Integer
+     * @var Integer|null
      */
-    public int $filtreSortieIdUser;
+    public int|null $filtreSortieIdUser;
 
     /**
-     * @var Campus[]
+     * @var Campus[]|null
      */
-    public array $filtreSortieCampus = [];
+    public array|null $filtreSortieCampus = [];
 
     /**
      * @var DateTime|null

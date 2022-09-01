@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
@@ -48,19 +49,23 @@ class Sortie
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $infoSortie = null;
 
+    #[MaxDepth(1)]
     #[ORM\ManyToOne(targetEntity: Etat::class, inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
     //#[Assert\NotNull]
     private ?Etat $etat = null;
 
+    #[MaxDepth(1)]
     #[ORM\ManyToOne(targetEntity: Lieu::class, inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Lieu $lieu = null;
 
+    #[MaxDepth(1)]
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'proprietaireSorties')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $organisateur = null;
 
+    #[MaxDepth(1)]
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'participantSorties')]
     #[ORM\JoinTable (name: "utilisateur_sortie")]
     private Collection $participants;

@@ -32,10 +32,10 @@ class SortieController extends AbstractController
         $form = $this->createForm(SortieFiltreType::class, $data);
         $form->handleRequest($request);
         $idUser = $this->getUser()->getId();
-        $user = $this->getUser();
+        /*todo : rajouter méthode pour mettre à jour l'état des sorties*/
 
+        $sorties= $sortieRepository->findByFiltre($idUser,$data);
 
-        $sorties= $sortieRepository->findByFiltre($user,$idUser,$data);
 
         return $this->render('sortie/listSorties.html.twig', [
             'sorties' => $sorties,
@@ -142,7 +142,7 @@ class SortieController extends AbstractController
         $userConnecte = $this->getUser();
         //vérifier l'état de la sortie
         if ($sortie->getEtat() !== $etatRepository->findOneBy(['libelle' => Etat::ETAT_OUVERTE])) {
-            $this->addFlash('danger', "Impossible de se retirer de la sortie.");
+            $this->addFlash('danger', "Impossible de se retirer de la sortie car la sortie est ".strtolower($sortie->getEtat()->getLibelle()));
         } elseif (!$sortie->getParticipants()->contains($userConnecte)) {
             $this->addFlash('danger', "L'utilisateur n'est pas inscrit à cette sortie");
         } else {

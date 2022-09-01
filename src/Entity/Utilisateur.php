@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -77,6 +78,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private ?bool $actif = null;
 
+    #[MaxDepth(1)]
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
     #[ORM\JoinColumn(nullable: true)]
     //#[Assert\Choice(choices: Campus::class, message: 'Veuillez choisir un campus dans la liste')]
@@ -84,9 +86,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Valid]
     private ?Campus $campus = null;
 
+    #[MaxDepth(1)]
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class, orphanRemoval: true )]
     private Collection $proprietaireSorties;
 
+    #[MaxDepth(1)]
     #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
     private Collection $participantSorties;
 

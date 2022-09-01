@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/lieu')]
+#[Route('/admin/lieu')]
 class AdminLieuController extends AbstractController
 {
     #[Route('/', name: 'app_lieu_index', methods: ['GET'])]

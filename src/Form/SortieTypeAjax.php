@@ -30,23 +30,25 @@ class SortieTypeAjax extends AbstractType
             ->add('duree', NumberType::class, ['mapped' => false, 'label' => 'Durée (en heure)', 'html5' => true, 'attr' => ['min' => '0.5', 'max' => '24', 'step' => '0.5', 'value' => 1]])
             ->add('infoSortie', null, ['label' => 'Description et infos', 'attr' => ['placeholder' => 'Renseigner les détails de la sortie', 'rows' => 5]])
             ->add('organisateur', EntityType::class, ['class' => Utilisateur::class, 'choice_label' => 'pseudo'])
-            ->add('ville',EntityType::class,['class' => Ville::class,'placeholder'=>'','choice_label'=>'nom'])
-            //->add('lieu', EntityType::class, ['class' => Lieu::class, 'choice_label' => 'nom'])
+            ->add('ville', EntityType::class, ['class' => Ville::class, 'placeholder' => 'Choississez une ville', 'choice_label' => 'nom','mapped'=>false,'attr'=>['required'=>true]])
+            ->add('lieu', EntityType::class, ['class' => Lieu::class, 'placeholder' => 'Choississez un lieu', 'choice_label' => 'nom'])
             ->add('latitude', TextType::class, ['required' => false, 'attr' => ['placeholder' => 'Préciser si besoin la latitude du lieu'], 'mapped' => false])
             ->add('longitude', TextType::class, ['required' => false, 'attr' => ['placeholder' => 'Préciser si besoin la longitude du lieu'], 'mapped' => false])
             ->add('btnEnregistrer', SubmitType::class, ['label' => 'Enregistrer'])
             ->add('btnPublier', SubmitType::class, ['label' => 'Publier la sortie']);
 
-        $builder->addEventListener(
+        /*$builder->addEventListener(
             FormEvents::PRE_SET_DATA,
-            function (FormEvents $event){
-                $form =$event->getForm();
+            function (FormEvent $event) {
+                $form = $event->getForm();
                 $data = $event->getData();
-                //$lieu = null === $ville ? []: $lieu->getLieuByVille();
+                dd($data);
+                $ville = $data->getVille();
+                $lieu = null === $ville ? [] : $ville->getLieuByVille();
 
-                //$form->add('lieu', EntityType::class,['class'=>Lieu::class,'placeholder'=>'','choices'=>$lieu]);
+                $form->add('lieu', EntityType::class, ['class' => Lieu::class, 'placeholder' => '', 'choices' => $lieu]);
             }
-        );
+        );*/
     }
 
     public function configureOptions(OptionsResolver $resolver): void
