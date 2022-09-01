@@ -11,6 +11,7 @@ use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
 use App\Repository\UtilisateurRepository;
+use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Types\Array_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/sortie')]
+
 class SortieController extends AbstractController
 {
     #[Route('/', name: 'afficher_liste_sorties', methods: ['GET','POST'])]
@@ -30,7 +32,6 @@ class SortieController extends AbstractController
         $idUser = $this->getUser()->getId();
         $user = $this->getUser();
 
-
         $sorties= $sortieRepository->findByFiltre($user,$idUser,$data);
 
         return $this->render('sortie/listSorties.html.twig', [
@@ -40,8 +41,11 @@ class SortieController extends AbstractController
     }
 
     #[Route('/creer', name: 'creer_sortie', methods: ['GET', 'POST'])]
+
     public function creerSortie(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository): Response
     {
+
+
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
