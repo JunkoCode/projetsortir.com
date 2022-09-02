@@ -35,10 +35,9 @@ class SortieController extends AbstractController
         $form = $this->createForm(SortieFiltreType::class, $data);
         $form->handleRequest($request);
         $idUser = $this->getUser()->getId();
-        $user = $this->getUser();
         /*todo : rajouter méthode pour mettre à jour l'état des sorties*/
 
-        $sorties= $sortieRepository->findByFiltre($user,$idUser,$data);
+        $sorties= $sortieRepository->findByFiltre($idUser,$data);
 
         return $this->render('sortie/listSorties.html.twig', [
             'sorties' => $sorties,
