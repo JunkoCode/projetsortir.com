@@ -21,25 +21,10 @@ class UtilisateurType extends AbstractType
         $builder
             ->add('email')
             //->add('roles')
-            ->add('password', PasswordType::class, [
-            // instead of being set onto the object directly,
-            // this is read and encoded in the controller
-            //'mapped' => false,
-            'label' => 'Mot de passe',
-            'attr' =>
-                ['autocomplete' => 'new-password'
-                ],
-            'constraints' => [
-                new NotBlank([
-                    'message' => 'Please enter a password',
-                ]),
-                new Length([
-                    'min' => 6,
-                    'minMessage' => 'Votre mot de passe doit être au minimum de {{ limit }} caractères',
-                    // max length allowed by Symfony for security reasons
-                    'max' => 4096,
-                    ]),
-                ],
+            ->add('password')
+            ->add('nouveau',PasswordType::class,[
+                'mapped'=>false,
+                'required'=>false  
             ])
             ->add('pseudo')
             ->add('nom')
