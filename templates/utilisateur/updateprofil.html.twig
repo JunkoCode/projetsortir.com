@@ -5,7 +5,7 @@
         {{ form_start(updateForm) }}
         <div class="row">
 
-            <div class="col-md-3 border-right">
+            <div class="col-md-3 border-right gradient-custom">
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                     <img class="rounded-circle mt-5" width="150px"
                     {% if utilisateur.photo != NULL %}
@@ -21,7 +21,7 @@
             <div class="col-md-5 border-right border-start">
                 <div class="p-3 py-5">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="text-right">Profile Settings</h4>
+                        <h4 class="text-right">Modification du profil</h4>
                     </div>
 
                     <div class="row mt-2">
@@ -36,12 +36,13 @@
                     </div>
 
                     <div class="row mt-3">
-                        {# <div class="col-md-6">{{ form_row(updateForm.campus) }}</div> #}
                         <div class="col-md-6">{{ form_row(updateForm.password) }}</div>
+                        <div class="col-md-6">{{ form_row(updateForm.nouveau) }}</div>
                     </div>
 
                     <div class="mt-5 text-center">
-                        <button class="btn btn-outline-success profile-button" type="submit">Save Profile</button>
+                        <button class="btn btn-outline-warning profile-button" type="submit">Sauvegarder</button>
+                        <button class="btn btn-outline-success" onclick="history.go(-1);">Retour </button>
                     </div>
                 </div>
             </div>
@@ -54,10 +55,8 @@
                                         class="fa fa-plus"></i>&nbsp;Actions rapides</span></div>
                         <br>
                         <div class="col-md-12"><label class="labels">{{ form_row(updateForm.actif) }}</div>
-                        <div class="col-md-12">
-                            {{ form_row(updateForm.administrateur) }}
-
-                        </div>
+                        <div class="col-md-12">{{ form_row(updateForm.administrateur) }}</div>
+                        <div class="col-md-6">{{ form_row(updateForm.campus) }}</div>
                     </div>
                 </div>
             {% endif %}
