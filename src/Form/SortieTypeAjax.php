@@ -30,12 +30,12 @@ class SortieTypeAjax extends AbstractType
             ->add('duree', NumberType::class, ['mapped' => false, 'label' => 'Durée (en heure)', 'html5' => true, 'attr' => ['min' => '0.5', 'max' => '24', 'step' => '0.5', 'value' => 1]])
             ->add('infoSortie', null, ['label' => 'Description et infos', 'attr' => ['placeholder' => 'Renseigner les détails de la sortie', 'rows' => 5]])
             ->add('organisateur', EntityType::class, ['class' => Utilisateur::class, 'choice_label' => 'pseudo'])
-            ->add('ville', EntityType::class, ['class' => Ville::class, 'placeholder' => 'Choississez une ville', 'choice_label' => 'nom','mapped'=>false,'attr'=>['required'=>true]])
+            ->add('ville', EntityType::class, ['class' => Ville::class, 'placeholder' => 'Choississez une ville', 'choice_label' => 'nom', 'mapped' => false, 'attr' => ['required' => true]])
             ->add('lieu', EntityType::class, ['class' => Lieu::class, 'placeholder' => 'Choississez un lieu', 'choice_label' => 'nom'])
             ->add('latitude', TextType::class, ['required' => false, 'attr' => ['placeholder' => 'Préciser si besoin la latitude du lieu'], 'mapped' => false])
             ->add('longitude', TextType::class, ['required' => false, 'attr' => ['placeholder' => 'Préciser si besoin la longitude du lieu'], 'mapped' => false])
-            ->add('btnEnregistrer', SubmitType::class, ['label' => 'Enregistrer'])
-            ->add('btnPublier', SubmitType::class, ['label' => 'Publier la sortie']);
+            ->add('btnEnregistrer', SubmitType::class, ['label' => 'Enregistrer', 'attr' => ['class' => 'btn-outline-success']])
+            ->add('btnPublier', SubmitType::class, ['label' => 'Publier la sortie', 'attr' => ['class' => 'btn-outline-success']]);
 
         /*$builder->addEventListener(
             FormEvents::PRE_SET_DATA,

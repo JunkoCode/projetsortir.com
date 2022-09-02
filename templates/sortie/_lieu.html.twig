@@ -41,10 +41,12 @@
     <p id="code_postal" class="form-control bg-grey">{{ lieu.codePostal }}</p>
 
     <input type="text" id="sortie_type_ajax_latitude" name="sortie_type_ajax[latitude]"
-           placeholder="Préciser si besoin la latitude du lieu" class="form-control" value="{{ (lieu.latitude is not empty)?lieu.latitude}}">
+           placeholder="Préciser si besoin la latitude du lieu" class="form-control"
+           value="{{ (lieu.latitude is not empty)?lieu.latitude }}">
 
     <input type="text" id="sortie_type_ajax_longitude" name="sortie_type_ajax[longitude]"
-           placeholder="Préciser si besoin la longitude du lieu" class="form-control" value="{{ (lieu.longitude is not empty)?lieu.longitude}}">
+           placeholder="Préciser si besoin la longitude du lieu" class="form-control"
+           value="{{ (lieu.longitude is not empty)?lieu.longitude }}">
 
 {% endif %}
 

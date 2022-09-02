@@ -29,7 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SortieController extends AbstractController
 {
     #[Route('/', name: 'afficher_liste_sorties', methods: ['GET', 'POST'])]
-    public function index(SortieRepository $sortieRepository, Request $request): Response
+    public function index(SortieRepository $sortieRepository, Request $request, EtatRepository $etatRepository): Response
     {
         $data = new FiltreData();
         $form = $this->createForm(SortieFiltreType::class, $data);
@@ -37,7 +37,13 @@ class SortieController extends AbstractController
         $idUser = $this->getUser()->getId();
         /*todo : rajouter méthode pour mettre à jour l'état des sorties*/
 
-        $sorties= $sortieRepository->findByFiltre($idUser,$data);
+        $sorties = $sortieRepository->findByFiltre($idUser, $data);
+        /*foreach ($sorties as $sortie) {
+          if (new DateTimeImmutable() < $sortie->getDateHeureDebut()){
+              $sortie->setEtat()
+          }
+
+        }*/
 
         return $this->render('sortie/listSorties.html.twig', [
             'sorties' => $sorties,
@@ -77,15 +83,15 @@ class SortieController extends AbstractController
 
             $this->addFlash('success', 'Lieu créée!');
 
-            $lieux = $lieuRepository->findBy( ['ville'=>$lieu->getVille()->getId()]);
-            $villes= $villeRepository->findAll();
+            $lieux = $lieuRepository->findBy(['ville' => $lieu->getVille()->getId()]);
+            $villes = $villeRepository->findAll();
 
-            return $this->renderForm('sortie/_lieu.html.twig',[
+            return $this->renderForm('sortie/_lieu.html.twig', [
                 'lieux' => $lieux,
-                'villes'=>$villes,
-                'lieu'=>$lieu,
-                'idVille'=>$lieu->getVille(),
-                'idLieu'=>$lieu->getId()
+                'villes' => $villes,
+                'lieu' => $lieu,
+                'idVille' => $lieu->getVille(),
+                'idLieu' => $lieu->getId()
 
             ]);
             /*return $this->renderForm('sortie/creerSortie.html.twig', [
@@ -207,7 +213,7 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/annulerSortieOrganisateur/{id}', name: 'annuler_sortie_organisateur', methods: ['GET','POST'])]
+    #[Route('/annulerSortieOrganisateur/{id}', name: 'annuler_sortie_organisateur', methods: ['GET', 'POST'])]
     public function delete(Request $request, Sortie $sortie, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
 
@@ -219,8 +225,8 @@ class SortieController extends AbstractController
         } elseif ($datenow >= $sortie->getDateHeureDebut()) {
             $this->addFlash('danger', "La sortie a débuté, impossible de le supprimer.");
         } else {
-            $sortie->setEtat($etatRepository->findOneBy(['libelle'=> Etat::ETAT_ANNULEE]));
-            if($sortie->getEtat()===$etatRepository->findOneBy(['libelle'=> Etat::ETAT_ANNULEE])){
+            $sortie->setEtat($etatRepository->findOneBy(['libelle' => Etat::ETAT_ANNULEE]));
+            if ($sortie->getEtat() === $etatRepository->findOneBy(['libelle' => Etat::ETAT_ANNULEE])) {
                 $sortie->setInfoSortie('Sortie annulée');
             }
             $entityManager->persist($sortie);
