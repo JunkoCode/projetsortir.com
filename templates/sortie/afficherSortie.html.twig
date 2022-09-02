@@ -3,95 +3,150 @@
 {% block title %}Afficher une sortie{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="container rounded mt-5 mb-5 text-center bg-white">
         <h1 class="my-5">Afficher sortie</h1>
 
         <div class="row d-flex flex-row align-items-stretch">
-            <div class="col-lg-6 col-md-12 col-sm-12">
-                <div class="alert alert-secondary w-100">
-                    <div style="min-height: 75px; ">
-                        <h2 class="alert-heading">Informations générales</h2>
+            <div class="col-lg-6 col-md-12 col-sm-12 h-100 rounded">
+                <div class="p-3 py-5 gradient-custom rounded">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="text-right">Informations générales</h2>
                     </div>
                     <hr>
-                    <div class="mb-3">
-                        <label for="nom" class="form-label">Organisateur</label>
-                        <p id="nom" class="form-control bg-grey">{{ sortie.organisateur.nom }}</p>
+
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="nom" class="form-label">Nom de la sortie</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="nom" class="form-control bg-grey">{{ sortie.nom }}</p>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="nom" class="form-label">Nom de la sortie</label>
-                        <p id="nom" class="form-control bg-grey">{{ sortie.nom }}</p>
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="date_sortie" class="form-label">Date et heure de la sortie</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="date_sortie" class="form-control bg-grey">{{ sortie.dateHeureDebut|date("d-m-y T hh:mm") }}</p>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="date_inscription" class="form-label">Date et heure limite d'inscription</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="date_inscription" class="form-control bg-grey">{{ sortie.dateLimiteInscription|date("d-m-y T hh:mm") }}</p>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="date_sortie" class="form-label">Date et heure de la sortie</label>
-                        <p id="date_sortie" class="form-control bg-grey">{{ sortie.dateHeureDebut|date("d-m-y T hh:mm") }}</p>
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="participant" class="form-label">Nombre de place Maximum</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="participant" class="form-control bg-grey">{{ sortie.nombreInscriptionMax }}</p>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="date_inscription" class="form-label">Date et heure limite d'inscription</label>
-                        <p id="date_inscription" class="form-control bg-grey">{{ sortie.dateLimiteInscription|date("d-m-y T hh:mm") }}</p>
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="duree" class="form-label">Durée</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="duree" class="form-control bg-grey">{#{{ sortie.duree | format_time('hh:mm') }}#}DUREE</p> {# todo : créer la variable duree#}
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="participant" class="form-label">Nombre de place Maximum</label>
-                        <p id="participant" class="form-control bg-grey">{{ sortie.nombreInscriptionMax }}</p>
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="nom" class="form-label">Organisateur</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="nom" class="form-control bg-grey">{{ sortie.organisateur.nom }}</p>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="duree" class="form-label">Durée</label>
-                        <p id="duree" class="form-control bg-grey">{{ sortie.duree | date("%Hh%Imin") }}</p> {# todo : créer la variable duree#}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="campus" class="form-label">Informations sur la sortie</label>
-                        <p id="campus" class="form-control bg-grey">{{ sortie.infoSortie==null?"Pas d'information sur la sortie":sortie.infoSortie }}</p>
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="campus" class="form-label">Informations sur la sortie</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="campus" class="form-control bg-grey">{{ sortie.infoSortie==null?"Pas d'information sur la sortie":sortie.infoSortie }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 col-md-12 col-sm-12">
-                <div class="alert alert-secondary">
-                    <div style="min-height: 75px;"><h2 class="alert-heading">Lieu de la sortie</h2>
+            <div class="col-lg-6 col-md-12 col-sm-12 h-100 rounded">
+                <div class="p-3 py-5 gradient-custom rounded">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="alert-heading">Lieu de la sortie</h2>
                     </div>
                     <hr>
-                    <div class="mb-3">
-                        <label for="campus" class="form-label">Campus</label>
-                        <p id="campus" class="form-control bg-grey">{{ sortie.organisateur.campus.nom }}</p>
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="campus" class="form-label">Campus</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="campus" class="form-control bg-grey">{{ sortie.organisateur.campus.nom }}</p>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="ville" class="form-label">Ville</label>
-                        <p id="ville" class="form-control bg-grey">{{ sortie.lieu.ville.nom }}</p>
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="ville" class="form-label">Ville</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="ville" class="form-control bg-grey">{{ sortie.lieu.ville.nom }}</p>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="ville" class="form-label">Lieu</label>
-                        <p id="ville" class="form-control bg-grey">{{ sortie.lieu.nom }}</p>
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="ville" class="form-label">Lieu</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="ville" class="form-control bg-grey">{{ sortie.lieu.nom }}</p>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="rue" class="form-label">Rue</label>
-                        <p id="rue" class="form-control bg-grey">{{ sortie.lieu.rue }}</p>
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="rue" class="form-label">Rue</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="rue" class="form-control bg-grey">{{ sortie.lieu.rue }}</p>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="code_postal" class="form-label">Code Postal</label>
-                        <p id="code_postal" class="form-control bg-grey">{{ sortie.lieu.ville.codePostal }}</p>
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="code_postal" class="form-label">Code Postal</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="code_postal" class="form-control bg-grey">{{ sortie.lieu.ville.codePostal }}</p>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="code_postal" class="form-label">Latitude</label>
-                        <p id="code_postal" class="form-control bg-grey">{{ sortie.lieu.latitude==null?"Aucune latitude renseignée":sortie.lieu.latitude }}</p>
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="code_postal" class="form-label">Latitude</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="code_postal" class="form-control bg-grey">{{ sortie.lieu.latitude==null?"Aucune latitude renseignée":sortie.lieu.latitude }}</p>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="code_postal" class="form-label">longitude</label>
-                        <p id="code_postal" class="form-control bg-grey">{{ sortie.lieu.longitude==null?"Aucune longitude renseignée":sortie.lieu.longitude }}</p>
+                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <label for="code_postal" class="form-label">Longitude</label>
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <p id="code_postal" class="form-control bg-grey">{{ sortie.lieu.longitude==null?"Aucune longitude renseignée":sortie.lieu.longitude }}</p>
+                        </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
-
-        <div class="row d-flex flex-row align-items-stretch">
-            <div class="col-6 h-100">
-                <div class="alert alert-secondary w-100">
-                    <div style="min-height: 75px; ">
+        <br>
+        <div class="row d-flex flex-row align-items-stretch text-black justify-content-around">
+            <div class="col-lg-6 col-md-12 col-sm-12 h-100 rounded">
+                <div class="p-3 py-4 gradient-custom rounded">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
                         <table class="table">
                             <thead>
                             <tr>
@@ -103,13 +158,13 @@
                             {% for participant in sortie.participants %}
                                 <tr>
                                     <td>
-                                        <a href="{{ path('ProfilParticipant', {'id':participant.id}) }}">{{ participant.pseudo }}</a>
+                                        <a href="{{ path('ProfilParticipant', {'id':participant.id}) }}" class="link-success form-control bg-grey">{{ participant.pseudo }}</a>
                                     </td>
-                                    <td>{{ participant.nom }}</td>
+                                    <td><div class="form-control bg-grey">{{ participant.nom }}</div></td>
                                 </tr>
                             {% else %}
                                 <tr>
-                                    <td>Pas de participant pour cette sortie!</td>
+                                    <td colspan="2"><div class="form-control bg-grey">Pas de participant pour cette sortie!</div></td>
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -118,23 +173,26 @@
                 </div>
             </div>
         </div>
-
-        <div class="row mt-5">
+        <br>
+        <div class="row d-flex flex-row align-items-center text-black justify-content-around">
             {% if app.user.id != sortie.organisateur.id %}
                 {% if app.user not in sortie.participants %}
-                    <div class="col text-center">
-                        <a href="{{ path('ajouter_participant_sortie', {'id':sortie.id}) }}" class="btn btn-primary btn-lg" role="button">Participer!</a>
+                    <div class="col-lg-6 col-md-12 col-sm-12 text-center">
+                        <a href="{{ path('ajouter_participant_sortie', {'id':sortie.id}) }}" class="btn btn-outline-success" role="button">Participer!</a>
                     </div>
                 {% else %}
-                    <div class="col text-center">
-                        <a href="{{ path('retirer_participant_sortie', {'id':sortie.id}) }}" class="btn btn-primary btn-lg" role="button">Se désister</a>
+                    <div class="col-lg-6 col-md-12 col-sm-12 text-center">
+                        <a href="{{ path('retirer_participant_sortie', {'id':sortie.id}) }}" class="btn btn-outline-success" role="button">Se désister</a>
                     </div>
                 {% endif %}
             {% else %}
-                <div class="col text-center">
-                    <a href="{{ path('annuler_sortie_organisateur', {'id':sortie.id}) }}" class="btn btn-primary btn-lg" role="button">Annuler la sortie</a>
+                <div class="col-lg-6 col-md-12 col-sm-12 text-center">
+                    <a href="{{ path('annuler_sortie_organisateur', {'id':sortie.id}) }}" class="btn btn-outline-success" role="button">Annuler la sortie</a>
                 </div>
             {% endif %}
+            <div class="col-lg-6 col-md-12 col-sm-12 text-center">
+                <button class="btn btn-outline-success" onclick="history.go(-1);">Retour </button>
+            </div>
         </div>
     </div>
 

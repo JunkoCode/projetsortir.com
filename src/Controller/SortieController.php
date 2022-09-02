@@ -208,8 +208,8 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/annulerSortieOrganisateur/{id}', name: 'annuler_sortie_organisateur', methods: ['GET', 'POST'])]
-    public function delete(Request $request, Sortie $sortie, EtatRepository $etatRepository): Response
+    #[Route('/annulerSortieOrganisateur/{id}', name: 'annuler_sortie_organisateur', methods: ['GET','POST'])]
+    public function delete(Request $request, Sortie $sortie, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
 
         $datenow = new DateTimeImmutable("now");
@@ -220,7 +220,13 @@ class SortieController extends AbstractController
         } elseif ($datenow >= $sortie->getDateHeureDebut()) {
             $this->addFlash('danger', "La sortie a débuté, impossible de le supprimer.");
         } else {
-            $sortie->setEtat($etatRepository->findOneBy(['libelle' => Etat::ANNULEE]));
+            $sortie->setEtat($etatRepository->findOneBy(['libelle'=> Etat::ETAT_ANNULEE]));
+            if($sortie->getEtat()===$etatRepository->findOneBy(['libelle'=> Etat::ETAT_ANNULEE])){
+                $sortie->setInfoSortie('Sortie annulée');
+            }
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
             $this->addFlash('warning', 'La sortie a été annulé!');
         }
 
