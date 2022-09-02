@@ -1,13 +1,292 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Sortie{% endblock %}
+{% block title %}Créer une nouvelle sortie{% endblock %}
 
 {% block body %}
-    <h1>Edit Sortie</h1>
+    {# <div class="container rounded bg-white mt-5 mb-5"> #}
+    {# <div class="container d-none d-md-block"> #}
+    <div class="container d-none d-md-block rounded bg-white mt-5 mb-5">
+        <h1 class="my-5">Créer une nouvelle sortie</h1>
 
-    {{ include('sortie/_form.html.twig', {'button_label': 'Update'}) }}
+        {{ form_start(formSortie, {'attr': {'id': 'formSortie'}}) }}
 
-    <a href="{{ path('app_sortie_index') }}">back to list</a>
+        <div class="row d-flex flex-row align-items-stretch">
+            <div class="col-lg-6 col-md-12 col-sm-12 h-100">
+                <div class="alert gradient-custom w-100">
+                    <div style="min-height: 75px;">
+                        <h2 class="alert-heading">Informations générales</h2>
+                    </div>
+                    <hr>
+                    {{ form_row(formSortie.nom) }}
+                    {{ form_row(formSortie.dateLimiteInscription) }}
+                    {{ form_row((formSortie.dateHeureDebut)) }}
+                    {{ form_row((formSortie.nombreInscriptionMax)) }}
+                    {{ form_row((formSortie.duree)) }}
+                    {{ form_row((formSortie.infoSortie)) }}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 h-100">
 
-    {{ include('sortie/_delete_form.html.twig') }}
+                <div class="alert gradient-custom">
+                    <div style="min-height: 75px;">
+                        <h2 class="alert-heading">Lieu de la sortie</h2>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <label for="campus" class="form-label">Campus</label>
+                        <p id="campus" class="form-control">{{ app.user.campus.nom }}</p>
+                    </div>
+                    {# <div class="mb-3">
+                    <label for="ville" class="form-label">{{ form_label(form.ville) }}</label>
+                    #}{# <p id="ville" class="form-control bg-grey">Ville</p> #}{#
+                    {{ form_widget(form.ville) }}
+                </div> #}
+
+                    <div class="row my-3 d-flex align-items-center justify-content-center">
+                        {{ form_label(formSortie.lieu.ville.nom) }}
+                        <div class="col-10">
+                            {{ form_widget(formSortie.lieu.ville.nom) }}
+                        </div>
+                        <div class="d-flex col-2 ml-auto">
+                            <!-- Button trigger modal -->
+                            <button type="button" id="btnShowVilleModal" class="btn btn-primary btn-sm rounded-circle"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#ModalVilleLieu">
+                                +
+                            </button>
+                        </div>
+                        {{ form_errors(formSortie.lieu.ville.nom) }}
+                    </div>
+                    <div class="row my-3 d-flex align-items-center justify-content-center">
+                        {{ form_label(formSortie.lieu) }}
+                        <div class="col-10">
+                            {{ form_widget(formSortie.lieu) }}
+                        </div>
+                        <div class="d-flex col-2 ml-auto">
+                            <!-- Button trigger modal -->
+                            <button type="button" id="btnShowLieuModal"
+                                    class="btn btn-outline-success btn-sm rounded-circle"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#ModalAjoutLieu">
+                                +
+                            </button>
+                        </div>
+                        {{ form_errors(formSortie.lieu) }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="rue" class="form-label">Rue</label>
+                        <p id="rue" class="form-control">Rue du lieu</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="code_postal" class="form-label">Code Postal</label>
+                        <p id="code_postal" class="form-control">Code postal du lieu</p>
+                    </div>
+                    {{ form_row(formSortie.latitude) }}
+                    {{ form_row(formSortie.longitude) }}
+                    {{ form_row(formSortie._token) }}
+                </div>
+
+
+            </div>
+            {# <button type="submit" class="btn btn-primary">Confirmer inscription</button> #}
+        </div>
+        <div class="row mt-5">
+            <div class="col-lg-4 col-md-12 col-sm-12 text-center">
+                {{ form_row(formSortie.btnEnregistrer) }}
+            </div>
+
+            <div class="col-lg-4 col-md-12 col-sm-12 text-center">
+                {{ form_row(formSortie.btnPublier) }}
+            </div>
+
+            <div class="col-lg-4 col-md-12 col-sm-12 text-center">
+                <a href="" class="btn btn-outline-success" onclick="window.location.replace(document.referrer)"
+                   role="button">Annuler</a>
+            </div>
+        </div>
+
+
+        {# {{ form_end(form) }} #}
+        {{ form_end(formSortie, {'render_rest': false}) }}
+
+        <div class="container d-sm-none">
+
+
+            <div class="alert alert-dismissible alert-primary">
+                <p>Impossible d'accéder à la modification d'une sortie depuis votre smartphone !
+                </p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <strong>Désolé!</strong> <a href="{{ path('home') }}" class="alert-link">Retour accueil</a>
+            </div>
+
+        </div>
+
+        <script type="module">
+            const formSortie = document.getElementById('formSortie');
+            const formVille = document.getElementById('formVille');
+            const formLieu = document.getElementById('formLieu');
+
+            const inputVilleFormLieu = document.getElementById('lieu_ville');
+
+
+            const containerModalLieu = document.getElementById('ModalAjoutLieu');
+            const modalLieu = new bootstrap.Modal(containerModalLieu);
+
+            const containerModalVille = document.getElementById('ModalAjoutVille');
+            const modalVille = new bootstrap.Modal(containerModalVille);
+
+            const selectVille = document.getElementById('sortie_type_ajax_ville');
+            const selectLieu = document.getElementById('sortie_type_ajax_lieu');
+
+            const inputRue = document.getElementById('rue');
+            const inputCodePostal = document.getElementById('code_postal');
+            const inputLatitude = document.getElementById('sortie_type_ajax_latitude');
+            const inputLongitude = document.getElementById('sortie_type_ajax_longitude');
+
+
+            document.addEventListener("DOMContentLoaded", () => {
+                selectLieu.innerHTML = "<option value='0' selected='selected' title='choississez d abord une ville'>Choississez un lieu</option>"
+                selectLieu.disabled = true;
+            })
+
+
+            /*
+            *   traitement des modales
+            */
+
+            document.getElementById("btnShowLieuModal").addEventListener("click", function () {
+                modalLieu.show();
+                const inputLieuNom = document.getElementById('lieu_nom');
+                inputLieuNom.focus()
+            });
+
+            document.getElementById("btnShowVilleModal").addEventListener("click", function () {
+                modalVille.show();
+            });
+
+            document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(btn => {
+                btn.addEventListener("click", function (event) {
+                    modalLieu.hide();
+                    modalVille.hide();
+                })
+            });
+
+
+            /*
+            *   Get Lieux après la saisie de la ville
+            */
+
+            selectVille.addEventListener('change', function (event) {
+                let idVille = selectVille.options[selectVille.selectedIndex].value;
+
+                fetch('{{ path('app_ajax_ville') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: idVille,
+                    })
+                })
+                    .then(response => response.text())
+                    .then(htmlOptionLieu => {
+                        selectLieu.disabled = false;
+                        let htmlResponse = (new DOMParser(htmlOptionLieu).parseFromString(text, 'text/html'))
+                        console.log(htmlResponse)
+                        //selectLieu.replaceWith(htmlResponse.getElementById('sortie_type_ajax_lieu').innerHTML)
+                        selectLieu.innerHTML = htmlOptionLieu;
+                        inputRue.innerText = "Rue du lieu";
+                        inputCodePostal.innerText = "Code postal du lieu";
+                        inputLatitude.value = '';
+                        inputLongitude.value = '';
+                        selectLieu.focus();
+
+                    })
+                ;
+            });
+
+            /*
+            *   traitement du champs Select pour le lieu
+            */
+            selectLieu.addEventListener('change', () => {
+                let idLieu = selectLieu.options[selectLieu.selectedIndex].value;
+                fetch('{{ path('app_ajax_lieu') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: idLieu,
+                    })
+                })
+                    .then(response => response.json())
+                    .then(json => {
+                            let data = JSON.parse(json);
+                            inputRue.innerText = data.rue;
+                            inputCodePostal.innerText = data.codePostal;
+                            inputLatitude.value = data.latitude;
+                            inputLongitude.value = data.longitude;
+
+                        }
+                    )
+
+            });
+
+
+            /*
+            *   traitement du formulaire pour le lieu
+            */
+
+            formLieu.addEventListener('submit', event => {
+                event.preventDefault();
+                console.log("test")
+                const lieu = document.getElementById('sortie_type_ajax_lieu')
+                /*//let formData = new FormData(document.querySelectorAll('form'));
+                //let data = new URLSearchParams (formData);
+                let dataForm = new FormData();
+                let dataFormLieu = new FormData(formLieu);
+                let dataFormSortie = new FormData(formSortie);
+                let dataFommVille = new FormData(formVille);
+
+                for (let pair of dataFormLieu.entries()) {
+                    dataForm.append(pair[0], pair[1]);
+                }
+                for (let pair of dataFormSortie.entries()) {
+                    dataForm.append(pair[0], pair[1]);
+                }
+                for (let pair of dataFormville.entries()) {
+                    dataForm.append(pair[0], pair[1]);
+                }*/
+
+                let dataFormLieu = new FormData(formLieu);
+
+                let dataUrlSearchParam = new URLSearchParams(dataFormLieu)
+
+                fetch(formLieu.action, {
+                    method: 'POST',
+                    body: dataUrlSearchParam
+
+                })
+                    .then(response => response.text())
+                    .then(text => {
+                        let htmlResponse = (new DOMParser(text).parseFromString(text, 'text/html'))
+                        lieu.replaceWith(htmlResponse.getElementById('sortie_type_ajax_lieu'))
+
+                        //todo : ajouter un message flash
+                        //lieu.focus()*/
+                        //document.body.replaceWith((new DOMParser().parseFromString(html, 'text/html')).body)
+                        inputRue.replaceWith(htmlResponse.getElementById('rue'))
+                        inputCodePostal.replaceWith(htmlResponse.getElementById('code_postal'))
+                        inputLatitude.replaceWith(htmlResponse.getElementById('sortie_type_ajax_latitude'))
+                        inputLongitude.replaceWith(htmlResponse.getElementById('sortie_type_ajax_longitude'))
+                        console.log("ça marche?")
+                        modalLieu.hide()
+
+
+                    })
+            })
+
+
+        </script>
+    </div>
 {% endblock %}

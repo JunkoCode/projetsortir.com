@@ -90,7 +90,7 @@ class SortieController extends AbstractController
                 'lieux' => $lieux,
                 'villes' => $villes,
                 'lieu' => $lieu,
-                'idVille' => $lieu->getVille(),
+                'idVille' => $lieu->getVille()->getId(),
                 'idLieu' => $lieu->getId()
 
             ]);
@@ -198,10 +198,13 @@ class SortieController extends AbstractController
     #[Route('/{id}/edit', name: 'editer_sortie', methods: ['GET', 'POST'])]
     public function edit(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
     {
-        $form = $this->createForm(SortieType::class, $sortie);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+
+
+        $formSortie = $this->createForm(SortieType::class, $sortie);
+        $formSortie->handleRequest($request);
+
+        if ($formSortie->isSubmitted() && $formSortie->isValid()) {
             $sortieRepository->add($sortie, true);
 
             return $this->redirectToRoute('afficher_liste_sorties', [], Response::HTTP_SEE_OTHER);
@@ -209,7 +212,7 @@ class SortieController extends AbstractController
 
         return $this->renderForm('sortie/editerSortie.html.twig', [
             'sortie' => $sortie,
-            'form' => $form,
+            'formSortie' => $formSortie,
         ]);
     }
 

@@ -63,7 +63,7 @@
 
                                 <a href="{{ path('afficher_sortie', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-success">Afficher la sortie</a>
                                 {% if app.user.id == sortie.organisateur.id %}
-                                <a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-warning">Modifier la sortie</a>
+                                <a href="{{ path('editer_sortie', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-warning">Modifier la sortie</a>
                                 {% endif %}
                             </div>
                         </div>
