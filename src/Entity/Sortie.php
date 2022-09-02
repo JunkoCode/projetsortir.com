@@ -66,7 +66,7 @@ class Sortie
     private ?Utilisateur $organisateur = null;
 
     #[MaxDepth(1)]
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'participantSorties',orphanRemoval: true)]
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'participantSorties')]
     #[ORM\JoinTable (name: "utilisateur_sortie")]
 
     private Collection $participants;
