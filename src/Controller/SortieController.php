@@ -70,12 +70,16 @@ class SortieController extends AbstractController
             $villeRepository->add($ville, true);
             $this->addFlash('success', 'Ville créée!');
 
-            /*return $this->renderForm('sortie/creerSortie.html.twig', [
-                'sortie' => $sortie,
-                'form' => $formSortie,
-                'formLieu' => $formLieu,
-                'formVille' => $formVille,
-            ]);*/
+            $villes = $villeRepository->findAll();
+
+            return $this->renderForm('sortie/_lieu.html.twig', [
+                'lieux' => 0,
+                'villes' => $villes,
+                'lieu' => 0,
+                'idVille' => $ville->getId(),
+                'idLieu' => 0
+
+            ]);
         }
 
         if ($formLieu->isSubmitted() && $formLieu->isValid()) {
@@ -94,12 +98,6 @@ class SortieController extends AbstractController
                 'idLieu' => $lieu->getId()
 
             ]);
-            /*return $this->renderForm('sortie/creerSortie.html.twig', [
-                'sortie' => $sortie,
-                'form' => $formSortie,
-                'formLieu' => $formLieu,
-                'formVille' => $formVille,
-            ]);*/
         }
 
         if ($formSortie->isSubmitted() && $formSortie->isValid()) {

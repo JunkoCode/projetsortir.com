@@ -192,7 +192,7 @@
             document.addEventListener("DOMContentLoaded", () => {
                 selectLieu.innerHTML = "<option value='0' selected='selected' title='choississez d abord une ville'>Choississez un lieu</option>"
                 selectLieu.disabled = true;
-                document.getElementById("btnShowLieuModal").disabled=true;
+                document.getElementById("btnShowLieuModal").disabled = true;
             })
 
 
@@ -249,7 +249,7 @@
                         inputLongitude.value = '';
                         selectLieu.focus();
                         selectLieu.disabled = false;
-                        document.getElementById("btnShowLieuModal").disabled=false;
+                        document.getElementById("btnShowLieuModal").disabled = false;
                         inputVilleDansFormLieu.innerHTML = htmlResponse.getElementById('sortie_type_ajax_ville').innerHTML
 
 
@@ -298,11 +298,11 @@
                 console.log("test")
                 const lieu = document.getElementById('sortie_type_ajax_lieu')
                 let dataFormLieu = new FormData(formLieu);
-                let dataUrlSearchParam = new URLSearchParams(dataFormLieu)
+                let dataUrlSearchParamLieu = new URLSearchParams(dataFormLieu)
 
-                fetch(formLieu.action, {
+                fetch('{{ path('creer_sortie') }}', {
                     method: 'POST',
-                    body: dataUrlSearchParam
+                    body: dataUrlSearchParamLieu
 
                 })
                     .then(response => response.text())
@@ -323,16 +323,48 @@
                         console.log("ça marche?")
                         //modalLieu.hide()
                         simulateClick(document.querySelector('[data-bs-dismiss="modal"]'))
-
-
-
-                        //console.log(document.querySelectorAll('.modal-backdrop.fade.show'))
-                        /*document.querySelectorAll('.modal-backdrop.fade.show').forEach(function (background) {
-                            console.log(background)
-                            background.style.display = 'none'
-                        })*/
-                        //document.querySelector('.modal-backdrop').style.display='none'
                     })
+            })
+
+            /*
+             *   traitement du formulaire pour la ville
+             */
+
+            formVille.addEventListener('submit', event => {
+                event.preventDefault();
+                const ville = document.getElementById('sortie_type_ajax_ville')
+                //let dataFormVille = new FormData(formVille);
+                let dataUrlSearchParamVille = new URLSearchParams(new FormData(formVille))
+
+                fetch('{{ path('creer_sortie') }}', {
+                    method: 'POST',
+                    body: dataUrlSearchParamVille
+
+                })
+                    .then(response => response.text())
+                    .then(text => {
+                        let htmlResponse = (new DOMParser().parseFromString(text, 'text/html'))
+                        ville.innerHTML = htmlResponse.getElementById('sortie_type_ajax_ville').innerHTML
+                        return htmlResponse
+                    })
+                    .then((htmlResponse) => {
+                        //todo : ajouter un message flash
+                        selectLieu.value ="";
+                        selectLieu.innerHTML="<option value='' selected='selected'>Choississez un lieu</option>"
+                        inputRue.innerText = "Rue du lieu";
+                        inputCodePostal.innerText = "Code postal du lieu";
+                        inputLatitude.value = '';
+                        inputLongitude.value = '';
+                        selectLieu.disabled = false;
+                        selectLieu.focus();
+                        document.getElementById("btnShowLieuModal").disabled = false;
+
+                        inputVilleDansFormLieu.innerHTML = htmlResponse.getElementById('sortie_type_ajax_ville').innerHTML
+
+                        simulateClick(document.querySelector('[data-bs-dismiss="modal"]'))
+
+                    })
+
 
             })
             let simulateClick = function (elem) {
@@ -345,7 +377,6 @@
                 // If cancelled, don't dispatch our event
                 let canceled = !elem.dispatchEvent(evt);
             };
-
 
 
         </script>

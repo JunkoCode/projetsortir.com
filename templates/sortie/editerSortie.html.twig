@@ -239,42 +239,20 @@
 
             formLieu.addEventListener('submit', event => {
                 event.preventDefault();
-                console.log("test")
                 const lieu = document.getElementById('sortie_type_ajax_lieu')
-                /*//let formData = new FormData(document.querySelectorAll('form'));
-                //let data = new URLSearchParams (formData);
-                let dataForm = new FormData();
-                let dataFormLieu = new FormData(formLieu);
-                let dataFormSortie = new FormData(formSortie);
-                let dataFommVille = new FormData(formVille);
-
-                for (let pair of dataFormLieu.entries()) {
-                    dataForm.append(pair[0], pair[1]);
-                }
-                for (let pair of dataFormSortie.entries()) {
-                    dataForm.append(pair[0], pair[1]);
-                }
-                for (let pair of dataFormville.entries()) {
-                    dataForm.append(pair[0], pair[1]);
-                }*/
-
                 let dataFormLieu = new FormData(formLieu);
 
-                let dataUrlSearchParam = new URLSearchParams(dataFormLieu)
+                let dataUrlSearchParamLieu = new URLSearchParams(dataFormLieu)
 
                 fetch(formLieu.action, {
                     method: 'POST',
-                    body: dataUrlSearchParam
-
+                    body: dataUrlSearchParamLieu
                 })
                     .then(response => response.text())
                     .then(text => {
                         let htmlResponse = (new DOMParser(text).parseFromString(text, 'text/html'))
                         lieu.replaceWith(htmlResponse.getElementById('sortie_type_ajax_lieu'))
-
                         //todo : ajouter un message flash
-                        //lieu.focus()*/
-                        //document.body.replaceWith((new DOMParser().parseFromString(html, 'text/html')).body)
                         inputRue.replaceWith(htmlResponse.getElementById('rue'))
                         inputCodePostal.replaceWith(htmlResponse.getElementById('code_postal'))
                         inputLatitude.replaceWith(htmlResponse.getElementById('sortie_type_ajax_latitude'))
