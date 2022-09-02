@@ -47,6 +47,7 @@ body{
 .card .card-header.no-border {
   border: 0;
 }
+
 .card .card-header {
   background-color: #fd7e14;
   padding: 0 0.9375rem;
@@ -149,11 +150,12 @@ body{
 }
 
 .widget-49 .widget-49-meeting-action {
+  margin-top: 7px;
   text-align: right;
 }
 .widget-49 .widget-49-meeting-action span {
   text-align: right;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .widget-49 .widget-49-meeting-action a {
