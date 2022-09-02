@@ -3,10 +3,10 @@
 {% block title %}Créer une nouvelle sortie{% endblock %}
 
 {% block body %}
-<div class="container d-none d-md-block">
+    <div class="container d-none d-md-block">
     <h1 class="my-5">Créer une nouvelle sortie</h1>
 
-    {{ form_start(form) }}
+    {{ form_start(form, {'attr': {'id': 'formSortie'}}) }}
 
     <div class="row d-flex flex-row align-items-stretch">
         <div class="col-lg-6 col-md-12 col-sm-12 h-100">
@@ -33,11 +33,29 @@
                     <label for="campus" class="form-label">Campus</label>
                     <p id="campus" class="form-control bg-grey">{{ app.user.campus.nom }}</p>
                 </div>
-                <div class="mb-3">
+                {# <div class="mb-3">
                     <label for="ville" class="form-label">{{ form_label(form.ville) }}</label>
-                    {# <p id="ville" class="form-control bg-grey">Ville</p> #}
-                    {{ form_widget(form.ville) }}
+                #}{# <p id="ville" class="form-control bg-grey">Ville</p> #}{#
+                {{ form_widget(form.ville) }}
+            </div> #}
+
+                <div class="row my-3 d-flex align-items-center justify-content-center">
+                    {{ form_label(form.ville) }}
+                    <div class="col-10">
+                        {{ form_widget(form.ville) }}
+                    </div>
+                    <div class="d-flex col-2 ml-auto">
+                        <!-- Button trigger modal -->
+                        <button type="button" id="btnShowVilleModal" class="btn btn-primary btn-sm rounded-circle"
+                                data-bs-toggle="modal"
+                                data-bs-target="#ModalVilleLieu">
+                            +
+                        </button>
+                    </div>
+                    {{ form_errors(form.ville) }}
                 </div>
+
+
                 <div class="row my-3 d-flex align-items-center justify-content-center">
                     {{ form_label(form.lieu) }}
                     <div class="col-10">
@@ -45,7 +63,8 @@
                     </div>
                     <div class="d-flex col-2 ml-auto">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary btn-sm rounded-circle" data-bs-toggle="modal"
+                        <button type="button" id="btnShowLieuModal" class="btn btn-primary btn-sm rounded-circle"
+                                data-bs-toggle="modal"
                                 data-bs-target="#ModalAjoutLieu">
                             +
                         </button>
@@ -79,7 +98,7 @@
         </div>
 
         <div class="col-lg-4 col-md-12 col-sm-12 text-center">
-            <a href="#" class="btn btn-primary" role="button">Annuler</a>
+            <a href="" class="btn btn-primary" onclick="window.location.replace(document.referrer)" role="button">Annuler</a>
         </div>
     </div>
 
@@ -87,13 +106,13 @@
     {# {{ form_end(form) }} #}
     {{ form_end(form, {'render_rest': false}) }}
 
-    <!-- Modal -->
+    <!-- Modal Lieu -->
     <div class="modal fade" id="ModalAjoutLieu" data-bs-backdrop="true" data-bs-keyboard="true" tabindex="-1"
          aria-labelledby="ModalAjoutLieuLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Ajouter un lieu</h5>
+                    <h5 class="modal-title" id="staticBackdropLabelLieu">Ajouter un lieu</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
                 {{ form_start(formLieu, {'attr': {'id': 'formLieu'}}) }}
@@ -106,6 +125,29 @@
                     <button type="submit" class="btn btn-primary">Ajouter un lieu</button>
                 </div>
                 {{ form_end(formLieu) }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ville-->
+    <div class="modal fade" id="ModalAjoutVille" data-bs-backdrop="true" data-bs-keyboard="true" tabindex="-1"
+         aria-labelledby="ModalAjoutVilleLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabelVille">Ajouter une Ville</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                {{ form_start(formVille, {'attr': {'id': 'formVille'}}) }}
+                <div class="modal-body">
+
+                    {{ form_widget(formVille) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter une Ville</button>
+                </div>
+                {{ form_end(formVille) }}
             </div>
         </div>
     </div>
@@ -123,98 +165,174 @@
 
     </div>
 
-    <script>
+    <script type="module">
+        const formSortie = document.getElementById('formSortie');
+        const formVille = document.getElementById('formVille');
+        const formLieu = document.getElementById('formLieu');
+
+        const inputVilleFormLieu = document.getElementById('lieu_ville');
+
+
+        const containerModalLieu = document.getElementById('ModalAjoutLieu');
+        const modalLieu = new bootstrap.Modal(containerModalLieu);
+
+        const containerModalVille = document.getElementById('ModalAjoutVille');
+        const modalVille = new bootstrap.Modal(containerModalVille);
+
+        const selectVille = document.getElementById('sortie_type_ajax_ville');
+        const selectLieu = document.getElementById('sortie_type_ajax_lieu');
+
+        const inputRue = document.getElementById('rue');
+        const inputCodePostal = document.getElementById('code_postal');
+        const inputLatitude = document.getElementById('sortie_type_ajax_latitude');
+        const inputLongitude = document.getElementById('sortie_type_ajax_longitude');
+
 
         document.addEventListener("DOMContentLoaded", () => {
-            const ville = document.getElementById('sortie_type_ajax_ville');
-            const lieu = document.getElementById('sortie_type_ajax_lieu');
-            const formLieu = document.getElementById('formLieu');
+            selectLieu.innerHTML = "<option value='0' selected='selected' title='choississez d abord une ville'>Choississez un lieu</option>"
+            selectLieu.disabled = true;
+        })
 
-            const modalLieu=document.getElementById('ModalAjoutLieu');
-            const inputLieuNom=document.getElementById('lieu_nom');
 
-            lieu.innerHTML="<option value='' selected='selected' title='choississez d abord une ville'>Choississez un lieu</option>"
-            lieu.disabled=true;
 
-            ville.addEventListener('change', function (event) {
-                let idVille = ville.options[ville.selectedIndex].value;
+        /*
+        *   traitement des modales
+        */
 
-                fetch('{{ path('app_ajax_ville') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        id: idVille,
-                    })
-                })
-                    .then(response => response.text())
-                    .then(htmlOptionLieu => {
-                            ville.firstChild.remove()
-                            lieu.disabled=false;
-                            lieu.innerHTML = htmlOptionLieu
-                            lieu.focus()
+        document.getElementById("btnShowLieuModal").addEventListener("click", function () {
+            modalLieu.show();
+            const inputLieuNom = document.getElementById('lieu_nom');
+            inputLieuNom.focus()
+        });
 
-                        }
-                    )
-                ;
-            });
+        document.getElementById("btnShowVilleModal").addEventListener("click", function () {
+            modalVille.show();
+        });
 
-            lieu.addEventListener('change', () => {
-                let idLieu = lieu.options[lieu.selectedIndex].value;
-                fetch('{{ path('app_ajax_lieu') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        id: idLieu,
-                    })
-                })
-                    .then(response => response.json())
-                    .then(json => {
-                            lieu.firstChild.remove()
-                            let data = JSON.parse(json)
-                            document.getElementById('rue').innerText = data.rue
-                            document.getElementById('code_postal').innerText = data.codePostal
-                            document.getElementById('sortie_type_ajax_latitude').value = data.latitude
-                            document.getElementById('sortie_type_ajax_longitude').value = data.longitude
-
-                        }
-                    );
-
-            });
-
-            modalLieu.addEventListener('shown.bs.modal', function () {
-                inputLieuNom.focus()
+        document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(btn => {
+            btn.addEventListener("click", function (event) {
+                modalLieu.hide();
+                modalVille.hide();
             })
+        });
 
-            formLieu.addEventListener('submit', event => {
-                event.preventDefault();
-                data = new URLSearchParams(new FormData(formLieu))
 
-                fetch(formLieu.action, {
-                    method: 'POST',
-                    body: data
+        /*
+        *   Get Lieux après la saisie de la ville
+        */
+
+        selectVille.addEventListener('change', function (event) {
+            let idVille = selectVille.options[selectVille.selectedIndex].value;
+
+            fetch('{{ path('app_ajax_ville') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: idVille,
+                })
+            })
+                .then(response => response.text())
+                .then(htmlOptionLieu => {
+                    selectLieu.disabled = false;
+                    let htmlResponse = (new DOMParser(htmlOptionLieu).parseFromString(text,'text/html'))
+                    console.log(htmlResponse)
+                    //selectLieu.replaceWith(htmlResponse.getElementById('sortie_type_ajax_lieu').innerHTML)
+                    selectLieu.innerHTML = htmlOptionLieu;
+                    inputRue.innerText = "Rue du lieu";
+                    inputCodePostal.innerText = "Code postal du lieu";
+                    inputLatitude.value = '';
+                    inputLongitude.value = '';
+                    selectLieu.focus();
 
                 })
-                    .then(response => response.text())
-                    .then(html => {
-                        lieu.replaceWith((new DOMParser().parseFromString(html,'text/html')).getElementById('sortie_type_ajax_lieu'))
-                        //todo : ajouter un message flash
-                        lieu.focus()
+            ;
+        });
 
-                    })
+        /*
+        *   traitement du champs Select pour le lieu
+        */
+        selectLieu.addEventListener('change', () => {
+            let idLieu = selectLieu.options[selectLieu.selectedIndex].value;
+            fetch('{{ path('app_ajax_lieu') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: idLieu,
+                })
+            })
+                .then(response => response.json())
+                .then(json => {
+                        let data = JSON.parse(json);
+                        inputRue.innerText = data.rue;
+                        inputCodePostal.innerText = data.codePostal;
+                        inputLatitude.value = data.latitude;
+                        inputLongitude.value = data.longitude;
 
-
-            });
-
-
-
-
+                    }
+                )
 
         });
 
+
+        /*
+        *   traitement du formulaire pour le lieu
+        */
+
+        formLieu.addEventListener('submit', event => {
+            event.preventDefault();
+            console.log("test")
+            const lieu = document.getElementById('sortie_type_ajax_lieu')
+            /*//let formData = new FormData(document.querySelectorAll('form'));
+            //let data = new URLSearchParams (formData);
+            let dataForm = new FormData();
+            let dataFormLieu = new FormData(formLieu);
+            let dataFormSortie = new FormData(formSortie);
+            let dataFommVille = new FormData(formVille);
+
+            for (let pair of dataFormLieu.entries()) {
+                dataForm.append(pair[0], pair[1]);
+            }
+            for (let pair of dataFormSortie.entries()) {
+                dataForm.append(pair[0], pair[1]);
+            }
+            for (let pair of dataFormville.entries()) {
+                dataForm.append(pair[0], pair[1]);
+            }*/
+
+            let dataFormLieu = new FormData(formLieu);
+
+            let dataUrlSearchParam = new URLSearchParams(dataFormLieu)
+
+            fetch(formLieu.action, {
+                method: 'POST',
+                body: dataUrlSearchParam
+
+            })
+                .then(response => response.text())
+                .then(text => {
+                    let htmlResponse = (new DOMParser(text).parseFromString(text,'text/html'))
+                    lieu.replaceWith(htmlResponse.getElementById('sortie_type_ajax_lieu'))
+
+                    //todo : ajouter un message flash
+                    //lieu.focus()*/
+                    //document.body.replaceWith((new DOMParser().parseFromString(html, 'text/html')).body)
+                    inputRue.replaceWith(htmlResponse.getElementById('rue'))
+                    inputCodePostal.replaceWith(htmlResponse.getElementById('code_postal'))
+                    inputLatitude.replaceWith(htmlResponse.getElementById('sortie_type_ajax_latitude'))
+                    inputLongitude.replaceWith(htmlResponse.getElementById('sortie_type_ajax_longitude'))
+                    console.log("ça marche?")
+                    modalLieu.hide()
+
+
+
+                })
+        })
+
+
     </script>
 
-    {% endblock %}
+{% endblock %}
