@@ -40,7 +40,7 @@
 
                     <div class="mb-3">
                         <label for="duree" class="form-label">Durée</label>
-                        <p id="duree" class="form-control bg-grey">{#{{ sortie.duree | format_time('hh:mm') }}#}DUREE</p> {# todo : créer la variable duree#}
+                        <p id="duree" class="form-control bg-grey">{{ sortie.duree | date("%Hh%Imin") }}</p> {# todo : créer la variable duree#}
                     </div>
 
                     <div class="mb-3">

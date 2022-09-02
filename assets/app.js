@@ -11,6 +11,8 @@ import './styles/app.scss';
 // start the Stimulus application
 import './bootstrap';
 
+import modal from "bootstrap/js/src/modal";
+
 //Concerne l'installation de bootstrap: (doc Symfony : https://symfony.com/doc/current/frontend/encore/bootstrap.html )
 const $ = require('jquery');
 // create global $ and jQuery variables

@@ -8,30 +8,30 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class AjaxController extends AbstractController
 {
-    #[Route('/ajax/ville', name: 'app_ajax_ville', /*requirements: ['id'=>'{\d]']*/)]
-    public function index(Request $request, LieuRepository $lieuRepository, /*SerializerInterface $serializer*/): Response
+    #[Route('/ajax/getLieux', name: 'app_ajax_ville')]
+    public function index(Request $request, LieuRepository $lieuRepository): Response
     {
         $params = json_decode($request->getContent(), true);
         if ($params == null) {
             $params['id'] = 1;
-            // TODO : Gérer un message d'erreur
+            // TODO : Gérer les erreurs et les exceptions
         }
         $lieux = $lieuRepository->findBy(['ville' => $params['id']]);
 
         return $this->renderForm('sortie/_lieu.html.twig',[
             'lieux' => $lieux,
+            'villes' =>0,
+            'lieu'=>0,
+            'idVille'=>0,
+            'idLieu'=>0
         ]);
     }
 
-    #[Route('/ajax/lieu', name: 'app_ajax_lieu')]
+    #[Route('/ajax/getInfosLieu', name: 'app_ajax_lieu')]
     public function lieu(Request $request, LieuRepository $lieuRepository, SerializerInterface $serializer): JsonResponse
     {
         $params = json_decode($request->getContent(), true);

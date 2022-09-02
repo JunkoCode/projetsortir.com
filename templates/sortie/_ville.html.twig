@@ -1,0 +1,4 @@
+<option value="" selected="selected">Choississez un lieu</option>
+{%for lieu in lieux %}
+<option value="{{ lieu.id }}">{{ lieu.nom }}</option>
+{% endfor %}
