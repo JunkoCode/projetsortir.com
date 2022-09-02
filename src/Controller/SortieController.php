@@ -18,8 +18,6 @@ use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
 use DateInterval;
 use DateTimeImmutable;
-use App\Repository\UtilisateurRepository;
-use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
