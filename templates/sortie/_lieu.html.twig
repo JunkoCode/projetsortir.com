@@ -1,4 +1,52 @@
-<option value="" selected="selected">Choississez un lieu</option>
-{%for lieu in lieux %}
-<option value="{{ lieu.id }}">{{ lieu.nom }}</option>
-{% endfor %}
+{# read and display all flash messages #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="badge bg-{{ label }} text-wrap">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+{% if  villes!=0 %}
+    <select id="sortie_type_ajax_ville" name="sortie_type_ajax[ville]" required="required" class="form-select">
+        <option value="" {{ (idVille != 0)?'':'selected="selected' }}">Choississez une ville</option>
+        {% for ville in villes %}
+            {% if (idVille != 0 and idVille == ville.id) %}
+                <option value="{{ ville.id }}" selected="selected">{{ ville.nom }}</option>
+            {% else %}
+                <option value="{{ ville.id }}">{{ ville.nom }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+{% endif %}
+
+{% if lieux!=0 %}
+    <select id="sortie_type_ajax_lieu" name="sortie_type_ajax[lieu]" required="required" class="form-select"
+            disabled="">
+        <option value="" {{ (idLieu !=0)?'':'selected="selected' }}">Choississez un lieu</option>
+        {% for lieu in lieux %}
+            {% if (idLieu !=0 and idLieu==lieu.id) %}
+                <option value='{{ lieu.id }}' selected='selected'>{{ lieu.nom }}</option>
+            {% else %}
+                <option value="{{ lieu.id }}">{{ lieu.nom }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+
+{% endif %}
+
+{% if lieu !=0 %}
+    <p id="rue" class="form-control bg-grey">{{ lieu.rue }}</p>
+
+    <p id="code_postal" class="form-control bg-grey">{{ lieu.codePostal }}</p>
+
+    <input type="text" id="sortie_type_ajax_latitude" name="sortie_type_ajax[latitude]"
+           placeholder="Préciser si besoin la latitude du lieu" class="form-control"
+           value="{{ (lieu.latitude is not empty)?lieu.latitude }}">
+
+    <input type="text" id="sortie_type_ajax_longitude" name="sortie_type_ajax[longitude]"
+           placeholder="Préciser si besoin la longitude du lieu" class="form-control"
+           value="{{ (lieu.longitude is not empty)?lieu.longitude }}">
+
+{% endif %}
+

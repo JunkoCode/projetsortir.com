@@ -33,7 +33,7 @@ class Ville
     private ?int $codePostal = null;
 
     #[MaxDepth(1)]
-    #[ORM\OneToMany(mappedBy: 'ville', targetEntity: Lieu::class)]
+    #[ORM\OneToMany(mappedBy: 'ville', targetEntity: Lieu::class,orphanRemoval: true)]
     private Collection $lieux;
 
 

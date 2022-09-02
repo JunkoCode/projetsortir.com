@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Sortie index{% endblock %}
+{% block title %}Sorties{% endblock %}
 
 {% block body %}
-    <h1>liste des Sorties</h1>
+    <h1>Liste des sorties</h1>
 
     <div class="container">
         {{ form_start(formFilter) }}
@@ -45,8 +45,9 @@
                                 </div>
                                 <div class="widget-49-meeting-info">
                                     <span class="widget-49-pro-title">{{ sortie.nom }} | par : <a href="{{ path('ProfilParticipant', {'id':sortie.organisateur.id}) }}">{{ sortie.organisateur.pseudo }}</a></span>
-                                    <span class="widget-49-meeting-time">Durée : {{ sortie.duree ? sortie.duree|date('Y-m-d H:i:s') : '' }}</span>
+                                    <span class="widget-49-meeting-time"> Durée : {{ sortie.duree ? sortie.duree| date("%Hh%Imin") }}</span>
                                     <span class="widget-49-meeting-time">Clôture : {{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('Y-m-d H:i') : '' }}</span>
+                                    <span class="widget-49-meeting-time">Etat : {{ sortie.etat }}</span>
                                 </div>
                             </div>
                             <div class="widget-49-meeting-points">
@@ -55,7 +56,11 @@
 
                             </div>
                             <div class="widget-49-meeting-action">
-                                <p class="widget-49-meeting-action"><span>Nombre d'inscriptions max : {{ sortie.nombreInscriptionMax }}</span></p>
+                                <p class="widget-49-meeting-action">
+                                    <span>Nombre d'inscriptions max : {{ sortie.nombreInscriptionMax }}</span><br>
+                                    <span>Nombre d'inscrits : {{ sortie.participants.count }}</span>
+                                </p>
+
                                 <a href="{{ path('afficher_sortie', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-success">Afficher la sortie</a>
                                 {% if app.user.id == sortie.organisateur.id %}
                                 <a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-warning">Modifier la sortie</a>

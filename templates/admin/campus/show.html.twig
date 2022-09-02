@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Campus{% endblock %}
+{% block title %}Campus de {{ campus.nom }}{% endblock %}
 
 {% block body %}
-    <h1>Campus</h1>
+    <div class="container">
+        <h1 class="my-5"><i class="ion-ios-paper-outline"></i> Campus de {{ campus.nom }} </h1>
 
     <table class="table">
         <tbody>
@@ -18,9 +19,10 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_campus_index') }}">back to list</a>
+    <a class="btn btn-outline-dark" href="{{ path('app_campus_index') }}">Retour</a>
 
-    <a href="{{ path('app_campus_edit', {'id': campus.id}) }}">edit</a>
+    <a class="btn btn-outline-warning" href="{{ path('app_campus_edit', {'id': campus.id}) }}">Modifier</a>
 
-    {{ include('admin/campus/_delete_form.html.twig') }}
+    <a class="btn btn-outline-danger" onclick="return confirm('Souhaitez vous supprimer ce campus ?');" href="{{ path('app_campus_delete',{'id':campus.id })}}">Supprimer</a>
+    </div>
 {% endblock %}

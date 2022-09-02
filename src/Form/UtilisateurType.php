@@ -11,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UtilisateurType extends AbstractType
 {
@@ -22,7 +24,7 @@ class UtilisateurType extends AbstractType
             ->add('password')
             ->add('nouveau',PasswordType::class,[
                 'mapped'=>false,
-                'required'=>false
+                'required'=>false  
             ])
             ->add('pseudo')
             ->add('nom')

@@ -68,6 +68,7 @@ class Sortie
     #[MaxDepth(1)]
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'participantSorties')]
     #[ORM\JoinTable (name: "utilisateur_sortie")]
+
     private Collection $participants;
 
     public function __construct()

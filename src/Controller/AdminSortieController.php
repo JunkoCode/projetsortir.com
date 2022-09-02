@@ -66,7 +66,7 @@ class AdminSortieController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $sortieRepository->add($sortie, true);
-
+            $this->addFlash('success', "La modification a bien été pris en compte");
             return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -77,11 +77,19 @@ class AdminSortieController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'app_sortie_delete', methods: ['POST'])]
-    public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
+    public function delete(Request $request, Sortie $sortie, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
+        /*if ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
             $sortieRepository->remove($sortie, true);
+        }*/
+
+        $sortie->setEtat($etatRepository->findOneBy(['libelle'=> Etat::ETAT_ANNULEE]));
+        if($sortie->getEtat()===$etatRepository->findOneBy(['libelle'=> Etat::ETAT_ANNULEE])){
+            $sortie->setInfoSortie('Sortie annulée');
         }
+        $entityManager->persist($sortie);
+        $entityManager->flush();
+        $this->addFlash('warning', 'La sortie a été annulé!');
 
         return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
     }

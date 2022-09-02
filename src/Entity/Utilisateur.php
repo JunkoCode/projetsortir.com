@@ -84,6 +84,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     //#[Assert\Choice(choices: Campus::class, message: 'Veuillez choisir un campus dans la liste')]
     #[Assert\Type(Campus::class)]
     #[Assert\Valid]
+    #[ORM\JoinColumn(onDelete:"SET NULL")]
     private ?Campus $campus = null;
 
     #[MaxDepth(1)]
@@ -156,10 +157,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->administrateur == true) {
             $this->roles[] = self::ROLE_ADMIN;
         }
-        if ($this->actif == true) {
+        if (true == $this->actif) {
             $this->roles[] = self::ROLE_ACTIF;
         }
-
         return array_unique($this->roles);
     }
 

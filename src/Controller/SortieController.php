@@ -6,13 +6,16 @@ use App\data\FiltreData;
 use App\Entity\Etat;
 use App\Entity\Lieu;
 use App\Entity\Sortie;
+use App\Entity\Ville;
 use App\Form\LieuType;
 use App\Form\SortieFiltreType;
 use App\Form\SortieType;
 use App\Form\SortieTypeAjax;
+use App\Form\VilleType;
 use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
 use App\Repository\SortieRepository;
+use App\Repository\VilleRepository;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,7 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SortieController extends AbstractController
 {
     #[Route('/', name: 'afficher_liste_sorties', methods: ['GET', 'POST'])]
-    public function index(SortieRepository $sortieRepository, Request $request): Response
+    public function index(SortieRepository $sortieRepository, Request $request, EtatRepository $etatRepository): Response
     {
         $data = new FiltreData();
         $form = $this->createForm(SortieFiltreType::class, $data);
@@ -34,8 +37,13 @@ class SortieController extends AbstractController
         $idUser = $this->getUser()->getId();
         /*todo : rajouter méthode pour mettre à jour l'état des sorties*/
 
-        $sorties= $sortieRepository->findByFiltre($idUser,$data);
+        $sorties = $sortieRepository->findByFiltre($idUser, $data);
+        /*foreach ($sorties as $sortie) {
+          if (new DateTimeImmutable() < $sortie->getDateHeureDebut()){
+              $sortie->setEtat()
+          }
 
+        }*/
 
         return $this->render('sortie/listSorties.html.twig', [
             'sorties' => $sorties,
@@ -44,46 +52,76 @@ class SortieController extends AbstractController
     }
 
     #[Route('/creer', name: 'creer_sortie', methods: ['GET', 'POST'])]
-    public function creerSortie(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, LieuRepository $lieuRepository): Response
+    public function creerSortie(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, LieuRepository $lieuRepository, VilleRepository $villeRepository): Response
     {
         $sortie = new Sortie();
-        $form = $this->createForm(SortieTypeAjax::class, $sortie);
-        $form->handleRequest($request);
+        $formSortie = $this->createForm(SortieTypeAjax::class, $sortie);
+        $formSortie->handleRequest($request);
 
         $lieu = new Lieu();
         $formLieu = $this->createForm(LieuType::class, $lieu);
         $formLieu->handleRequest($request);
 
-        if ($formLieu->isSubmitted() && $formLieu->isValid()) {
-            $lieuRepository->add($lieu, true);
-            $this->addFlash('success', 'Lieu créée!');
-            return $this->renderForm('sortie/creerSortie.html.twig', [
+        $ville = new Ville();
+        $formVille = $this->createForm(VilleType::class, $ville);
+        $formVille->handleRequest($request);
+
+        if ($formVille->isSubmitted() && $formVille->isValid()) {
+            $villeRepository->add($ville, true);
+            $this->addFlash('success', 'Ville créée!');
+
+            /*return $this->renderForm('sortie/creerSortie.html.twig', [
                 'sortie' => $sortie,
-                'form' => $form,
-                'formLieu' =>$formLieu,
-            ]);
+                'form' => $formSortie,
+                'formLieu' => $formLieu,
+                'formVille' => $formVille,
+            ]);*/
         }
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($formLieu->isSubmitted() && $formLieu->isValid()) {
+            $lieuRepository->add($lieu, true);
 
-            $dureeEnMinutes = $form->get('duree')->getData() * 60;
+            $this->addFlash('success', 'Lieu créée!');
 
-            if (($form->get('latitude')->getData() != null)) {
-                $sortie->getLieu()->setLatitude($form->get('latitude')->getData());
+            $lieux = $lieuRepository->findBy(['ville' => $lieu->getVille()->getId()]);
+            $villes = $villeRepository->findAll();
+
+            return $this->renderForm('sortie/_lieu.html.twig', [
+                'lieux' => $lieux,
+                'villes' => $villes,
+                'lieu' => $lieu,
+                'idVille' => $lieu->getVille(),
+                'idLieu' => $lieu->getId()
+
+            ]);
+            /*return $this->renderForm('sortie/creerSortie.html.twig', [
+                'sortie' => $sortie,
+                'form' => $formSortie,
+                'formLieu' => $formLieu,
+                'formVille' => $formVille,
+            ]);*/
+        }
+
+        if ($formSortie->isSubmitted() && $formSortie->isValid()) {
+
+            $dureeEnMinutes = $formSortie->get('duree')->getData() * 60;
+
+            if (($formSortie->get('latitude')->getData() != null)) {
+                $sortie->getLieu()->setLatitude($formSortie->get('latitude')->getData());
             }
 
-            if (($form->get('longitude')->getData() != null)) {
-                $sortie->getLieu()->setLongitude($form->get('longitude')->getData());
+            if (($formSortie->get('longitude')->getData() != null)) {
+                $sortie->getLieu()->setLongitude($formSortie->get('longitude')->getData());
             }
 
             $sortie->setDuree(new DateInterval('PT' . $dureeEnMinutes . 'M'));
             $sortie->setOrganisateur($this->getUser());
 
-            if ($form->getClickedButton() && 'btnEnregistrer' === $form->getClickedButton()->getName()) {
+            if ($formSortie->getClickedButton() && 'btnEnregistrer' === $formSortie->getClickedButton()->getName()) {
                 $sortie->setEtat($etatRepository->findOneBy(['libelle' => Etat::ETAT_CREEE]));
             }
 
-            if ($form->getClickedButton() && 'btnPublier' === $form->getClickedButton()->getName()) {
+            if ($formSortie->getClickedButton() && 'btnPublier' === $formSortie->getClickedButton()->getName()) {
                 $sortie->setEtat($etatRepository->findOneBy(['libelle' => Etat::ETAT_OUVERTE]));
             }
 
@@ -95,8 +133,9 @@ class SortieController extends AbstractController
 
         return $this->renderForm('sortie/creerSortie.html.twig', [
             'sortie' => $sortie,
-            'form' => $form,
-            'formLieu' =>$formLieu,
+            'form' => $formSortie,
+            'formLieu' => $formLieu,
+            'formVille' => $formVille,
         ]);
     }
 
@@ -142,7 +181,7 @@ class SortieController extends AbstractController
         $userConnecte = $this->getUser();
         //vérifier l'état de la sortie
         if ($sortie->getEtat() !== $etatRepository->findOneBy(['libelle' => Etat::ETAT_OUVERTE])) {
-            $this->addFlash('danger', "Impossible de se retirer de la sortie car la sortie est ".strtolower($sortie->getEtat()->getLibelle()));
+            $this->addFlash('danger', "Impossible de se retirer de la sortie car la sortie est " . strtolower($sortie->getEtat()->getLibelle()));
         } elseif (!$sortie->getParticipants()->contains($userConnecte)) {
             $this->addFlash('danger', "L'utilisateur n'est pas inscrit à cette sortie");
         } else {
@@ -174,19 +213,25 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/annulerSortieOrganisateur/{id}', name: 'annuler_sortie_organisateur', methods: ['GET','POST'])]
-    public function delete(Request $request, Sortie $sortie, EtatRepository $etatRepository): Response
+    #[Route('/annulerSortieOrganisateur/{id}', name: 'annuler_sortie_organisateur', methods: ['GET', 'POST'])]
+    public function delete(Request $request, Sortie $sortie, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
 
         $datenow = new DateTimeImmutable("now");
         $userConnecte = $this->getUser();
 
-        if($userConnecte!==$sortie->getOrganisateur()){
+        if ($userConnecte !== $sortie->getOrganisateur()) {
             $this->addFlash('danger', "Suppression impossible, vous n'êtes pas l'organisateur de cette sortie.");
-        } elseif ($datenow >= $sortie->getDateHeureDebut()){
-            $this->addFlash('danger',"La sortie a débuté, impossible de le supprimer.");
+        } elseif ($datenow >= $sortie->getDateHeureDebut()) {
+            $this->addFlash('danger', "La sortie a débuté, impossible de le supprimer.");
         } else {
-            $sortie->setEtat($etatRepository->findOneBy(['libelle'=> Etat::ANNULEE]));
+            $sortie->setEtat($etatRepository->findOneBy(['libelle' => Etat::ETAT_ANNULEE]));
+            if ($sortie->getEtat() === $etatRepository->findOneBy(['libelle' => Etat::ETAT_ANNULEE])) {
+                $sortie->setInfoSortie('Sortie annulée');
+            }
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
             $this->addFlash('warning', 'La sortie a été annulé!');
         }
 

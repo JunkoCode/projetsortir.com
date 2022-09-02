@@ -1,13 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Ville{% endblock %}
+{% block title %}Modifier Ville{% endblock %}
 
 {% block body %}
-    <h1>Edit Ville</h1>
+    <div class="container">
+        <h1 class="my-5"><i class="ion-ios-paper-outline"></i> Modifier la ville de {{ ville.nom }} </h1>
 
-    {{ include('admin/ville/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('admin/ville/_form.html.twig', {'button_label': 'Enregistrer'}) }}
 
-    <a href="{{ path('app_ville_index') }}">back to list</a>
 
-    {{ include('admin/ville/_delete_form.html.twig') }}
+    <a class="btn btn-outline-dark" href="{{ path('app_ville_index') }}">Retour</a>
+    <a class="btn btn-outline-danger"
+       onclick="return confirm('Souhaitez vous supprimer cette ville ?');"
+       href="{{ path('app_ville_delete',{'id':ville.id })}}">Supprimer
+    </a>
+    </div>
 {% endblock %}

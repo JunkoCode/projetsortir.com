@@ -8,6 +8,7 @@ use App\Repository\UtilisateurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/admin/utilisateur')]
@@ -22,13 +23,19 @@ class AdminUtilisateurController extends AbstractController
     }
 
     #[Route('/new', name: 'app_utilisateur_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, UtilisateurRepository $utilisateurRepository): Response
+    public function new(Request $request,UserPasswordHasherInterface $userPasswordHasher, UtilisateurRepository $utilisateurRepository): Response
     {
         $utilisateur = new Utilisateur();
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $utilisateur->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $utilisateur,
+                    $form->get('password')->getData()
+                )
+            );
             $utilisateurRepository->add($utilisateur, true);
 
             return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
@@ -66,12 +73,10 @@ class AdminUtilisateurController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_utilisateur_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_utilisateur_delete')]
     public function delete(Request $request, Utilisateur $utilisateur, UtilisateurRepository $utilisateurRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $utilisateur->getId(), $request->request->get('_token'))) {
-            $utilisateurRepository->remove($utilisateur, true);
-        }
+        $utilisateurRepository->remove($utilisateur, true);
 
         return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
     }
