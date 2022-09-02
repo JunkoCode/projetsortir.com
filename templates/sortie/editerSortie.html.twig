@@ -43,19 +43,12 @@
                 </div> #}
 
                     <div class="row my-3 d-flex align-items-center justify-content-center">
-                        {{ form_label(formSortie.lieu.ville.nom) }}
-                        <div class="col-10">
-                            {{ form_widget(formSortie.lieu.ville.nom) }}
+                        <div class="col">
+                            <label for="ville" class="form-label">Ville</label>
                         </div>
-                        <div class="d-flex col-2 ml-auto">
-                            <!-- Button trigger modal -->
-                            <button type="button" id="btnShowVilleModal" class="btn btn-primary btn-sm rounded-circle"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#ModalVilleLieu">
-                                +
-                            </button>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <p id="ville" class="form-control">{{ sortie.lieu.ville.nom }}</p>
                         </div>
-                        {{ form_errors(formSortie.lieu.ville.nom) }}
                     </div>
                     <div class="row my-3 d-flex align-items-center justify-content-center">
                         {{ form_label(formSortie.lieu) }}
@@ -109,31 +102,17 @@
         {# {{ form_end(form) }} #}
         {{ form_end(formSortie, {'render_rest': false}) }}
 
-        <div class="container d-sm-none">
-
-
-            <div class="alert alert-dismissible alert-primary">
-                <p>Impossible d'accéder à la modification d'une sortie depuis votre smartphone !
-                </p>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                <strong>Désolé!</strong> <a href="{{ path('home') }}" class="alert-link">Retour accueil</a>
-            </div>
-
-        </div>
-
         <script type="module">
             const formSortie = document.getElementById('formSortie');
             const formVille = document.getElementById('formVille');
             const formLieu = document.getElementById('formLieu');
 
-            const inputVilleFormLieu = document.getElementById('lieu_ville');
+            const inputVilleDansFormLieu = document.getElementById('lieu_ville');
 
 
-            const containerModalLieu = document.getElementById('ModalAjoutLieu');
-            const modalLieu = new bootstrap.Modal(containerModalLieu);
+            const modalLieu = new bootstrap.Modal(document.getElementById('ModalAjoutLieu'));
 
-            const containerModalVille = document.getElementById('ModalAjoutVille');
-            const modalVille = new bootstrap.Modal(containerModalVille);
+            const modalVille = new bootstrap.Modal(document.getElementById('ModalAjoutVille'));
 
             const selectVille = document.getElementById('sortie_type_ajax_ville');
             const selectLieu = document.getElementById('sortie_type_ajax_lieu');
@@ -147,6 +126,7 @@
             document.addEventListener("DOMContentLoaded", () => {
                 selectLieu.innerHTML = "<option value='0' selected='selected' title='choississez d abord une ville'>Choississez un lieu</option>"
                 selectLieu.disabled = true;
+                document.getElementById("btnShowLieuModal").disabled = true;
             })
 
 
@@ -176,10 +156,13 @@
             *   Get Lieux après la saisie de la ville
             */
 
-            selectVille.addEventListener('change', function (event) {
+            selectVille.addEventListener('change', get_lieux)
+
+            function get_lieux() {
+                selectLieu.disabled = true;
                 let idVille = selectVille.options[selectVille.selectedIndex].value;
 
-                fetch('{{ path('app_ajax_ville') }}', {
+                fetch('{{ path('ajax_get_lieu') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -190,27 +173,34 @@
                 })
                     .then(response => response.text())
                     .then(htmlOptionLieu => {
-                        selectLieu.disabled = false;
-                        let htmlResponse = (new DOMParser(htmlOptionLieu).parseFromString(text, 'text/html'))
+
+                        let htmlResponse = (new DOMParser().parseFromString(htmlOptionLieu, 'text/html'))
                         console.log(htmlResponse)
-                        //selectLieu.replaceWith(htmlResponse.getElementById('sortie_type_ajax_lieu').innerHTML)
-                        selectLieu.innerHTML = htmlOptionLieu;
+                        selectLieu.innerHTML = htmlResponse.getElementById('sortie_type_ajax_lieu').innerHTML
                         inputRue.innerText = "Rue du lieu";
                         inputCodePostal.innerText = "Code postal du lieu";
                         inputLatitude.value = '';
                         inputLongitude.value = '';
                         selectLieu.focus();
+                        selectLieu.disabled = false;
+                        document.getElementById("btnShowLieuModal").disabled = false;
+                        inputVilleDansFormLieu.innerHTML = htmlResponse.getElementById('sortie_type_ajax_ville').innerHTML
+
 
                     })
                 ;
-            });
+            }
+
 
             /*
             *   traitement du champs Select pour le lieu
             */
-            selectLieu.addEventListener('change', () => {
+
+            selectLieu.addEventListener('change', get_info_lieu)
+
+            function get_info_lieu() {
                 let idLieu = selectLieu.options[selectLieu.selectedIndex].value;
-                fetch('{{ path('app_ajax_lieu') }}', {
+                fetch('{{ path('get_info_lieu') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -230,7 +220,7 @@
                         }
                     )
 
-            });
+            }
 
 
             /*
@@ -239,30 +229,88 @@
 
             formLieu.addEventListener('submit', event => {
                 event.preventDefault();
+                console.log("test")
                 const lieu = document.getElementById('sortie_type_ajax_lieu')
                 let dataFormLieu = new FormData(formLieu);
-
                 let dataUrlSearchParamLieu = new URLSearchParams(dataFormLieu)
 
-                fetch(formLieu.action, {
+                fetch('{{ path('creer_sortie') }}', {
                     method: 'POST',
                     body: dataUrlSearchParamLieu
+
                 })
                     .then(response => response.text())
                     .then(text => {
-                        let htmlResponse = (new DOMParser(text).parseFromString(text, 'text/html'))
-                        lieu.replaceWith(htmlResponse.getElementById('sortie_type_ajax_lieu'))
+                        console.log(text)
+                        let htmlResponse = (new DOMParser().parseFromString(text, 'text/html'))
+                        lieu.innerHTML = htmlResponse.getElementById('sortie_type_ajax_lieu').innerHTML
+                        return htmlResponse
+                    })
+                    .then((htmlResponse) => {
                         //todo : ajouter un message flash
-                        inputRue.replaceWith(htmlResponse.getElementById('rue'))
-                        inputCodePostal.replaceWith(htmlResponse.getElementById('code_postal'))
-                        inputLatitude.replaceWith(htmlResponse.getElementById('sortie_type_ajax_latitude'))
-                        inputLongitude.replaceWith(htmlResponse.getElementById('sortie_type_ajax_longitude'))
+                        //lieu.focus()*/
+                        //document.body.replaceWith((new DOMParser().parseFromString(html, 'text/html')).body)
+                        inputRue.innerHTML = htmlResponse.getElementById('rue').innerHTML
+                        inputCodePostal.innerHTML = htmlResponse.getElementById('code_postal').innerHTML
+                        inputLatitude.innerHTML = htmlResponse.getElementById('sortie_type_ajax_latitude').innerHTML
+                        inputLongitude.innerHTML = htmlResponse.getElementById('sortie_type_ajax_longitude').innerHTML
                         console.log("ça marche?")
-                        modalLieu.hide()
-
-
+                        //modalLieu.hide()
+                        simulateClick(document.querySelector('[data-bs-dismiss="modal"]'))
                     })
             })
+
+            /*
+             *   traitement du formulaire pour la ville
+             */
+
+            formVille.addEventListener('submit', event => {
+                event.preventDefault();
+                const ville = document.getElementById('sortie_type_ajax_ville')
+                //let dataFormVille = new FormData(formVille);
+                let dataUrlSearchParamVille = new URLSearchParams(new FormData(formVille))
+
+                fetch('{{ path('creer_sortie') }}', {
+                    method: 'POST',
+                    body: dataUrlSearchParamVille
+
+                })
+                    .then(response => response.text())
+                    .then(text => {
+                        let htmlResponse = (new DOMParser().parseFromString(text, 'text/html'))
+                        ville.innerHTML = htmlResponse.getElementById('sortie_type_ajax_ville').innerHTML
+                        return htmlResponse
+                    })
+                    .then((htmlResponse) => {
+                        //todo : ajouter un message flash
+                        selectLieu.value ="";
+                        selectLieu.innerHTML="<option value='' selected='selected'>Choississez un lieu</option>"
+                        inputRue.innerText = "Rue du lieu";
+                        inputCodePostal.innerText = "Code postal du lieu";
+                        inputLatitude.value = '';
+                        inputLongitude.value = '';
+                        selectLieu.disabled = false;
+                        selectLieu.focus();
+                        document.getElementById("btnShowLieuModal").disabled = false;
+
+                        inputVilleDansFormLieu.innerHTML = htmlResponse.getElementById('sortie_type_ajax_ville').innerHTML
+
+                        simulateClick(document.querySelector('[data-bs-dismiss="modal"]'))
+
+                    })
+
+
+            })
+            let simulateClick = function (elem) {
+                // Create our event (with options)
+                let evt = new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                });
+                // If cancelled, don't dispatch our event
+                let canceled = !elem.dispatchEvent(evt);
+            };
 
 
         </script>

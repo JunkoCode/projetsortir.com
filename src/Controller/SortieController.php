@@ -197,8 +197,6 @@ class SortieController extends AbstractController
     public function edit(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
     {
 
-
-
         $formSortie = $this->createForm(SortieType::class, $sortie);
         $formSortie->handleRequest($request);
 
